@@ -36,7 +36,7 @@ npm run test:local    # the same without a Claude runtime (local mode)
 npm run test:self     # legacy vs legacy: must be all identical
 ```
 
-Both directories are served locally and driven through the same 60-step
+Both directories are served locally and driven through the same 66-step
 scenario with an identical seeded fixture, a frozen clock, seeded `Math.random`
 and a fake `window.claude` (database, user, coach). After every step the DOM,
 localStorage and the cloud-write log must be identical. `--shots` adds
