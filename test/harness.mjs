@@ -20,6 +20,7 @@ const OLD = path.resolve(args.old || 'legacy');
 const NEW = path.resolve(args.new || 'src');
 const OUT = path.resolve(args.out || 'test/out');
 const SHOTS = !!args.shots;
+const NORUNTIME = !!args.noruntime; // no window.claude: the page runs in local mode
 const FROZEN = '2026-10-07T15:30:00-04:00';
 const VIEW = { width: 390, height: 844 };
 const PIXEL_NOISE = 10;
@@ -73,7 +74,7 @@ async function openPage(browser, url, label) {
     // seed once per page; a reload must find what the app itself wrote, not a fresh fixture
     try { if (!localStorage.getItem('__seeded')) { localStorage.clear(); localStorage.setItem('dojo-log-v1', JSON.stringify(local)); localStorage.setItem('gol-coach-v1', JSON.stringify(coach)); localStorage.setItem('gol-body-filter', JSON.stringify(filter)); localStorage.setItem('__seeded', '1'); } } catch (e) { }
   }, { local, coach: COACH_LOCAL, filter: BODY_FILTER });
-  await page.addInitScript(({ src, cfg }) => { window.__fakeCfg = cfg; (0, eval)(src); }, { src: FAKE_SRC, cfg: { seed: 20261007, cloud: cloudDocs(), script: COACH_SCRIPT } });
+  await page.addInitScript(({ src, cfg }) => { window.__fakeCfg = cfg; (0, eval)(src); }, { src: FAKE_SRC, cfg: { seed: 20261007, cloud: cloudDocs(), script: COACH_SCRIPT, noClaude: NORUNTIME } });
   await page.goto(url, { waitUntil: 'load' });
   return { context, page, console_, label };
 }

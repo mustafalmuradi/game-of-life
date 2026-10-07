@@ -37,8 +37,8 @@ async function escape(page) { await page.keyboard.press('Escape'); await settle(
 async function tab(page, name) { await click(page, '[data-tab="' + name + '"]'); await settle(page); }
 
 export const steps = [
-  { name: 'load (cloud connected)', run: async (page) => {
-    await page.waitForFunction(() => /Synced/.test((document.querySelector('#sync') || {}).textContent || ''), null, { timeout: 10000 });
+  { name: 'load (cloud connected, or local mode with --noruntime)', run: async (page) => {
+    await page.waitForFunction(() => /Synced|Saved in this browser/.test((document.querySelector('#sync') || {}).textContent || ''), null, { timeout: 10000 });
     await settle(page);
   } },
   { name: 'tab: lifts', run: async (page) => tab(page, 'lifts') },
@@ -205,7 +205,10 @@ export const steps = [
     await submit(page, '#ch-form');
     await settle(page); await settle(page);
   } },
-  { name: 'coach: undo the change', run: async (page) => { await click(page, '[data-coach="undo"]'); await settle(page); } },
+  { name: 'coach: undo the change', run: async (page) => {
+    if (await page.locator('[data-coach="undo"]').count()) { await click(page, '[data-coach="undo"]'); await settle(page); }
+    else await page.evaluate(() => { document.body.setAttribute('data-step-note', 'no undo button (no runtime)'); });
+  } },
   { name: 'coach: send another (plain answer)', run: async (page) => {
     await fill(page, '#ch-in', 'How was my week?');
     await submit(page, '#ch-form');
@@ -230,7 +233,7 @@ export const steps = [
   } },
   { name: 'reload: cache round-trip', run: async (page) => {
     await page.reload();
-    await page.waitForFunction(() => /Synced/.test((document.querySelector('#sync') || {}).textContent || ''), null, { timeout: 10000 });
+    await page.waitForFunction(() => /Synced|Saved in this browser/.test((document.querySelector('#sync') || {}).textContent || ''), null, { timeout: 10000 });
     await settle(page);
   } },
   { name: 'visibility change flushes', run: async (page) => {

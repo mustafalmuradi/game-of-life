@@ -11,13 +11,29 @@ and write the tracker through tools.
 | `legacy/index.html` | v2: the single-file artifact exactly as it was before the split. Kept as the regression baseline. |
 | `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root. |
 | `test/` | The old-vs-new regression harness (see below). |
-| `docs/` | The architecture plan lives in the Claude doc "Game of Life v3 Architecture"; `docs/` holds anything exported from it. |
+| `tools/` | The split itself, as scripts: `split-css.py` and `split-js.py` regenerate `src/` from `legacy/index.html`; `check-cascade.py` and `reassemble-js.py` prove what changed. |
+
+The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
+
+## How `src/js` is laid out
+
+| Layer | Files | Rule |
+| --- | --- | --- |
+| `app.js` | events + boot | The composition root. The only file that imports everything. |
+| `features/` | `today`, `progress`, `lifts`, `body`, `build`, `coach` | One file per tab. Each calls `registerTab()` when it loads and keeps its own UI flags behind small exported actions. |
+| `core/` | `config`, `utils`, `state`, `xp`, `strength`, `stats`, `store`, `effects`, `svg`, `render`, `sheets` | Shared by every tab, imports nothing above it. `store.js` is the only file that talks to the database. |
+
+`npm run check` prints the cascade proof and the line-by-line difference between
+the modules and the original script (98.7% of lines moved verbatim; the rest is
+the import/export plumbing, the tab registry, and the per-tab actions).
 
 ## Running the regression harness
 
 ```
 npm install
-node test/harness.mjs --old legacy --new src --shots
+npm test              # legacy vs src, with screenshots
+npm run test:local    # the same without a Claude runtime (local mode)
+npm run test:self     # legacy vs legacy: must be all identical
 ```
 
 Both directories are served locally and driven through the same 60-step

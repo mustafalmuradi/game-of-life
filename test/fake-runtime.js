@@ -116,5 +116,6 @@
   sample.json = function (input, opts) { return sample(input, opts).then(function (r) { return JSON.parse(r.text); }); };
 
   var caps = { db: db, user: user, sample: sample };
-  window.claude = { use: function (name) { return later(function () { return caps[name] || null; }); } };
+  // --noruntime: no window.claude at all, the page must fall back to local mode
+  if (!cfg.noClaude) window.claude = { use: function (name) { return later(function () { return caps[name] || null; }); } };
 })(window.__fakeCfg);
