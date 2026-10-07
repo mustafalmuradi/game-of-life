@@ -1,0 +1,77 @@
+/* Design tokens: every colour, shadow and font the app uses, light and dark. */
+/* =====================================================================
+   GAME OF LIFE — visual layer v2 "Arcade Bright"
+   Same DOM, same IDs, same class names. Only paint, type, motion.
+   ===================================================================== */
+:root{
+  --bg:#F3F1FF; --surface:#FFFFFF; --surface-2:#F6F4FF; --track:#E7E3FA;
+  --ink:#1A1440; --ink-2:#4A4470; --muted:#7B7599; --line:#E4E0F6;
+  --accent:#6C3DFF; --accent-ink:#5A2EE6; --accent-soft:#ECE5FF; --on-accent:#FFFFFF;
+  --accent-2:#FF3D9A; --accent-3:#00C2FF; --lime:#9BFF3D;
+  --gold:#FFB020; --gold-ink:#B86A00; --gold-soft:#FFF1D6;
+  --h-read:#FF3D9A; --h-meditate:#8B5CFF; --h-workout:#FF5C2B; --h-money:#12C66A; --h-sleep:#2E8BFF; --h-x1:#FF9F1C; --h-x2:#00C2C8; --h-x3:#A3C910;
+  --on-hc:#FFFFFF;
+  --z-green:#12C66A; --z-yellow:#F4B400; --z-red:#FF4D4D;
+  --t-bronze:#D2782E; --t-silver:#7F8FA6; --t-gold:#F0A400; --t-platinum:#12B4C8; --t-diamond:#4C7DFF;
+  --pr:#FF4D4D; --up:#12C66A; --dip:#F28C1C; --spark-fill:rgba(108,61,255,.16);
+  --heat-0:#E7E3FA; --heat-1:#D7CCFF; --heat-2:#B79CFF; --heat-3:#9570FF; --heat-4:#7549FF; --heat-5:#5A2EE6;
+  --belt-edge:rgba(26,20,64,.22);
+  --shadow:0 1px 2px rgba(26,20,64,.05),0 14px 34px -18px rgba(90,46,230,.35);
+  --shadow-pop:0 6px 0 -2px rgba(90,46,230,.18),0 24px 48px -20px rgba(90,46,230,.45);
+  --glow:0 0 0 4px rgba(108,61,255,.15);
+  --backdrop:rgba(26,20,64,.5);
+  --grad:linear-gradient(135deg,#6C3DFF 0%,#FF3D9A 55%,#FFB020 100%);
+  --grad-cool:linear-gradient(135deg,#00C2FF,#6C3DFF);
+  --blob-a:rgba(255,61,154,.35); --blob-b:rgba(0,194,255,.35); --blob-c:rgba(255,176,32,.32);
+  --font-display:"Bricolage Grotesque","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --font-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D0A1F; --surface:#171331; --surface-2:#1F1A3E; --track:#2B2554;
+    --ink:#F3F0FF; --ink-2:#C4BDE6; --muted:#8F88B5; --line:#2C2652;
+    --accent:#9B78FF; --accent-ink:#BFA8FF; --accent-soft:#2A1F5E; --on-accent:#0D0A1F;
+    --accent-2:#FF5FAE; --accent-3:#3DD6FF; --lime:#B4FF5C;
+    --gold:#FFBE3D; --gold-ink:#FFD277; --gold-soft:#3A2A0F;
+    --h-read:#FF5FAE; --h-meditate:#A88CFF; --h-workout:#FF7A50; --h-money:#2EE887; --h-sleep:#5AA4FF; --h-x1:#FFB042; --h-x2:#2EDCE2; --h-x3:#B4FF5C;
+    --on-hc:#0D0A1F;
+    --z-green:#2EE887; --z-yellow:#FFCB3D; --z-red:#FF6B6B;
+    --t-bronze:#E8955A; --t-silver:#B9C4D6; --t-gold:#FFC93D; --t-platinum:#4FE0F2; --t-diamond:#8AA8FF;
+    --pr:#FF6B6B; --up:#2EE887; --dip:#FFA64A; --spark-fill:rgba(155,120,255,.22);
+    --heat-0:#221C46; --heat-1:#2E2568; --heat-2:#43358F; --heat-3:#5B48BD; --heat-4:#7A62E8; --heat-5:#A48CFF;
+    --belt-edge:rgba(255,255,255,.18);
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 14px 34px -18px rgba(0,0,0,.7);
+    --shadow-pop:0 6px 0 -2px rgba(155,120,255,.18),0 24px 48px -20px rgba(0,0,0,.8);
+    --glow:0 0 0 4px rgba(155,120,255,.22);
+    --backdrop:rgba(5,3,18,.7);
+    --grad:linear-gradient(135deg,#9B78FF 0%,#FF5FAE 55%,#FFBE3D 100%);
+    --grad-cool:linear-gradient(135deg,#3DD6FF,#9B78FF);
+    --blob-a:rgba(255,95,174,.22); --blob-b:rgba(61,214,255,.18); --blob-c:rgba(255,190,61,.16);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D0A1F; --surface:#171331; --surface-2:#1F1A3E; --track:#2B2554;
+  --ink:#F3F0FF; --ink-2:#C4BDE6; --muted:#8F88B5; --line:#2C2652;
+  --accent:#9B78FF; --accent-ink:#BFA8FF; --accent-soft:#2A1F5E; --on-accent:#0D0A1F;
+  --accent-2:#FF5FAE; --accent-3:#3DD6FF; --lime:#B4FF5C;
+  --gold:#FFBE3D; --gold-ink:#FFD277; --gold-soft:#3A2A0F;
+  --h-read:#FF5FAE; --h-meditate:#A88CFF; --h-workout:#FF7A50; --h-money:#2EE887; --h-sleep:#5AA4FF; --h-x1:#FFB042; --h-x2:#2EDCE2; --h-x3:#B4FF5C;
+  --on-hc:#0D0A1F;
+  --z-green:#2EE887; --z-yellow:#FFCB3D; --z-red:#FF6B6B;
+  --t-bronze:#E8955A; --t-silver:#B9C4D6; --t-gold:#FFC93D; --t-platinum:#4FE0F2; --t-diamond:#8AA8FF;
+  --pr:#FF6B6B; --up:#2EE887; --dip:#FFA64A; --spark-fill:rgba(155,120,255,.22);
+  --heat-0:#221C46; --heat-1:#2E2568; --heat-2:#43358F; --heat-3:#5B48BD; --heat-4:#7A62E8; --heat-5:#A48CFF;
+  --belt-edge:rgba(255,255,255,.18);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 14px 34px -18px rgba(0,0,0,.7);
+  --shadow-pop:0 6px 0 -2px rgba(155,120,255,.18),0 24px 48px -20px rgba(0,0,0,.8);
+  --glow:0 0 0 4px rgba(155,120,255,.22);
+  --backdrop:rgba(5,3,18,.7);
+  --grad:linear-gradient(135deg,#9B78FF 0%,#FF5FAE 55%,#FFBE3D 100%);
+  --grad-cool:linear-gradient(135deg,#3DD6FF,#9B78FF);
+  --blob-a:rgba(255,95,174,.22); --blob-b:rgba(61,214,255,.18); --blob-c:rgba(255,190,61,.16);
+}
+
