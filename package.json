@@ -1,0 +1,18 @@
+{
+  "name": "game-of-life",
+  "version": "1.0.0",
+  "description": "Moose's Game of Life tracker: Claude artifact split into modules, with an old-vs-new regression harness",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/harness.mjs --old legacy --new src --shots",
+    "test:self": "node test/harness.mjs --old legacy --new legacy"
+  },
+  "devDependencies": {
+    "pixelmatch": "^6.0.0",
+    "playwright": "^1.56.1",
+    "pngjs": "^7.0.0"
+  },
+  "private": true
+}
