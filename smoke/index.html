@@ -1,0 +1,28 @@
+<title>Module Smoke Test</title>
+<link rel="stylesheet" href="css/smoke.css">
+<style>
+/* a throwaway page: does the artifact runtime serve ES modules and stylesheets from its files? */
+:root{--bg:#F3F1FF;--fg:#1A1440;--ok:#12C66A;--bad:#FF4D4D;--muted:#7B7599}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0D0A1F;--fg:#F3F0FF;--muted:#8F88B5;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0D0A1F;--fg:#F3F0FF;--muted:#8F88B5;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,sans-serif;padding-inline:16px;padding-block:24px;max-width:540px;margin:0 auto}
+h1{font-size:22px;margin:0 0 12px}
+ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+li{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.12)}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.wait{color:var(--muted)}
+</style>
+<h1>Module Smoke Test</h1>
+<p class="wait" id="note">Checks whether a page published with supporting files can load an ES module graph and a stylesheet from them.</p>
+<ul>
+  <li><span>Inline script ran</span><b id="c-inline" class="wait">waiting</b></li>
+  <li><span>Module entry (js/app.js) ran</span><b id="c-entry" class="wait">waiting</b></li>
+  <li><span>Nested import (js/core/math.js) resolved</span><b id="c-import" class="wait">waiting</b></li>
+  <li><span>Stylesheet file (css/smoke.css) applied</span><b id="c-css" class="wait">waiting</b></li>
+  <li><span>window.claude.use('user') resolves</span><b id="c-user" class="wait">waiting</b></li>
+</ul>
+<script>
+  document.getElementById('c-inline').textContent = 'OK'; document.getElementById('c-inline').className = 'ok';
+  setTimeout(function(){ ['c-entry','c-import'].forEach(function(id){ var el = document.getElementById(id); if(el.className === 'wait'){ el.textContent = 'FAILED (no module ran in 3 s)'; el.className = 'bad'; } }); }, 3000);
+  window.addEventListener('error', function(e){ var el = document.getElementById('c-entry'); el.textContent = 'ERROR: ' + (e.message || e.type); el.className = 'bad'; }, true);
+</script>
+<script type="module" src="js/app.js"></script>
