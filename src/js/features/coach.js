@@ -1,18 +1,18 @@
 // Coach: rules, the tracker snapshot Claude sees, the tools it can call, the conversation, the chat UI.
-import { DEFAULT_TARGETS } from '../core/config.js';
-import { $, addDays, clone, esc, fmtShort, fmtWd, mondayOf, pad, parseKey, todayKey, uid } from '../core/utils.js';
+import { COLOR_SLOTS, DEFAULT_TARGETS } from '../core/config.js';
+import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, todayKey, uid } from '../core/utils.js';
 import { activeHabits, capOf, habitById, habitTarget, isActive, normalizeSettings, state, T } from '../core/state.js';
-import { rankTitle } from '../core/xp.js';
-import { fmtW, LSTATUS, mooseRank, norm, workingText } from '../core/strength.js';
+import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
+import { fmtW, liftKey, LSTATUS, mooseRank, norm, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
-import { flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, sync } from '../core/store.js';
+import { cleanLift, flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, sync } from '../core/store.js';
 import { mutateDay } from './today.js';
 import { burst, toast } from '../core/effects.js';
 import { render } from '../core/render.js';
 import { celebrateLift, sessOpen } from './lifts.js';
 import { CI_NUMS, CI_TIMES, commitMetrics, daysBetween, metricsOf, patternData, readiness, SESS, TAGS, watchList, weekReview, weekTally, weightTrend } from './body.js';
-import { BCOLS, bKind, BKINDS, bNode, bRank, bRemove, bSel, BSTATUS, bStatus, buildStats, bWrite, BXP, setSelected } from './build.js';
-import { openSheet } from '../core/sheets.js';
+import { BCOLS, bKind, BKINDS, bNode, bRank, bRemove, bSel, BSTATUS, bStatus, buildStats, bWrite, BXP, setSelected, shortName } from './build.js';
+import { closeSheets, openSheet } from '../core/sheets.js';
 
 /* ---------- coach: chat with Claude, which reads and writes this tracker ---------- */
 /* Claude runs through the sample capability; every change goes through the same functions the page's own buttons use. */
@@ -73,7 +73,7 @@ function coachSave(){
   if(!sync.lsOK) return;
   try {
     localStorage.setItem(CHAT_KEY, JSON.stringify(coach.turns.filter(function(t){ return !t.pending; }).slice(-CHAT_KEEP).map(function(t){
-      return {role:t.role, content:t.content, img:t.img || 0, err:t.err || '', acts:(t.acts || []).map(function(a){ return {label:a.label, undone:!!a.undone}; })};
+      return {role:t.role, content:t.content, img:t.img || 0, photos:t.photos || undefined, at:t.at || undefined, err:t.err || '', acts:(t.acts || []).map(function(a){ return {label:a.label, undone:!!a.undone}; })};
     })));
   } catch(e){}
 }
@@ -428,8 +428,8 @@ function coachTools(){
     return {name:t.name, description:t.description, inputSchema:t.schema, execute:function(inp, ctx){
       if(ctx && ctx.signal && ctx.signal.aborted) throw new Error('Stopped by Moose.');
       coach.status = t.busy; coachRender();
-      try { return t.run(inp && typeof inp === 'object' ? inp : {}); }
-      finally { coach.status = ''; }
+      return Promise.resolve().then(function(){ return t.run(inp && typeof inp === 'object' ? inp : {}); })
+        .finally(function(){ coach.status = ''; coachRender(); });
     }};
   });
 }
@@ -465,12 +465,17 @@ var COACH_ERR = {
 async function coachSend(text){
   text = String(text || '').trim();
   if(coach.busy || !coach.sample || (!text && !coach.imgs.length)) return;
-  var imgs = coach.imgs.map(function(x){ return x.file; }); coachClearImg();
-  coach.turns.push({role:'user', content:text || (imgs.length > 1 ? 'Log what’s in these photos.' : 'Log what’s in this photo.'), img:imgs.length});
+  var files = coach.imgs.map(function(x){ return x.file; }); coachClearImg();
+  var u = {role:'user', content:text || (files.length > 1 ? 'Log what’s in these photos.' : 'Log what’s in this photo.'), img:files.length, at:Date.now()};
+  coach.turns.push(u);
   var a = {role:'assistant', content:'', acts:[], pending:true, uid:'t' + uid()};
   coach.turns.push(a); coach.cur = a; coach.busy = true; coach.status = '';
   Object.keys(coach.undo).forEach(function(k){ delete coach.undo[k]; });
   coachRender(true);
+  var imgs = files.length ? await Promise.all(files.map(shrinkImage)) : [];
+  u.thumbs = imgs.map(function(b){ try { return URL.createObjectURL(b); } catch(e){ return ''; } }).filter(Boolean);
+  var photoP = savePhotos(imgs).then(function(ids){ if(ids.length){ u.photos = ids; coachSave(); } });
+  coachRender();
   var ctl = coach.ctl = new AbortController();
   var opts = {signal:ctl.signal, onText:function(u){ a.content = u.text; coachRender(); }};
   if(coach.canTools) opts.tools = coachTools(); else opts.cache = false;
@@ -491,6 +496,7 @@ async function coachSend(text){
     a.pending = false; coach.busy = false; coach.ctl = null; coach.status = ''; coach.cur = null;
     if(!a.content && !a.acts.length && !a.err) a.err = 'No answer came back. Try again.';
     coachSave(); coachRender(true);
+    photoP.then(function(){ archiveExchange(u, a); });
   }
 }
 function coachUndoTurn(uidv){
@@ -541,7 +547,11 @@ function coachRender(force){
   }
   if(coach.off) h += '<p class="chat-off">' + esc(coach.off) + '</p>';
   coach.turns.forEach(function(t){
-    if(t.role === 'user'){ h += '<div class="msg u">' + esc(t.content) + (t.img ? '<br><span class="tag-img">' + (t.img > 1 ? t.img + ' photos' : 'Photo') + ' attached</span>' : '') + '</div>'; return; }
+    if(t.role === 'user'){
+      var srcs = t.photos && t.photos.length ? t.photos.map(function(id){ return '/_blob/' + id; }) : (t.thumbs || []);
+      var ph = srcs.length ? '<span class="msg-photos">' + srcs.map(function(src){ return '<img alt="Photo you sent" src="' + esc(src) + '" onerror="this.style.display=\'none\'">'; }).join('') + '</span>' : (t.img ? '<br><span class="tag-img">' + (t.img > 1 ? t.img + ' photos' : 'Photo') + ' attached</span>' : '');
+      h += '<div class="msg u">' + (srcs.length ? ph : '') + esc(t.content) + (srcs.length ? '' : ph) + '</div>'; return;
+    }
     var b = '';
     if(t.content) b += mdLite(t.content);
     if(t.pending && (!t.content || coach.status)) b += '<div class="status"><span class="dots"><i></i><i></i><i></i></span>' + esc(coach.status ? coach.status + '…' : 'Thinking…') + '</div>';
@@ -659,5 +669,450 @@ export function initCoach(){
       coachRender();
     });
   }).catch(function(){ coach.off = 'Coach isn’t available in this view.'; coachRender(); });
+}
+
+/* ---------- coach, part 2: full data control, permanent storage, export ---------- */
+/* Notes live in tracker/notes, Coach conversations in tracker/coachlog (one doc per day), photos in artifact asset storage. */
+var DB_CAP = 25000;
+coach.assets = null; coach.dl = null;
+
+function findTool(n){ return COACH_TOOLS.filter(function(t){ return t.name === n; })[0]; }
+function cleanStr(v, n){ return String(v == null ? '' : v).trim().slice(0, n); }
+function strList(v, n, each){ return (Array.isArray(v) ? v : (v == null || v === '' ? [] : [v])).map(function(x){ return cleanStr(x, each || 60); }).filter(Boolean).slice(0, n); }
+function intIn(v, lo, hi, k){ var n = parseInt(v, 10); if(!Number.isFinite(n) || n < lo || n > hi) throw new Error(k + ' must be a whole number from ' + lo + ' to ' + hi + '.'); return n; }
+
+/* ----- settings writes with undo ----- */
+function commitSettings(s2, label){
+  var old = clone(state.settings);
+  state.settings = normalizeSettings(s2); recompute(); render(); saveSettings();
+  addAct(label, function(){ state.settings = normalizeSettings(old); recompute(); render(); saveSettings(); });
+}
+function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined}; }
+
+/* ----- notes ----- */
+function noteWrite(obj){
+  var i = state.notes.map(function(x){ return x.id; }).indexOf(obj.id);
+  if(i >= 0) state.notes[i] = obj; else state.notes.push(obj);
+  persistLocal();
+  if(sync.cloud && sync.cloud.notes){ var b = clone(obj); delete b.id; return sync.cloud.notes.doc(obj.id).set(b).catch(function(e){ toast(e && e.code === 'quota_exceeded' ? 'Storage is full. Download your data, then ask Coach to archive old records.' : 'Couldn’t reach your account. Note saved on this device.'); }); }
+}
+function noteRemove(id){
+  state.notes = state.notes.filter(function(x){ return x.id !== id; }); persistLocal();
+  if(sync.cloud && sync.cloud.notes) sync.cloud.notes.doc(id).delete().catch(function(){});
+}
+
+/* ----- storage numbers ----- */
+function recordCounts(){
+  var B = state.build;
+  return {days:Object.keys(state.days).length, lifts:state.lifts.length, mapBoxes:B.bnodes.length, ships:B.bships.length, skills:B.bskills.length, notes:state.notes.length, coachLogDays:coach.logDays || 0};
+}
+async function storageStatus(){
+  var c = recordCounts(), used = 3 + Object.keys(c).reduce(function(a, k){ return a + c[k]; }, 0);
+  var since = addDays(todayKey(), -90);
+  var lifts90 = state.lifts.filter(function(l){ return l.date >= since; }).length;
+  var perYear = Math.round(365 + 365 + lifts90*365/90 + 60);
+  var out = {records:{used:used, cap:DB_CAP, pct:Math.round(used/DB_CAP*1000)/10, breakdown:c}, growthPerYear:perYear, yearsLeft:Math.round((DB_CAP - used)/Math.max(perYear, 1)*10)/10};
+  if(coach.assets){
+    try { var l = await coach.assets.list(); out.photos = {files:l.usage.files, maxFiles:l.usage.maxFiles, mb:Math.round(l.usage.bytes/1048576*10)/10, maxMb:Math.round(l.usage.maxBytes/1048576), pct:l.usage.maxBytes ? Math.round(l.usage.bytes/l.usage.maxBytes*1000)/10 : 0}; }
+    catch(e){ out.photos = {error:'Couldn’t read photo storage'}; }
+  } else out.photos = {error:'Photo storage isn’t available in this view'};
+  return out;
+}
+
+/* ----- photos: shrink, then keep in artifact storage ----- */
+function shrinkImage(file){
+  return new Promise(function(res){
+    var url; try { url = URL.createObjectURL(file); } catch(e){ return res(file); }
+    var im = new Image();
+    im.onload = function(){
+      try {
+        var max = 2048, w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, max/Math.max(w, h));
+        var c = document.createElement('canvas'); c.width = Math.round(w*k); c.height = Math.round(h*k);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        c.toBlob(function(b){ URL.revokeObjectURL(url); res(b && b.size < file.size ? b : file); }, 'image/jpeg', 0.86);
+      } catch(e){ URL.revokeObjectURL(url); res(file); }
+    };
+    im.onerror = function(){ URL.revokeObjectURL(url); res(file); };
+    im.src = url;
+  });
+}
+function savePhotos(blobs){
+  if(!coach.assets || !blobs.length) return Promise.resolve([]);
+  return Promise.all(blobs.map(function(b){ return coach.assets.upload(b).then(function(r){ return r.id; }).catch(function(e){ if(e && e.code === 'quota_or_state') toast('Photo storage is full. Download your data to keep the old photos.'); return null; }); }))
+    .then(function(ids){ return ids.filter(Boolean); });
+}
+
+/* ----- conversation archive: every exchange, one doc per day ----- */
+var archiveChain = Promise.resolve();
+function archiveExchange(u, a){
+  if(!sync.cloud || !sync.cloud.coachlog) return;
+  var date = todayKey();
+  var entry = [
+    {at:u.at || Date.now(), role:'user', text:u.content, photos:u.photos || []},
+    {at:Date.now(), role:'coach', text:a.content || '', changes:(a.acts || []).map(function(x){ return x.label; }), error:a.err || undefined}
+  ];
+  archiveChain = archiveChain.then(async function(){
+    for(var part = 1; part < 20; part++){
+      var id = part === 1 ? date : date + '_' + part, ref = sync.cloud.coachlog.doc(id), snap = await ref.get();
+      var turns = snap.exists && Array.isArray(snap.data().turns) ? snap.data().turns.slice() : [];
+      var next = turns.concat(entry);
+      if(JSON.stringify(next).length > 220000 && turns.length) continue;
+      await ref.set({date:date, part:part, turns:next});
+      if(!snap.exists) coach.logDays = (coach.logDays || 0) + 1;
+      return;
+    }
+  }).catch(function(e){ if(e && e.code === 'quota_exceeded') toast('Storage is full. Download your data so nothing is lost.'); });
+}
+
+/* ----- export: one .zip with everything ----- */
+var CRC_T = (function(){ var t = new Uint32Array(256); for(var n=0;n<256;n++){ var c = n; for(var k=0;k<8;k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8){ var c = 0xFFFFFFFF; for(var i=0;i<u8.length;i++) c = CRC_T[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipStore(files){
+  var enc = new TextEncoder(), parts = [], central = [], off = 0, d = new Date();
+  var dt = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate(), tm = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  files.forEach(function(f){
+    var name = enc.encode(f.name), data = typeof f.data === 'string' ? enc.encode(f.data) : f.data, crc = crc32(data);
+    var h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+    h.setUint16(10, tm, true); h.setUint16(12, dt, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true);
+    h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
+    parts.push(new Uint8Array(h.buffer), name, data);
+    var c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+    c.setUint16(12, tm, true); c.setUint16(14, dt, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+    c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), name);
+    off += 30 + name.length + data.length;
+  });
+  var csize = central.reduce(function(a, b){ return a + b.length; }, 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, csize, true); e.setUint32(16, off, true);
+  return new Blob(parts.concat(central, [new Uint8Array(e.buffer)]), {type:'application/zip'});
+}
+function csvCell(v){ if(v == null) return ''; var s = typeof v === 'object' ? JSON.stringify(v) : String(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+function toCSV(head, rows){ return [head.map(csvCell).join(',')].concat(rows.map(function(r){ return r.map(csvCell).join(','); })).join('\r\n'); }
+var EXPORT_README = [
+  'GAME OF LIFE - FULL EXPORT',
+  '',
+  'data.json      Everything in one file: settings (habits, targets, rewards), every day, every lift, the Build tab, notes, every Coach conversation, and the photo index. Use this to move to any other app or database.',
+  'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
+  'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
+  'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
+  'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
+  'photos/        Every photo sent to Coach, named by date.',
+  '',
+  'Day metric fields: rec recovery %, hrv ms, rhr resting HR, rr breaths/min, sleep hours, inbed hours, eff sleep efficiency %, sperf sleep performance %, deep / rem minutes,',
+  'strain, napMin minutes, bed / wake times (bed = the night before this date), cal, pro / carb / fat / fib grams, sod mg, first / meal = first and last food times,',
+  'meals count, weight lb, waist inches, sess sessions, tags, patch = nicotine patch worn overnight, vape, wo = WHOOP workouts, naps.'
+].join('\r\n');
+async function buildExport(withPhotos, onStep){
+  onStep = onStep || function(){};
+  var now = new Date(), stamp = todayKey(), files = [];
+  onStep('Reading Coach history');
+  var log = [];
+  if(sync.cloud && sync.cloud.coachlog){ try { var qs = await sync.cloud.coachlog.get(); log = qs.docs.map(function(d){ return d.data(); }).sort(function(a, b){ return (a.date + (a.part || 1)) < (b.date + (b.part || 1)) ? -1 : 1; }); coach.logDays = qs.size; } catch(e){} }
+  var photos = [];
+  if(coach.assets){ try { photos = (await coach.assets.list()).assets; } catch(e){} }
+  var lifts = state.lifts.map(cleanLift).sort(function(a, b){ return liftKey(a) < liftKey(b) ? -1 : 1; });
+  var dayKeys = Object.keys(state.days).sort();
+  var json = {app:'Game Of Life', exportedAt:now.toISOString(), format:1, settings:state.settings, days:dayKeys.map(function(k){ return state.days[k]; }), lifts:lifts, build:{mapBoxes:state.build.bnodes, ships:state.build.bships, skills:state.build.bskills}, notes:state.notes, coachLog:log,
+    photos:photos.map(function(p){ return {id:p.id, file:'photos/' + p.createdAt.slice(0, 10) + '_' + p.id.slice(0, 8) + (p.contentType === 'image/png' ? '.png' : '.jpg'), createdAt:p.createdAt, contentType:p.contentType, bytes:p.sizeBytes}; })};
+  files.push({name:'README.txt', data:EXPORT_README});
+  files.push({name:'data.json', data:JSON.stringify(json, null, 1)});
+  onStep('Building spreadsheets');
+  var hab = state.settings.habits, mkeys = {};
+  dayKeys.forEach(function(k){ Object.keys(state.days[k].m || {}).forEach(function(f){ mkeys[f] = 1; }); });
+  mkeys = Object.keys(mkeys).sort();
+  files.push({name:'days.csv', data:toCSV(['date'].concat(hab.map(function(h){ return h.name; }), ['extras'], mkeys), dayKeys.map(function(k){
+    var d = state.days[k];
+    return [k].concat(hab.map(function(h){ return d.done[h.id] ? 1 : d.rest && d.rest[h.id] ? (d.rest[h.id] === 'light' ? 'light' : 'rest') : ''; }),
+      [Object.keys(d.extras || {}).map(function(h){ var hb = habitById(h); return (hb ? hb.name : h) + ': ' + d.extras[h].map(function(x){ return x.note; }).join(' | '); }).join('; ')],
+      mkeys.map(function(f){ var v = (d.m || {})[f]; return Array.isArray(v) && typeof v[0] !== 'object' ? v.join('+') : v; }));
+  }))});
+  var lrows = []; lifts.forEach(function(l){ (l.sets || []).forEach(function(s, i){ lrows.push([l.date, l.exercise, l.location, i + 1, s.w, s.r, i === l.sets.length - 1 ? l.rir : '', i === 0 ? l.notes : '', l.id]); }); });
+  files.push({name:'lifts.csv', data:toCSV(['date', 'exercise', 'location', 'set', 'weight_lb', 'reps', 'rir', 'notes', 'entry_id'], lrows)});
+  files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
+  files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
+  files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
+  files.push({name:'notes.csv', data:toCSV(['date', 'tags', 'text', 'id'], state.notes.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ return [x.date, (x.tags || []).join('; '), x.text, x.id]; }))});
+  var crow = []; log.forEach(function(d){ (d.turns || []).forEach(function(t){ crow.push([new Date(t.at).toISOString(), t.role, t.text, (t.changes || []).join('; '), (t.photos || []).length || '']); }); });
+  files.push({name:'coach-log.csv', data:toCSV(['time_utc', 'who', 'message', 'changes_made', 'photos'], crow)});
+  var got = 0, missed = 0;
+  if(withPhotos && photos.length){
+    for(var i = 0; i < photos.length; i++){
+      onStep('Adding photos ' + (i + 1) + '/' + photos.length);
+      try { var r = await fetch(photos[i].url || ('/_blob/' + photos[i].id)); if(!r.ok) throw 0; files.push({name:json.photos[i].file, data:new Uint8Array(await r.arrayBuffer())}); got++; } catch(e){ missed++; }
+    }
+  }
+  onStep('Zipping');
+  var blob = zipStore(files);
+  return {blob:blob, filename:'game-of-life-export-' + stamp + '.zip', files:files.length, photos:got, photosMissed:missed, mb:Math.round(blob.size/1048576*10)/10, counts:recordCounts()};
+}
+var exporting = false;
+async function exportAll(onStep){
+  if(exporting) throw new Error('An export is already running.');
+  if(!coach.dl) throw new Error('Downloads aren’t available in this view. Open Game Of Life in the Claude app or on claude.ai.');
+  exporting = true;
+  try {
+    var x = await buildExport(true, onStep);
+    try { await coach.dl.save({filename:x.filename, data:x.blob}); }
+    catch(e){ var c = e && e.code; throw new Error(c === 'declined' ? 'Download cancelled.' : c === 'too_large' ? 'The export is too big for this device. Try on a computer.' : c === 'rate_limited' ? 'A save prompt is already open.' : 'The download didn’t go through.'); }
+    return x;
+  } finally { exporting = false; }
+}
+
+/* ----- the data box in the settings sheet ----- */
+export async function renderDataBox(){
+  var el = $('#data-stats'); if(!el) return;
+  el.textContent = 'Checking storage…';
+  var s = await storageStatus(), r = s.records;
+  $('#data-bar').style.width = Math.max(1, r.pct) + '%';
+  el.innerHTML = '<b>' + fmt(r.used) + '</b> of ' + fmt(r.cap) + ' records (' + r.pct + '%) · about <b>' + s.yearsLeft + ' years</b> left at your pace' +
+    (s.photos && !s.photos.error ? '<br>Photos: <b>' + s.photos.files + '</b> · ' + s.photos.mb + ' of ' + fmt(s.photos.maxMb) + ' MB (' + s.photos.pct + '%)' : '');
+  $('#btn-export').disabled = !coach.dl;
+  if(!coach.dl) $('#data-note').textContent = 'Downloads work when the page is open in the Claude app or on claude.ai.';
+}
+export async function onExportClick(){
+  var b = $('#btn-export'), lbl = b.textContent; b.disabled = true;
+  try {
+    var x = await exportAll(function(s){ b.textContent = s + '…'; });
+    toast('Exported ' + x.files + ' files · ' + x.mb + ' MB' + (x.photosMissed ? ' · ' + x.photosMissed + ' photos couldn’t be read' : ''));
+  } catch(e){ toast(e.message || 'Export failed.'); }
+  finally { b.textContent = lbl; b.disabled = !coach.dl; }
+}
+
+/* ----- new tools ----- */
+COACH_TOOLS.push(
+{name:'manage_habit', busy:'Updating habits',
+ description:'Add, edit, pause or resume a habit. add: a new habit starting today (name, target, optional settings). edit: change name, target, presets, rest days, caps or ladder. pause/resume: from today; history is kept. There is no delete: pause instead. Returns the habit as saved.',
+ schema:{type:'object', properties:{
+   action:{type:'string', enum:['add', 'edit', 'pause', 'resume']},
+   habit:{type:'string', description:'Id or current name (edit/pause/resume).'},
+   name:{type:'string'}, target:{type:'string', description:'What counts as done, in plain words.'},
+   restPerWeek:{type:'integer', description:'0-3 rest days a week that don’t break the streak.'},
+   maxPerWeek:{type:'integer', description:'0-7, days a week that earn XP (0 = no cap).'},
+   lightPerWeek:{type:'integer', description:'0-2 light days a week.'},
+   extraCap:{type:'integer', description:'0-3 extras a day.'},
+   presets:{type:'array', items:{type:'string'}, description:'Up to 4 quick extra options.'},
+   ladder:{type:'array', items:{type:'number'}, description:'Optional growing target per belt, up to 5 numbers, e.g. [1,2,3,4,5].'},
+   unit:{type:'string', description:'Ladder unit, e.g. "minutes" or "perfect salahs".'}}, required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), s2 = clone(state.settings), today = todayKey(), h;
+   function find(){ var q = String(inp.habit || inp.name || ''); var x = s2.habits.filter(function(y){ return y.id === q || norm(y.name) === norm(q); })[0]; if(!x) throw new Error('No habit "' + q + '". Habits: ' + s2.habits.map(function(y){ return y.name + ' (' + y.id + ')'; }).join(', ')); return x; }
+   function apply(x){
+     if(inp.name !== undefined && a !== 'add'){ var nm = cleanStr(inp.name, 40); if(!nm) throw new Error('Name can’t be empty.'); x.name = nm; }
+     if(inp.target !== undefined) x.target = cleanStr(inp.target, 50) || x.target;
+     if(inp.restPerWeek !== undefined) x.restPerWeek = intIn(inp.restPerWeek, 0, 3, 'restPerWeek');
+     if(inp.maxPerWeek !== undefined) x.maxPerWeek = intIn(inp.maxPerWeek, 0, 7, 'maxPerWeek');
+     if(inp.lightPerWeek !== undefined) x.lightPerWeek = intIn(inp.lightPerWeek, 0, 2, 'lightPerWeek');
+     if(inp.extraCap !== undefined) x.extraCap = intIn(inp.extraCap, 0, 3, 'extraCap');
+     if(inp.presets !== undefined){ var p = strList(inp.presets, 4, 40); x.presets = p.length ? p : ['Extra session']; }
+     if(inp.ladder !== undefined){ var l = (Array.isArray(inp.ladder) ? inp.ladder : []).map(Number).filter(function(n){ return n > 0; }).slice(0, 5); x.ladder = l.length ? l : null; }
+     if(inp.unit !== undefined) x.unit = cleanStr(inp.unit, 20) || 'minutes';
+   }
+   if(a === 'add'){
+     var nm = cleanStr(inp.name, 40); if(!nm) throw new Error('name is required.');
+     var dup = s2.habits.filter(function(y){ return norm(y.name) === norm(nm); })[0];
+     if(dup) throw new Error('"' + dup.name + '" already exists' + (isActive(dup, today) ? '.' : ' but is paused. Use resume.'));
+     var used = s2.habits.filter(function(y){ return isActive(y, today); }).map(function(y){ return y.color; });
+     h = {id:'h' + uid(), name:nm, target:cleanStr(inp.target, 50) || 'Daily', color:COLOR_SLOTS.filter(function(c){ return used.indexOf(c) < 0; })[0] || COLOR_SLOTS[s2.habits.length % COLOR_SLOTS.length], since:today, pauses:[], restPerWeek:0, presets:['Extra session']};
+     apply(h); s2.habits.push(h);
+     commitSettings(s2, 'Habit added · ' + h.name + ' (' + (h.ladder ? h.ladder[0] + ' ' + (h.unit || '') : h.target) + ')');
+   } else if(a === 'edit'){
+     h = find(); var before = h.name; apply(h);
+     commitSettings(s2, 'Habit edited · ' + before + (before !== h.name ? ' → ' + h.name : ''));
+   } else if(a === 'pause'){
+     h = find(); if(!isActive(h, today)) return {ok:true, note:h.name + ' is already paused.'};
+     h.pauses = (h.pauses || []).filter(function(x){ return x.to; }); h.pauses.push({from:today, to:null}); if(h.since > today) h.since = today;
+     commitSettings(s2, 'Habit paused · ' + h.name);
+   } else if(a === 'resume'){
+     h = find(); if(isActive(h, today)) return {ok:true, note:h.name + ' is already active.'};
+     h.pauses = (h.pauses || []).map(function(x){ return x.to ? x : {from:x.from, to:today}; }).filter(function(x){ return x.from < x.to; });
+     commitSettings(s2, 'Habit resumed · ' + h.name);
+   } else throw new Error('action must be add, edit, pause or resume.');
+   var saved = habitById(h.id);
+   return {ok:true, habit:saved ? habitBrief(saved) : null, activeHabits:activeHabits(today).length};
+ }},
+{name:'update_lift', busy:'Fixing lift',
+ description:'Correct a logged lift entry by id (ids come from lift_history): sets, exercise name, date, location, RIR, notes or next target. Only the fields given change.',
+ schema:{type:'object', properties:{
+   id:{type:'string'}, exercise:{type:'string'}, date:{type:'string'}, location:{type:'string'},
+   sets:{type:'array', items:{type:'object', properties:{w:{type:'number'}, r:{type:'integer'}}, required:['w', 'r']}},
+   rir:{type:'number'}, notes:{type:'string'}, target:{type:'string'}}, required:['id']},
+ run:function(inp){
+   var id = String(inp.id || ''), i = state.lifts.map(function(l){ return l.id; }).indexOf(id);
+   if(i < 0) throw new Error('No lift with id ' + id + '. Use lift_history to find it.');
+   var old = clone(cleanLift(state.lifts[i])), l = clone(old), ch = [];
+   if(inp.exercise !== undefined){ l.exercise = cleanStr(inp.exercise, 80) || l.exercise; ch.push('name'); }
+   if(inp.date !== undefined){ l.date = cDate(inp.date); ch.push('date'); }
+   if(inp.location !== undefined){ l.location = cleanStr(inp.location, 40) || l.location; ch.push('location'); }
+   if(inp.sets !== undefined){
+     var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10)}; }).filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
+     if(!sets.length) throw new Error('Need at least one set with reps.'); l.sets = sets; ch.push('sets');
+   }
+   if(inp.rir !== undefined){ if(inp.rir === null || inp.rir === '') delete l.rir; else l.rir = Number(inp.rir); ch.push('RIR'); }
+   if(inp.notes !== undefined){ l.notes = cleanStr(inp.notes, 160); ch.push('notes'); }
+   if(inp.target !== undefined){ if(inp.target) l.target = cleanStr(inp.target, 40); else delete l.target; ch.push('target'); }
+   if(!ch.length) throw new Error('Nothing to change.');
+   l.updatedAt = Date.now();
+   function put(x){ var j = state.lifts.map(function(y){ return y.id; }).indexOf(id); if(j >= 0) state.lifts[j] = x; else state.lifts.push(x); sync.liftOps[id] = 'set'; recompute(); persistLocal(); flushLiftOps(); render(); }
+   put(l);
+   addAct('Lift fixed · ' + l.exercise + ' ' + fmtShort(l.date) + ' (' + ch.join(', ') + ')', function(){ put(old); });
+   return {ok:true, id:id, changed:ch};
+ }},
+{name:'rewards', busy:'Updating rewards',
+ description:'His real-world rewards for belts and big trophies. list: every reward slot with status. set: name the reward for a slot (key). claim: mark an unlocked reward as claimed.',
+ schema:{type:'object', properties:{action:{type:'string', enum:['list', 'set', 'claim']}, key:{type:'string', description:'Slot key from list, e.g. belt-1 or pillars-3.'}, text:{type:'string', description:'The reward, e.g. "new gym shoes".'}}, required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), slots = rewardSlots(), claimed = state.settings.rewardsClaimed || {};
+   if(a === 'list') return {slots:slots.map(function(r){ return {key:r.k, name:r.name, requirement:r.req, unlocked:r.got, reward:rewardText(r.k) || null, claimed:claimed[r.k] || null}; })};
+   var slot = slots.filter(function(r){ return r.k === inp.key || norm(r.name) === norm(inp.key); })[0];
+   if(!slot) throw new Error('Unknown slot. Keys: ' + slots.map(function(r){ return r.k; }).join(', '));
+   var s2 = clone(state.settings);
+   if(a === 'set'){
+     var v = cleanStr(inp.text, 80); s2.rewards = s2.rewards || {}; if(v) s2.rewards[slot.k] = v; else delete s2.rewards[slot.k];
+     commitSettings(s2, 'Reward · ' + slot.name + ': ' + (v || 'cleared'));
+     return {ok:true, key:slot.k, reward:v || null};
+   }
+   if(a === 'claim'){
+     if(!slot.got) throw new Error(slot.name + ' isn’t unlocked yet: ' + slot.req);
+     if(!rewardText(slot.k)) throw new Error('Name the reward first.');
+     s2.rewardsClaimed = s2.rewardsClaimed || {}; s2.rewardsClaimed[slot.k] = todayKey();
+     commitSettings(s2, 'Reward claimed · ' + rewardText(slot.k)); burst();
+     return {ok:true};
+   }
+   throw new Error('action must be list, set or claim.');
+ }},
+{name:'notes', busy:'Notes',
+ description:'His permanent notebook inside the tracker. save: keep anything worth keeping that has no field (decisions, plan changes, definitions, ideas, feature requests). search: find notes by words and/or tag, newest first. update / delete by id.',
+ schema:{type:'object', properties:{
+   action:{type:'string', enum:['save', 'search', 'update', 'delete']},
+   text:{type:'string'}, tags:{type:'array', items:{type:'string'}, description:'Short lowercase tags, e.g. ["training"], ["deen"], ["feature-request"].'},
+   date:{type:'string', description:'YYYY-MM-DD the note is about; default today.'},
+   query:{type:'string'}, tag:{type:'string'}, id:{type:'string'}}, required:['action']},
+ run:function(inp){
+   var a = String(inp.action || '');
+   if(a === 'save'){
+     var tx = cleanStr(inp.text, 4000); if(!tx) throw new Error('text is required.');
+     var o = {id:'x' + uid(), text:tx, tags:strList(inp.tags, 6, 30).map(function(t){ return t.toLowerCase(); }), date:cDate(inp.date || 'today'), createdAt:Date.now(), source:'coach'};
+     noteWrite(o);
+     addAct('Note · ' + (o.tags.length ? '[' + o.tags.join(', ') + '] ' : '') + shortName(tx, 70), function(){ noteRemove(o.id); });
+     return {ok:true, id:o.id, totalNotes:state.notes.length};
+   }
+   if(a === 'search'){
+     var q = norm(inp.query || ''), tg = norm(inp.tag || '');
+     var hits = state.notes.filter(function(n){ return (!tg || (n.tags || []).indexOf(tg) >= 0) && (!q || q.split(' ').every(function(w){ return norm(n.text + ' ' + (n.tags || []).join(' ')).indexOf(w) >= 0; })); })
+       .sort(function(x, y){ return (y.date + y.createdAt) < (x.date + x.createdAt) ? -1 : 1; });
+     return {total:hits.length, notes:hits.slice(0, 30).map(function(n){ return {id:n.id, date:n.date, tags:n.tags, text:n.text}; })};
+   }
+   var n = state.notes.filter(function(x){ return x.id === String(inp.id || ''); })[0];
+   if(!n) throw new Error('No note with id ' + inp.id + '. Search first.');
+   var old = clone(n);
+   if(a === 'update'){
+     var u = clone(n); if(inp.text !== undefined) u.text = cleanStr(inp.text, 4000) || u.text; if(inp.tags !== undefined) u.tags = strList(inp.tags, 6, 30).map(function(t){ return t.toLowerCase(); }); if(inp.date !== undefined) u.date = cDate(inp.date); u.updatedAt = Date.now();
+     noteWrite(u); addAct('Note edited · ' + shortName(u.text, 60), function(){ noteWrite(old); });
+     return {ok:true};
+   }
+   if(a === 'delete'){ noteRemove(n.id); addAct('Note deleted · ' + shortName(n.text, 60), function(){ noteWrite(old); }); return {ok:true}; }
+   throw new Error('action must be save, search, update or delete.');
+ }},
+{name:'data_status', busy:'Checking storage',
+ description:'How much storage is used: records against the 25,000 cap (with a breakdown), estimated years left at his pace, and photo storage. Use when he asks about storage, space, limits or how much he has logged.',
+ schema:{type:'object', properties:{}},
+ run:function(){ return storageStatus(); }},
+{name:'export_data', busy:'Packing your data',
+ description:'Build one .zip of everything (data.json with all records, spreadsheet CSVs, every Coach conversation, every photo) and open the save prompt on his device. Only when he asks to export, download, back up or move his data.',
+ schema:{type:'object', properties:{}},
+ run:function(){
+   return exportAll(function(s){ coach.status = s; coachRender(); }).then(function(x){ return {ok:true, filename:x.filename, files:x.files, photos:x.photos, photosMissed:x.photosMissed, sizeMB:x.mb, records:x.counts}; });
+ }},
+{name:'navigate', busy:'Opening',
+ description:'Show him something on the page behind the chat: a tab (today, lifts, body, progress, build) and optionally a date to open on Today. Closes the chat so he can see it.',
+ schema:{type:'object', properties:{tab:{type:'string', enum:['today', 'lifts', 'body', 'progress', 'build']}, date:{type:'string'}}, required:['tab']},
+ run:function(inp){
+   var tab = ['today', 'lifts', 'body', 'progress', 'build'].indexOf(inp.tab) >= 0 ? inp.tab : 'today';
+   if(inp.date){ var d = cDate(inp.date); state.selected = d; state.weekOf = mondayOf(d); tab = 'today'; }
+   state.tab = tab;
+   setTimeout(function(){ closeSheets(); render(); window.scrollTo({top:0, behavior:'auto'}); }, 900);
+   return {ok:true, showing:tab + (inp.date ? ' ' + state.selected : '')};
+ }}
+);
+
+/* extend existing tools */
+(function(){
+  var sh = findTool('set_habit'), base = sh.run;
+  sh.description = 'Check, uncheck or rest a habit on a date, log an extra, or remove one extra. Statuses: done, undone (also clears its extras), rest, light (Train only), extra (needs the habit done; note says what), remove_extra (note = the extra to remove). Returns the day XP and clean-sweep state.';
+  sh.schema.properties.status.enum = ['done', 'undone', 'rest', 'light', 'extra', 'remove_extra'];
+  sh.run = function(inp){
+    if(inp.status !== 'remove_extra') return base(inp);
+    var date = cDate(inp.date), h = findHabit(inp.habit); if(!h) throw new Error('Unknown habit.');
+    var cur = state.days[date], list = (cur && cur.extras[h.id]) || [];
+    if(!list.length) throw new Error(h.name + ' has no extras on ' + date + '.');
+    var x = list.filter(function(e){ return norm(e.note) === norm(inp.note); })[0] || list.filter(function(e){ return inp.note && norm(e.note).indexOf(norm(inp.note)) >= 0; })[0] || list[list.length - 1];
+    var snap = snapDays([date]);
+    mutateDay(date, function(d){ d.extras[h.id] = (d.extras[h.id] || []).filter(function(e){ return e.id !== x.id; }); if(!d.extras[h.id].length) delete d.extras[h.id]; }, {});
+    addAct(fmtShort(date) + ' · removed ' + h.name + ' extra: ' + x.note, function(){ restoreDays(snap); });
+    return {ok:true, removed:x.note};
+  };
+
+  var bl = findTool('build_log'), baseB = bl.run;
+  bl.description = 'Build tab writes. ship: log a finished ship (title, kind, date, node, note). skill: log a skill (name, date, node, note). node: add or update a map box (id to update, else name; kind, status, venture, url, note). connect: add an arrow (from, to, label). disconnect: remove an arrow (from, to). update: edit a ship or skill by id (title/name, kind, date, node, note). Boxes by id or exact name.';
+  bl.schema.properties.action.enum = ['ship', 'skill', 'node', 'connect', 'disconnect', 'update'];
+  bl.run = function(inp){
+    var a = String(inp.action || '');
+    if(a === 'disconnect'){
+      var f = findNode(inp.from), t = findNode(inp.to); if(!f || !t) throw new Error('Both boxes must exist.');
+      if(!(f.links || []).some(function(l){ return l.to === t.id; })) throw new Error('There’s no arrow from ' + f.name + ' to ' + t.name + '.');
+      var oldF = clone(f), c = clone(f); c.links = c.links.filter(function(l){ return l.to !== t.id; }); bWrite('bnodes', c); render();
+      addAct('Map · removed ' + f.name + ' → ' + t.name, function(){ bWrite('bnodes', oldF); render(); });
+      return {ok:true};
+    }
+    if(a === 'update'){
+      var id = String(inp.id || ''), cn = state.build.bships.some(function(x){ return x.id === id; }) ? 'bships' : state.build.bskills.some(function(x){ return x.id === id; }) ? 'bskills' : null;
+      if(!cn) throw new Error('No ship or skill with id ' + id + '.');
+      var rec = state.build[cn].filter(function(x){ return x.id === id; })[0], old = clone(rec), u = clone(rec);
+      if(cn === 'bships'){ if(inp.title) u.title = cleanStr(inp.title, 90); if(inp.kind){ if(!BKINDS.some(function(k){ return k.k === inp.kind; })) throw new Error('kind must be ship, live, connect, upgrade or fix.'); u.kind = inp.kind; } }
+      else if(inp.name || inp.title) u.name = cleanStr(inp.name || inp.title, 60);
+      if(inp.date) u.date = cDate(inp.date);
+      if(inp.node !== undefined){ var nd = inp.node ? findNode(inp.node) : null; if(inp.node && !nd) throw new Error('No map box "' + inp.node + '".'); u.node = nd ? nd.id : ''; }
+      if(inp.note !== undefined) u.note = cleanStr(inp.note, 160);
+      bWrite(cn, u); render();
+      addAct((cn === 'bships' ? 'Ship' : 'Skill') + ' edited · ' + (u.title || u.name), function(){ bWrite(cn, old); render(); });
+      return {ok:true, builderXP:buildStats().xp};
+    }
+    return baseB(inp);
+  };
+
+  /* priority order, in case a view allows fewer tools */
+  var order = ['update_day', 'set_habit', 'log_lift', 'build_log', 'manage_habit', 'notes', 'read_days', 'lift_history', 'review', 'update_lift', 'remove_entry', 'set_targets', 'rewards', 'export_data', 'data_status', 'navigate'];
+  COACH_TOOLS.sort(function(x, y){ return order.indexOf(x.name) - order.indexOf(y.name); });
+})();
+
+COACH_RULES += '\n\n' + [
+'FULL CONTROL (use these so he never has to leave this chat)',
+'- Habits: manage_habit adds, edits, pauses and resumes. New habits start today. Never delete: pause keeps history. If a new habit’s bar is vague (e.g. "perfect salah"), add it right away with his words, then in one line offer a sharper definition as numbered options he can pick to tighten the target. If he wants it to grow over time, use a ladder (e.g. [1,2,3,4,5] perfect salahs) so the target rises with each belt.',
+'- Mistakes: update_lift fixes a lift, build_log update fixes a ship or skill, set_habit remove_extra drops one extra, remove_entry deletes. Find ids with lift_history or the live data.',
+'- Rewards: rewards list/set/claim.',
+'- Notes: save a note when he says remember/note/keep this, makes a decision or plan change, defines a rule, or tells you something worth keeping that has no field. Search notes when he asks about anything from the past that isn’t in the logs. Don’t save chit-chat.',
+'- Storage: every Coach conversation and every photo is archived permanently. data_status reports usage; export_data packs everything into one .zip for him to keep or move.',
+'- navigate opens a tab or a day behind the chat when showing him is faster than telling him.',
+'- What you cannot do: change how the page looks or works (new screens, charts, scoring rules, new kinds of fields). When he asks for that, say so in one line, save it as a note tagged feature-request with the full ask, and tell him a Claude chat can build it straight from that note.'
+].join('\n');
+
+/* snapshot additions */
+(function(){
+  var base = coachSnapshot;
+  coachSnapshot = function(){
+    var s = base();
+    s.habits = state.settings.habits.map(function(h){ var b = habitBrief(h), st = state.stats.habits[h.id] || {}; return {id:b.id, name:b.name, target:b.target, paused:b.paused || undefined, streak:st.run || 0, restDaysPerWeek:b.restPerWeek, extraCap:b.extraCap}; });
+    s.notes = {total:state.notes.length, latest:state.notes.slice().sort(function(a, b){ return (b.createdAt || 0) - (a.createdAt || 0); }).slice(0, 5).map(function(n){ return {id:n.id, date:n.date, tags:n.tags, text:shortName(n.text, 140)}; })};
+    s.records = 3 + Object.values(recordCounts()).reduce(function(a, b){ return a + b; }, 0) + ' of ' + DB_CAP;
+    return s;
+  };
+})();
+
+export function initCoach2(){
+  if(!(window.claude && typeof window.claude.use === 'function')) return;
+  window.claude.use('assets').then(function(a){ coach.assets = a; }).catch(function(){});
+  window.claude.use('downloads').then(function(d){ coach.dl = d; var b = $('#btn-export'); if(b) b.disabled = !d; }).catch(function(){});
 }
 

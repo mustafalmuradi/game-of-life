@@ -40,7 +40,7 @@ function bLabel(name, x, cy){
   if(!l2) return t.replace('<text ', '<text y="' + (cy + 3.5) + '" ') + esc(l1) + '</text>';
   return t.replace('<text ', '<text y="' + (cy - 2.5) + '" ') + '<tspan x="' + x + '">' + esc(l1) + '</tspan><tspan x="' + x + '" dy="12">' + esc(shortName(l2, 14)) + '</tspan></text>';
 }
-function shortName(s, n){ s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+export function shortName(s, n){ s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 function mapSVG(){
   var nodes = state.build.bnodes, colW = 104, gx = 16, top = 24, rowH = 44, bh = 34, W = colW*3 + gx*2 + 18;
   var pos = {}, rows = 0;

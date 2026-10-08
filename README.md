@@ -8,7 +8,7 @@ and write the tracker through tools.
 
 | Path | What it is |
 | --- | --- |
-| `legacy/index.html` | v2: the single-file artifact exactly as it was before the split. Kept as the regression baseline. |
+| `legacy/index.html` | The single-file version of the app. Feature changes land here and in `src/` together, so the harness keeps proving the modules behave exactly like it. |
 | `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root. |
 | `test/` | The old-vs-new regression harness (see below). |
 | `tools/` | The split itself, as scripts: `split-css.py` and `split-js.py` regenerate `src/` from `legacy/index.html`; `check-cascade.py` and `reassemble-js.py` prove what changed. |
@@ -45,6 +45,15 @@ light/dark screenshots of every tab with a pixel diff. Output lands in
 
 Proving the harness itself: `node test/harness.mjs --old legacy --new legacy`
 must pass with every step identical.
+
+## Coach and data
+
+The coach (`src/js/features/coach.js`) can read and change everything the page can: check-ins, habits (add, edit, pause, resume), lifts, the Build tab, rewards, targets and notes. Every change has an undo.
+
+Storage:
+- Records live in the artifact database under `data/users/<id>/tracker/`: `days`, `lifts`, `bnodes`, `bships`, `bskills`, `notes`, and `coachlog` (one doc per day holding every Coach exchange). The cap is 25,000 documents.
+- Photos sent to the coach are shrunk to 2048 px JPEG and kept in the artifact's asset storage. Their ids are stored with the conversation.
+- Settings → Your data shows usage, and "Download everything" (or asking the coach) saves one .zip: `data.json` with everything, CSVs for days, lifts, ships, skills, map, notes and the coach log, and every photo.
 
 ## Rules for changes to `src/`
 

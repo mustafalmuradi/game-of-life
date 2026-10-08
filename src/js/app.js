@@ -12,7 +12,7 @@ import { addSetRow, deleteLift, onExerciseChange, openLiftSheet, saveLift, setLi
 import { applyCalories, bodyFilter, ciChip, openCheckin, saveBodyFilter, saveCheckin, stepBodyWeek } from './features/body.js';
 import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, selectNode, toggleBuildLadder, toggleShowAll } from './features/build.js';
 import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSettings, renderSettingsList } from './core/sheets.js';
-import { bindCoach, initCoach } from './features/coach.js';
+import { bindCoach, initCoach, initCoach2, onExportClick, renderDataBox } from './features/coach.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -65,7 +65,8 @@ function bind(){
       case 'resume': { var q = draftHabit(hid); if(q){ var td3 = todayKey(); q.pauses = (q.pauses || []).map(function(x){ return x.to ? x : {from:x.from, to:td3}; }).filter(function(x){ return x.from < x.to; }); renderSettingsList(); } break; }
     }
   });
-  $('#btn-settings').addEventListener('click', openSettings);
+  $('#btn-settings').addEventListener('click', function(){ openSettings(); renderDataBox(); });
+  $('#btn-export').addEventListener('click', onExportClick);
   $('#lift-form').addEventListener('submit', function(e){ e.preventDefault(); saveLift(); });
   $('#ci-form').addEventListener('submit', function(e){ e.preventDefault(); saveCheckin(); });
   $('#bd-form').addEventListener('submit', function(e){ e.preventDefault(); saveBuildForm(); });
@@ -150,3 +151,4 @@ bindCoach();
 render();
 connectCloud();
 initCoach();
+initCoach2();

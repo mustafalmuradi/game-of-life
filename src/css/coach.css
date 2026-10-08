@@ -79,3 +79,10 @@ body:has(#chat-sheet:not([hidden])) .toast{bottom:auto;top:calc(14px + env(safe-
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* ---------- data box + photos in chat ---------- */
+.data-box{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2)}
+.data-box .bar{height:8px}
+.data-box .ghost{align-self:flex-start}
+.msg-photos{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.msg-photos img{width:76px;height:76px;object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,.35);display:block}

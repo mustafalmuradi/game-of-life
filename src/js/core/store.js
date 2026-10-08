@@ -12,7 +12,7 @@ var dirty = new Map(), writing = new Set(), timers = {}, unsynced = new Set();
 export function testLS(){ try { localStorage.setItem('__dl','1'); localStorage.removeItem('__dl'); return true; } catch(e){ return false; } }
 export function persistLocal(){
   if(!sync.lsOK) return;
-  try { localStorage.setItem(LS_KEY, JSON.stringify({v:1, settings:state.settings, days:state.days, unsynced:Array.from(unsynced), lifts:state.lifts.map(cleanLift), liftOps:sync.liftOps, build:state.build})); } catch(e){}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({v:1, settings:state.settings, days:state.days, unsynced:Array.from(unsynced), lifts:state.lifts.map(cleanLift), liftOps:sync.liftOps, build:state.build, notes:state.notes})); } catch(e){}
 }
 export function loadLocal(){
   if(!sync.lsOK) return;
@@ -24,6 +24,7 @@ export function loadLocal(){
     (c.unsynced || []).forEach(function(k){ unsynced.add(k); });
     if(Array.isArray(c.lifts)) state.lifts = c.lifts.filter(function(l){ return l && l.id && Array.isArray(l.sets); });
     if(c.liftOps && typeof c.liftOps === 'object') sync.liftOps = c.liftOps;
+    if(Array.isArray(c.notes)) state.notes = c.notes.filter(function(x){ return x && x.id; });
     if(c.build && typeof c.build === 'object') ['bnodes','bships','bskills'].forEach(function(k){ if(Array.isArray(c.build[k])) state.build[k] = c.build[k].filter(function(x){ return x && x.id; }); });
   } catch(e){}
 }
@@ -50,6 +51,12 @@ export function connectCloud(){
           persistLocal(); if(state.tab === 'build') render();
         }, onCloudError);
       });
+      var notesCol = settingsRef.collection('notes'); sync.cloud.notes = notesCol; sync.cloud.coachlog = settingsRef.collection('coachlog');
+      notesCol.onSnapshot(function(snap){
+        if(snap.metadata.fromCache && snap.empty) return;
+        state.notes = snap.docs.map(function(doc){ return Object.assign({id:doc.id}, doc.data()); });
+        persistLocal();
+      }, onCloudError);
       var liftsFlushed = false;
       liftsCol.onSnapshot(function(snap){
         if(snap.metadata.fromCache && snap.empty) return;
@@ -86,7 +93,7 @@ function onCloudError(e){
     sync.cloud = null; state.mode = sync.lsOK ? 'local' : 'memory'; renderSync();
   }
 }
-function cleanLift(l){ var o = {}; Object.keys(l).forEach(function(k){ if(k.charAt(0) !== '_') o[k] = l[k]; }); return o; }
+export function cleanLift(l){ var o = {}; Object.keys(l).forEach(function(k){ if(k.charAt(0) !== '_') o[k] = l[k]; }); return o; }
 export function flushLiftOps(){
   if(!sync.cloud || !sync.cloud.liftsCol) return;
   Object.keys(sync.liftOps).forEach(function(id){

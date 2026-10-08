@@ -9,6 +9,7 @@ export var state = {
   days: {},
   lifts: [],
   build: {bnodes:[], bships:[], bskills:[]},
+  notes: [],
   liftStats: null,
   tab: 'today',
   selected: todayKey(),
@@ -64,7 +65,9 @@ export function habitTarget(h){
   if(!h || !h.ladder || !h.ladder.length) return h ? h.target : '';
   var hs = state.stats && state.stats.habits && state.stats.habits[h.id];
   var lv = hs && hs.rank ? hs.rank.level : 0;
-  return ladderStep(h, lv) + ' ' + h.unit;
+  var st = ladderStep(h, lv), un = h.unit || '';
+  if(st === 1 && /s$/.test(un) && !/ss$/.test(un)) un = un.slice(0, -1);
+  return st + ' ' + un;
 }
 export function capOf(h){ return h ? (h.extraCap === undefined ? EXTRA_CAP : h.extraCap) : EXTRA_CAP; }
 export function isActive(h, d){
