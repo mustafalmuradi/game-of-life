@@ -12,7 +12,7 @@ import { addSetRow, deleteLift, onExerciseChange, openLiftSheet, saveLift, setLi
 import { applyCalories, bodyFilter, ciChip, openCheckin, saveBodyFilter, saveCheckin, stepBodyWeek } from './features/body.js';
 import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, selectNode, toggleBuildLadder, toggleShowAll } from './features/build.js';
 import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSettings, renderSettingsList } from './core/sheets.js';
-import { bindCoach, initCoach, initCoach2, onExportClick, renderDataBox } from './features/coach.js';
+import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -24,6 +24,7 @@ function bind(){
       case 'toggle': toggleHabit(hid, t); break;
       case 'rest': toggleRest(hid); break;
       case 'light': toggleRest(hid, 'light'); break;
+      case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }

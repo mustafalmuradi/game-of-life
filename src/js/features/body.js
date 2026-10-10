@@ -1,7 +1,7 @@
 // Body tab: WHOOP and Cal AI metrics, the check-in sheet, readiness, the weekly review.
 import { DEFAULT_TARGETS } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, range7, todayKey } from '../core/utils.js';
-import { habitById, isActive, normalizeSettings, state, T } from '../core/state.js';
+import { habitById, isActive, lateOf, normalizeSettings, state, T } from '../core/state.js';
 import { recompute } from '../core/stats.js';
 import { saveSettings } from '../core/store.js';
 import { mutateDay } from './today.js';
@@ -42,7 +42,7 @@ function bedMin(t){ var m = tmin(t); if(m === null) return null; return m < 12*6
 function foodMin(t){ var m = tmin(t); if(m === null) return null; return m < 4*60 ? m + 1440 : m; }
 export function fmtClock(mins){ mins = ((Math.round(mins) % 1440) + 1440) % 1440; var h = Math.floor(mins/60), mm = mins % 60; return (h % 12 || 12) + ':' + pad(mm) + (h >= 12 ? ' PM' : ' AM'); }
 function fmtHour(t){ var m = tmin(t); if(m === null) return ''; return m === 0 ? 'midnight' : fmtClock(m).replace(':00', ''); }
-function bedTargetMin(d){ var tg = T(); return (parseKey(d).getDay() === 6 && tg.satBed) ? bedMin(tg.satBed) : bedMin(tg.bed); }
+function bedTargetMin(d){ var tg = T(), lt = lateOf(d); if(lt) return bedMin(lt.bed); return (parseKey(d).getDay() === 6 && tg.satBed) ? bedMin(tg.satBed) : bedMin(tg.bed); }
 export function metricsOf(d){ var doc = state.days[d]; return (doc && doc.m) || {}; }
 function nightBed(d){ return metricsOf(addDays(d, 1)).bed; }
 function avgOf(a){ return a.length ? a.reduce(function(x, y){ return x + y; }, 0)/a.length : null; }

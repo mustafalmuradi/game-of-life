@@ -1,12 +1,12 @@
 // Coach: rules, the tracker snapshot Claude sees, the tools it can call, the conversation, the chat UI.
 import { COLOR_SLOTS, DEFAULT_TARGETS } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, todayKey, uid } from '../core/utils.js';
-import { activeHabits, capOf, habitById, habitTarget, isActive, normalizeSettings, state, T } from '../core/state.js';
+import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
 import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
 import { fmtW, liftKey, LSTATUS, mooseRank, norm, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
 import { cleanLift, flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, sync } from '../core/store.js';
-import { mutateDay } from './today.js';
+import { lateOpen, mutateDay } from './today.js';
 import { burst, toast } from '../core/effects.js';
 import { render } from '../core/render.js';
 import { celebrateLift, sessOpen } from './lifts.js';
@@ -1114,5 +1114,82 @@ export function initCoach2(){
   if(!(window.claude && typeof window.claude.use === 'function')) return;
   window.claude.use('assets').then(function(a){ coach.assets = a; }).catch(function(){});
   window.claude.use('downloads').then(function(d){ coach.dl = d; var b = $('#btn-export'); if(b) b.disabled = !d; }).catch(function(){});
+}
+
+/* ----- planned late nights ----- */
+COACH_TOOLS.push({name:'late_night', busy:'Late night',
+ description:'Planned late nights for Bed on time. plan: tonight only, before his normal bedtime, max 2 a week (not Saturday), latest midnight; needs his reason, and YOUR judged xp (0-20) and a one-line verdict. judge: re-score a plan (new facts only). cancel: drop a plan before that night is scored. status: passes left, tonight’s plan, deadline.',
+ schema:{type:'object', properties:{
+   action:{type:'string', enum:['plan', 'judge', 'cancel', 'status']},
+   date:{type:'string', description:'Night date YYYY-MM-DD (the evening he goes to bed). Default today.'},
+   bed:{type:'string', description:'Planned bedtime HH:MM, 24h, latest 00:00.'},
+   reason:{type:'string', description:'His reason, in his words.'},
+   xp:{type:'integer', description:'0-20, from the rubric.'},
+   verdict:{type:'string', description:'One blunt line explaining the points.'}}, required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), today = todayKey(), tg = T();
+   var d = inp.date ? String(inp.date).trim() : today;
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new Error('date must be YYYY-MM-DD.');
+   if(a === 'status'){
+     var o = lateOpen(today), wk = [];
+     for(var i=0;i<7;i++){ var k = addDays(mondayOf(today), i), l = lateOf(k); if(l) wk.push({date:k, bed:l.bed, reason:l.reason, xp:l.xp, verdict:l.verdict}); }
+     return {normalBedtime:tg.bed, saturdayBedtime:tg.satBed, perWeek:LATE.perWeek, usedThisWeek:wk.length, plansThisWeek:wk, canPlanTonight:o.ok, why:o.ok ? undefined : o.why};
+   }
+   if(a === 'plan'){
+     var op = lateOpen(d); if(!op.ok) throw new Error(op.why);
+     var bed = cTime(inp.bed), bm = clockMin(bed);
+     if(bm <= clockMin(tg.bed)) throw new Error('That isn’t later than his normal ' + tg.bed + '. No plan needed.');
+     if(bm > clockMin(LATE.latest)) throw new Error('Latest allowed is midnight.');
+     var reason = String(inp.reason || '').trim().slice(0, 300); if(reason.length < 3) throw new Error('Ask him for the reason first.');
+     var xp = intIn(inp.xp, 0, 20, 'xp'), verdict = String(inp.verdict || '').trim().slice(0, 200); if(!verdict) throw new Error('Give a one-line verdict.');
+     var snap = snapDays([d]);
+     mutateDay(d, function(day){ day.m = day.m || {}; day.m.late = {bed:bed, reason:reason, xp:xp, verdict:verdict, setAt:Date.now()}; }, {});
+     addAct('Late night · ' + fmtShort(d) + ' in bed by ' + bed + ' · +' + xp + ' XP if you make it', function(){ restoreDays(snap); });
+     return {ok:true, date:d, bed:bed, xp:xp, passesLeftThisWeek:LATE.perWeek - lateUsed(d) - 1};
+   }
+   var lt = lateOf(d); if(!lt) throw new Error('No late-night plan on ' + d + '.');
+   var nx = state.days[addDays(d, 1)], scored = !!(nx && nx.m && nx.m.bed);
+   var snap2 = snapDays([d]);
+   if(a === 'judge'){
+     var nxp = intIn(inp.xp, 0, 20, 'xp'), nv = String(inp.verdict || '').trim().slice(0, 200) || lt.verdict;
+     mutateDay(d, function(day){ day.m.late = Object.assign({}, day.m.late, {xp:nxp, verdict:nv, judgedAt:Date.now()}); }, {});
+     addAct('Late night · ' + fmtShort(d) + ' re-scored to +' + nxp + ' XP', function(){ restoreDays(snap2); });
+     return {ok:true, xp:nxp};
+   }
+   if(a === 'cancel'){
+     if(scored) throw new Error('That night is already scored. Use judge to change the points.');
+     mutateDay(d, function(day){ delete day.m.late; }, {});
+     addAct('Late night cancelled · ' + fmtShort(d), function(){ restoreDays(snap2); });
+     return {ok:true};
+   }
+   throw new Error('action must be plan, judge, cancel or status.');
+ }});
+COACH_RULES += '\n\n' + [
+'PLANNED LATE NIGHTS (Bed on time)',
+'- His normal bedtime is in targets.bed (Saturday: satBed, midnight). He gets 2 planned late nights a week, not counting Saturday, latest midnight, and only if set BEFORE his normal bedtime. Use late_night status when unsure.',
+'- When he wants one: get the planned time and his reason in his words (ask in one line if missing), judge the points, then late_night plan. If the deadline has passed or both are used, say so plainly; don’t look for a workaround.',
+'- He wakes for Fajr around 4:15-5:10 no matter what, so a late night cuts sleep 1:1. His own data: ~62% average recovery after nights in bed by ~10:30 vs ~46% after 11 PM+; nights under 5h came after late beds. Say the cost in hours of sleep when you confirm.',
+'- XP rubric (0-20; hitting his normal time instead always pays the full 20):',
+'  20: can’t be moved and matters: family obligation or emergency, travel, religious occasion, a hard deadline with real money or a promise attached.',
+'  15: finishing high-leverage work tonight that ships something real (a build going live, a client deliverable), or a family/social event that genuinely matters.',
+'  10: productive work that could have waited until tomorrow. The default when the case is ordinary.',
+'  5: weak: "in the zone", loose ends, could easily stop.',
+'  0: no real reason: scrolling, TV, games, just not tired.',
+'- Adjust down 5 if he already had a short night (<6h) or recovery under 34% in the last 3 days, or has strength training at the gym tomorrow morning. Never above 20, never below 0.',
+'- Judge on substance, not enthusiasm. Change points only for new facts, never because he pushes back. Next morning, if what happened clearly differs from the reason he gave (e.g. planned to build but didn’t), re-score with judge and tell him why.',
+'- Missing even the planned time means Bed on time isn’t done that night, same as any miss.'
+].join('\n');
+(function(){
+  var base = coachSnapshot;
+  coachSnapshot = function(){
+    var s = base(), t = todayKey(), o = lateOpen(t), lt = lateOf(t);
+    s.lateNights = {normalBedtime:T().bed, usedThisWeek:lateUsed(t) + (lt ? 1 : 0), perWeek:LATE.perWeek, tonight:lt || null, canPlanTonight:o.ok, why:o.ok ? undefined : o.why};
+    return s;
+  };
+})();
+export function openCoachWith(text){
+  openCoach();
+  var el = $('#ch-in'); el.value = text; coachGrow();
+  setTimeout(function(){ try { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } catch(e){} }, 90);
 }
 

@@ -1,7 +1,7 @@
 // recompute(): walks every day and rebuilds state.stats and state.liftStats. Call it after any data change. Plus habit30(), the 30-day hit rate.
 import { BASE_XP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from './config.js';
 import { addDays, mondayOf, todayKey } from './utils.js';
-import { activeHabits, capOf, hasHabitData, isActive, state } from './state.js';
+import { activeHabits, capOf, hasHabitData, isActive, lateXP, state } from './state.js';
 import { checkMilestones, CURVES, habitCurve, rankInfo } from './xp.js';
 import { analyzeLifts } from './strength.js';
 
@@ -32,8 +32,9 @@ export function recompute(){
         if(h.maxPerWeek && wc > h.maxPerWeek){ overCap.push(h.id); return; }
         var n = Math.min(((doc.extras && doc.extras[h.id]) || []).length, capOf(h));
         extraXP += n*EXTRA_XP; s.extras += n; if(n > 0) extraHabits++;
-        baseXP += BASE_XP;
-        s.xp += BASE_XP + n*EXTRA_XP;
+        var bx = h.id === 'sleep' ? lateXP(d) : null; if(bx === null) bx = BASE_XP;
+        baseXP += bx;
+        s.xp += bx + n*EXTRA_XP;
       } else if(used < allow && (restMarked || d !== today)){
         restUsed[rk] = used + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;

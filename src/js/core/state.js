@@ -1,6 +1,6 @@
 // The one state object, the normalizers that keep stored data well-formed, and the habit activity rules.
-import { COLOR_SLOTS, DEFAULT_SETTINGS, DEFAULT_TARGETS, EXTRA_CAP } from './config.js';
-import { clone, fmt, mondayOf, todayKey, uid } from './utils.js';
+import { BASE_XP, COLOR_SLOTS, DEFAULT_SETTINGS, DEFAULT_TARGETS, EXTRA_CAP } from './config.js';
+import { addDays, clone, fmt, mondayOf, todayKey, uid } from './utils.js';
 import { beltOf } from './xp.js';
 
 /* ---------- state ---------- */
@@ -79,4 +79,19 @@ export function isActive(h, d){
 export function activeHabits(d){ return state.settings.habits.filter(function(h){ return isActive(h, d); }); }
 export function T(){ return state.settings.targets || DEFAULT_TARGETS; }
 export function habitById(id){ return state.settings.habits.filter(function(h){ return h.id === id; })[0]; }
+
+/* ---------- planned late nights (Bed on time) ---------- */
+/* A night can carry a planned bedtime (day.m.late on the night's date): up to 2 a week, never on Saturday,
+   no later than midnight, set before the normal bedtime. Hitting it keeps the habit done; the coach judges its XP (0-20). */
+export var LATE = {perWeek:2, latest:'00:00', pendingXP:10, grandfather:'2026-10-09'};
+export function clockMin(t){ var p = String(t || '').split(':').map(Number); if(p.length < 2 || !Number.isFinite(p[0]) || !Number.isFinite(p[1])) return null; var m = p[0]*60 + p[1]; return m < 720 ? m + 1440 : m; }
+export function lateOf(d){ var doc = state.days[d], l = doc && doc.m && doc.m.late; return l && l.bed ? l : null; }
+export function lateUsed(d){ var mon = mondayOf(d), n = 0; for(var i=0;i<7;i++){ var k = addDays(mon, i); if(k !== d && lateOf(k)) n++; } return n; }
+export function lateXP(d){
+  var lt = lateOf(d); if(!lt) return null;
+  var nx = state.days[addDays(d, 1)], nb = nx && nx.m ? nx.m.bed : null, tg = T();
+  if(nb && clockMin(nb) !== null && clockMin(nb) <= clockMin(tg.bed)) return null;
+  return Number.isFinite(lt.xp) ? Math.max(0, Math.min(BASE_XP, Math.round(lt.xp))) : LATE.pendingXP;
+}
+
 

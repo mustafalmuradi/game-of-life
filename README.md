@@ -55,6 +55,10 @@ Storage:
 - Photos sent to the coach are shrunk to 2048 px JPEG and kept in the artifact's asset storage. Their ids are stored with the conversation.
 - Settings → Your data shows usage, and "Download everything" (or asking the coach) saves one .zip: `data.json` with everything, CSVs for days, lifts, ships, skills, map, notes and the coach log, and every photo.
 
+## Planned late nights
+
+Bed on time has 2 planned late nights a week (Saturday, already midnight, doesn't count), latest midnight, set before the normal bedtime. The plan lives on the night's day doc as `m.late = {bed, reason, xp, verdict}`. Hitting the planned time keeps the habit done and pays the coach-judged `xp` (0-20, rubric in the coach rules); in bed by the normal time still pays the full 20. Logic: `LATE`, `lateOf`, `lateXP` in `core/state.js`; `lateOpen` and the Today line in `features/today.js`; the `late_night` tool in `features/coach.js`.
+
 ## Rules for changes to `src/`
 
 1. One file, one job. A tab's code lives in its feature file.

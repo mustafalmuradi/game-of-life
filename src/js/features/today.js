@@ -1,7 +1,7 @@
 // Today tab: week strip, day card, habit list, and the habit mutations (toggle, rest, extras).
 import { BASE_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, hijri, mondayOf, parseKey, range7, reduceMotion, timeOf, todayKey, uid } from '../core/utils.js';
-import { activeHabits, capOf, habitById, habitTarget, isActive, isEmptyDay, ladderStep, state, ui } from '../core/state.js';
+import { activeHabits, capOf, habitById, habitTarget, isActive, isEmptyDay, ladderStep, LATE, lateOf, lateUsed, lateXP, state, T, ui } from '../core/state.js';
 import { beltOf, habitCurve, msMeta, nextTrophy, rankInfo, rankTitle, rewardText, trophySVG } from '../core/xp.js';
 import { recompute } from '../core/stats.js';
 import { scheduleSave } from '../core/store.js';
@@ -166,7 +166,7 @@ function renderHabits(){
       '<div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3>' +
       '<button class="hrank" type="button" data-act="open-rank" data-h="' + esc(hb.id) + '" aria-label="' + esc(hb.name + ' rank: ' + rankTitle(hr.level) + ', level ' + (hr.level+1)) + '">' + miniBelt(hr.level) + '<span>Lv ' + (hr.level+1) + '</span>' + (hr.capped ? '<em>Test</em>' : '') + '</button>' +
       (streak > 0 ? '<span class="streak" title="Current streak"><svg viewBox="0 0 24 24">' + ICON.flame + '</svg>' + streak + 'd</span>' : '') + '</div>' +
-      '<p class="target">' + esc(hb.id === 'sleep' && parseKey(d).getDay() === 6 ? 'In bed by midnight (Saturday)' : habitTarget(hb)) + esc(restText) + (hb.ladder ? ' \u00b7 grows with belt' : '') + '</p>';
+      '<p class="target">' + esc(hb.id === 'sleep' && lateOf(d) ? lateLine(d) : hb.id === 'sleep' && parseKey(d).getDay() === 6 ? 'In bed by midnight (Saturday)' : habitTarget(hb)) + esc(restText) + (hb.ladder ? ' \u00b7 grows with belt' : '') + '</p>';
     if(ex.length){
       h += '<div class="extras">';
       ex.forEach(function(x){
@@ -180,7 +180,9 @@ function renderHabits(){
       h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag">Rest day</span>';
       if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
-      h += '<span class="xp-hint">+' + BASE_XP + '</span>';
+      var lx = hb.id === 'sleep' ? lateXP(d) : null;
+      h += '<span class="xp-hint">+' + (lx === null ? BASE_XP : lx) + '</span>';
+      if(hb.id === 'sleep' && lateOpen(d).ok) h += '<button class="rest-btn" type="button" data-act="plan-late">Late night</button>';
       if(allow && d === today && left > 0){
         if(hb.id === 'workout') h += '<span class="rest-pair"><button class="rest-btn" type="button" data-act="light" data-h="' + esc(hb.id) + '">' + (((hb.lightPerWeek || 0) - ((st.lightUsed || {})[hb.id + '|' + mondayOf(d)] || 0)) > 0 ? 'Light +' + LIGHT_XP : 'Light day') + '</button><button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest</button></span>';
         else h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest day</button>';
@@ -213,3 +215,19 @@ function renderHabits(){
 /* the Today tab renders four parts; render() calls this through the registry */
 function renderToday(){ renderWeek(); renderDay(); renderHabits(); renderSync(); }
 registerTab('today', renderToday);
+
+/* planned late nights: the Bed on time line, and whether one can still be planned for d */
+function lateLine(d){
+  var lt = lateOf(d), x = lateXP(d);
+  return 'Late night planned: in bed by ' + fmtClock(tmin(lt.bed)) + ' · ' + (Number.isFinite(lt.xp) ? '+' + x + ' XP' : 'points pending') + (lt.reason ? ' · “' + String(lt.reason).slice(0, 70) + '”' : '');
+}
+export function lateOpen(d){
+  var today = todayKey(), now = new Date(), tg = T();
+  if(d !== today) return {ok:false, why:'Late nights are planned for tonight only.'};
+  if(parseKey(d).getDay() === 6) return {ok:false, why:'Saturday already runs to midnight.'};
+  if(lateOf(d)) return {ok:false, why:'Tonight already has a plan.'};
+  var used = lateUsed(d); if(used >= LATE.perWeek) return {ok:false, why:'Both late nights this week are used.'};
+  if(d !== LATE.grandfather && now.getHours()*60 + now.getMinutes() >= tmin(tg.bed)) return {ok:false, why:'Too late: a late night has to be set before ' + fmtClock(tmin(tg.bed)) + '.'};
+  return {ok:true, left:LATE.perWeek - used};
+}
+
