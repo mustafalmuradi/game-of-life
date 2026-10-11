@@ -687,7 +687,7 @@ function commitSettings(s2, label){
   state.settings = normalizeSettings(s2); recompute(); render(); saveSettings();
   addAct(label, function(){ state.settings = normalizeSettings(old); recompute(); render(); saveSettings(); });
 }
-function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined}; }
+function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined}; }
 
 /* ----- notes ----- */
 function noteWrite(obj){
@@ -883,12 +883,14 @@ export async function onExportClick(){
 /* ----- new tools ----- */
 COACH_TOOLS.push(
 {name:'manage_habit', busy:'Updating habits',
- description:'Add, edit, pause or resume a habit. add: a new habit starting today (name, target, optional settings). edit: change name, target, presets, rest days, caps or ladder. pause/resume: from today; history is kept. There is no delete: pause instead. Returns the habit as saved.',
+ description:'Add, edit, pause or resume a habit. add: a new habit starting today (name, target, optional settings). edit: change name, target, presets, rest days (how many, which weekdays, whether a logged rest pays full points), caps or ladder. pause/resume: from today; history is kept. There is no delete: pause instead. Returns the habit as saved.',
  schema:{type:'object', properties:{
    action:{type:'string', enum:['add', 'edit', 'pause', 'resume']},
    habit:{type:'string', description:'Id or current name (edit/pause/resume).'},
    name:{type:'string'}, target:{type:'string', description:'What counts as done, in plain words.'},
    restPerWeek:{type:'integer', description:'0-3 rest days a week that don’t break the streak.'},
+   restOn:{type:'array', items:{type:'integer'}, description:'Weekdays a rest day is allowed on, 0 = Sunday ... 6 = Saturday. Empty array = any day.'},
+   restFull:{type:'boolean', description:'true: a rest day he logs pays the full base XP (keeps the streak either way).'},
    maxPerWeek:{type:'integer', description:'0-7, days a week that earn XP (0 = no cap).'},
    lightPerWeek:{type:'integer', description:'0-2 light days a week.'},
    extraCap:{type:'integer', description:'0-3 extras a day.'},
@@ -902,6 +904,8 @@ COACH_TOOLS.push(
      if(inp.name !== undefined && a !== 'add'){ var nm = cleanStr(inp.name, 40); if(!nm) throw new Error('Name can’t be empty.'); x.name = nm; }
      if(inp.target !== undefined) x.target = cleanStr(inp.target, 50) || x.target;
      if(inp.restPerWeek !== undefined) x.restPerWeek = intIn(inp.restPerWeek, 0, 3, 'restPerWeek');
+     if(inp.restOn !== undefined){ var ro = (Array.isArray(inp.restOn) ? inp.restOn : [inp.restOn]).map(Number).filter(function(n){ return n >= 0 && n <= 6; }); x.restOn = ro.length ? ro : null; }
+     if(inp.restFull !== undefined) x.restFull = !!inp.restFull;
      if(inp.maxPerWeek !== undefined) x.maxPerWeek = intIn(inp.maxPerWeek, 0, 7, 'maxPerWeek');
      if(inp.lightPerWeek !== undefined) x.lightPerWeek = intIn(inp.lightPerWeek, 0, 2, 'lightPerWeek');
      if(inp.extraCap !== undefined) x.extraCap = intIn(inp.extraCap, 0, 3, 'extraCap');

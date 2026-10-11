@@ -157,7 +157,9 @@ function renderHabits(){
     var bd = st.byDate[d], rested = !done && !!(bd && bd.excused && bd.excused.indexOf(hb.id) >= 0);
     var restMarked = !!(doc && doc.rest && doc.rest[hb.id]);
     var allow = hb.restPerWeek || 0, left = allow - ((st.restUsed || {})[hb.id + '|' + mondayOf(d)] || 0);
-    var restText = allow ? (mondayOf(d) === mondayOf(today) ? ' · ' + Math.max(left, 0) + ' of ' + allow + ' rest days left this week' : ' · ' + allow + ' rest days a week') : '';
+    var restDays = hb.restOn && hb.restOn.length ? hb.restOn.map(function(n){ return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][n]; }).join('/') : '';
+    var restText = !allow ? '' : restDays ? ' · ' + restDays + ' rest day' + (hb.restFull ? ' (full points)' : '') : (mondayOf(d) === mondayOf(today) ? ' · ' + Math.max(left, 0) + ' of ' + allow + ' rest days left this week' : ' · ' + allow + ' rest days a week');
+    var restToday = !hb.restOn || !hb.restOn.length || hb.restOn.indexOf(parseKey(d).getDay()) >= 0;
     var restLogged = rested && !!(bd && bd.restDone && bd.restDone.indexOf(hb.id) >= 0);
     var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : 'rest day';
     h += '<article class="habit' + (done || restLogged ? ' is-done' : '') + (rested && !restLogged ? ' is-rest' : '') + '" style="--hc:var(--h-' + hb.color + ')">' +
@@ -177,13 +179,13 @@ function renderHabits(){
     h += '</div><div class="habit-side">';
     if(rested){
       var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0);
-      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag">Rest day</span>';
+      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag' + (hb.restFull && restMarked ? ' light' : '') + '">Rest day' + (hb.restFull && restMarked ? ' · +' + BASE_XP : '') + '</span>';
       if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
       var lx = hb.id === 'sleep' ? lateXP(d) : null;
       h += '<span class="xp-hint">+' + (lx === null ? BASE_XP : lx) + '</span>';
       if(hb.id === 'sleep' && lateOpen(d).ok) h += '<button class="rest-btn" type="button" data-act="plan-late">Late night</button>';
-      if(allow && d === today && left > 0){
+      if(allow && d === today && left > 0 && restToday){
         if(hb.id === 'workout') h += '<span class="rest-pair"><button class="rest-btn" type="button" data-act="light" data-h="' + esc(hb.id) + '">' + (((hb.lightPerWeek || 0) - ((st.lightUsed || {})[hb.id + '|' + mondayOf(d)] || 0)) > 0 ? 'Light +' + LIGHT_XP : 'Light day') + '</button><button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest</button></span>';
         else h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest day</button>';
       }

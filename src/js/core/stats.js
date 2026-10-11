@@ -1,10 +1,11 @@
 // recompute(): walks every day and rebuilds state.stats and state.liftStats. Call it after any data change. Plus habit30(), the 30-day hit rate.
 import { BASE_XP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from './config.js';
-import { addDays, mondayOf, todayKey } from './utils.js';
+import { addDays, mondayOf, parseKey, todayKey } from './utils.js';
 import { activeHabits, capOf, hasHabitData, isActive, lateXP, state } from './state.js';
 import { checkMilestones, CURVES, habitCurve, rankInfo } from './xp.js';
 import { analyzeLifts } from './strength.js';
 
+function restDayOK(h, d){ return !h.restOn || !h.restOn.length || h.restOn.indexOf(parseKey(d).getDay()) >= 0; }
 export function recompute(){
   var today = todayKey();
   var keys = Object.keys(state.days).filter(function(k){ return k <= today && hasHabitData(state.days[k]); }).sort();
@@ -35,10 +36,11 @@ export function recompute(){
         var bx = h.id === 'sleep' ? lateXP(d) : null; if(bx === null) bx = BASE_XP;
         baseXP += bx;
         s.xp += bx + n*EXTRA_XP;
-      } else if(used < allow && (restMarked || d !== today)){
+      } else if(used < allow && (restMarked || d !== today) && restDayOK(h, d)){
         restUsed[rk] = used + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         if(restMarked){ done++; required++; restDone.push(h.id); }
+        if(restMarked && h.restFull && doc.rest[h.id] !== 'light'){ baseXP += BASE_XP; s.xp += BASE_XP; }
         if(doc && doc.rest && doc.rest[h.id] === 'light' && (lightUsed[rk] || 0) < (h.lightPerWeek || 0)){
           lightUsed[rk] = (lightUsed[rk] || 0) + 1; s.light++; s.xp += LIGHT_XP; lightXP += LIGHT_XP; lightDays.push(h.id);
         }

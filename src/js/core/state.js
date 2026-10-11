@@ -36,7 +36,9 @@ export function normalizeSettings(s){
       ladder: Array.isArray(h.ladder) ? h.ladder.map(Number).filter(function(n){ return n > 0; }).slice(0, 5) : null,
       unit: h.unit ? String(h.unit) : 'minutes',
       extraCap: h.extraCap === undefined || h.extraCap === null ? EXTRA_CAP : Math.max(0, Math.min(3, parseInt(h.extraCap, 10) || 0)),
-      presets: Array.isArray(h.presets) && h.presets.length ? h.presets.slice(0,4).map(String) : ['Extra session']
+      presets: Array.isArray(h.presets) && h.presets.length ? h.presets.slice(0,4).map(String) : ['Extra session'],
+      restOn: Array.isArray(h.restOn) && h.restOn.length ? h.restOn.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : null,
+      restFull: !!h.restFull
     });
   });
   if(!out.habits.length){ var dflt = clone(DEFAULT_SETTINGS); dflt.targets = out.targets; return normalizeSettings(dflt); }

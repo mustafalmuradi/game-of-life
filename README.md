@@ -55,6 +55,10 @@ Storage:
 - Photos sent to the coach are shrunk to 2048 px JPEG and kept in the artifact's asset storage. Their ids are stored with the conversation.
 - Settings → Your data shows usage, and "Download everything" (or asking the coach) saves one .zip: `data.json` with everything, CSVs for days, lifts, ships, skills, map, notes and the coach log, and every photo.
 
+## Rest days on set weekdays
+
+A habit can limit its rest days to certain weekdays (`restOn`, 0 = Sunday) and make a logged rest pay the full base XP (`restFull`). Money-producing work uses both: one rest a week, Sundays only, +20 when logged. Off-day misses are never excused. Logic: `restDayOK` in `core/stats.js`, the row in `features/today.js`, editable through the coach's `manage_habit`.
+
 ## Planned late nights
 
 Bed on time has 2 planned late nights a week (Saturday, already midnight, doesn't count), latest midnight, set before the normal bedtime. The plan lives on the night's day doc as `m.late = {bed, reason, xp, verdict}`. Hitting the planned time keeps the habit done and pays the coach-judged `xp` (0-20, rubric in the coach rules); in bed by the normal time still pays the full 20. Logic: `LATE`, `lateOf`, `lateXP` in `core/state.js`; `lateOpen` and the Today line in `features/today.js`; the `late_night` tool in `features/coach.js`.
