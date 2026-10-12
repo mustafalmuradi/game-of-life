@@ -77,11 +77,12 @@ function sessionCard(date, entries, groupOf, idx){
     '<span class="sess-r"><span class="sess-xp">+' + xp + '<small>XP</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></summary>' +
     '<div class="sess-body">' + entries.map(function(e){ return sessionEntry(e, groupOf.get(e.id)); }).join('') + '</div></details>';
 }
-var liftFilter = 'All', showLadder = false;
+var liftFilter = 'All', showLadder = false, progOpen = false;
 function renderLifts(){
   var view = $('#view-lifts');
   view.querySelectorAll('details.sx-more').forEach(function(d){ if(d.open) openLiftKeys.add(d.dataset.id); else openLiftKeys.delete(d.dataset.id); });
   view.querySelectorAll('details.sess').forEach(function(d){ sessOpen.set(d.dataset.date, d.open); });
+  var pcard = view.querySelector('details.prog-card'); if(pcard) progOpen = pcard.open;
   var a = state.liftStats, L = a.level, lo = ironXPFor(L), hi = ironXPFor(L+1), pct = (a.xp - lo)/(hi - lo)*100;
   var h = '<section class="card iron">' +
     '<div class="iron-main"><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Strength level ' + L + '. Show rank ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
@@ -102,7 +103,9 @@ function renderLifts(){
     '<button class="primary wide" type="button" data-act="open-lift">Log a lift</button></section>';
 
   if(a.groups.length){
-    h += '<section class="card panel"><div class="panel-head"><h3>Progression</h3><span class="muted" style="font-size:12px">8–12 reps · trend per lift</span></div><div class="lprog">' +
+    var nAdd = a.groups.filter(function(g){ return g.prog.addWeight; }).length, nStall = a.groups.filter(function(g){ return !g.prog.addWeight && g.prog.stall; }).length;
+    var progSum = [a.groups.length + (a.groups.length === 1 ? ' lift' : ' lifts'), nAdd ? nAdd + ' add weight' : '', nStall ? nStall + ' stalled' : ''].filter(Boolean).join(' · ');
+    h += '<details class="card panel prog-card"' + (progOpen ? ' open' : '') + '><summary class="prog-head"><span class="prog-l"><h3>Progression</h3><span class="muted" style="font-size:12px">' + esc(progSum) + '</span></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="lprog">' +
       a.groups.map(function(g){
         var pr = g.prog, chip;
         if(pr.addWeight) chip = '<span class="pchip add">Add weight</span>';
@@ -111,7 +114,7 @@ function renderLifts(){
         else if(pr.up) chip = '<span class="pchip up">Progress</span>';
         else chip = '<span class="pchip">Holding ' + pr.since + '</span>';
         return '<div class="lp-row"><b>' + esc(g.name) + '</b><span class="lp-w">' + esc(workingText(pr.working)) + ' \u00b7 ' + g.entries.length + (g.entries.length === 1 ? ' session' : ' sessions') + '</span>' + sparkSVG(g.entries) + chip + '</div>';
-      }).join('') + '</div><p class="muted small">Add weight: every set at your working weight hit ' + REP_TOP + '. Stall: ' + STALL_N + ' sessions in a row without more weight or reps. The line is estimated 1RM (reps for bodyweight).</p></section>';
+      }).join('') + '</div><p class="muted small">Add weight: every set at your working weight hit ' + REP_TOP + '. Stall: ' + STALL_N + ' sessions in a row without more weight or reps. The line is estimated 1RM (reps for bodyweight).</p></details>';
   }
 
   var locs = ['All'].concat(Array.from(new Set(a.groups.map(function(g){ return g.location; }))));
