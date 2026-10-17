@@ -4,7 +4,7 @@ import { addDays, mondayOf, todayKey } from './utils.js';
 /* ---------- lifts: strength log (ported from Iron Log) ---------- */
 var BOWFLEX_MAX = 52.5;
 export var LXP = {set:10, base:20, pr:50, up:25, same:5, dip:0, quest:40, day:25};
-export var MOOSE_RANKS = [[1,'Saiyan Warrior'],[3,'Kaioken'],[5,'Super Saiyan'],[8,'Super Saiyan 2'],[12,'Super Saiyan 3'],[17,'Super Saiyan Blue'],[25,'Ultra Instinct']];
+export var MOOSE_RANKS = [[1,'Saiyan Warrior',[1,2,3]],[4,'Kaioken',[4,5,7]],[9,'Super Saiyan',[9,11,13]],[15,'Super Saiyan 2',[15,17,20]],[22,'Super Saiyan 3',[22,25,28]],[30,'Super Saiyan Blue',[30,33,37]],[40,'Ultra Instinct',[40,45,50]]];
 export var TIERS = [['bronze','Weighted Gi',0],['silver','Gravity Room',5],['gold','Time Chamber',10],['platinum','King Kai’s Planet',20],['diamond','Over 9,000',35]];
 export var LSTATUS = {pr:['pr','PR'], up:['up','Up'], same:['same','Matched'], dip:['dip','Dip'], base:['base','New lift']};
 export function norm(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
@@ -18,6 +18,13 @@ export function liftKey(e){ return (e.date || '') + '|' + String(e.createdAt || 
 export function ironXPFor(L){ return 50*L*(L-1); }
 export function ironLevel(xp){ var L = 1; while(ironXPFor(L+1) <= xp) L++; return L; }
 export function mooseRank(L){ var r = MOOSE_RANKS[0][1]; MOOSE_RANKS.forEach(function(x){ if(L >= x[0]) r = x[1]; }); return r; }
+/* each form has 3 stages; mooseStage gives {form, stage (1-3), next: {level, label} or null at the very top} */
+export function mooseStage(L){
+  var i = 0; MOOSE_RANKS.forEach(function(x, k){ if(L >= x[0]) i = k; });
+  var r = MOOSE_RANKS[i], st = 1; r[2].forEach(function(m, k){ if(L >= m) st = k + 1; });
+  var next = st < 3 ? {level:r[2][st], label:'Stage ' + (st + 1)} : MOOSE_RANKS[i+1] ? {level:MOOSE_RANKS[i+1][0], label:MOOSE_RANKS[i+1][1]} : null;
+  return {form:r[1], stage:st, next:next};
+}
 function tierFor(gain){ var t = TIERS[0]; TIERS.forEach(function(x){ if(gain >= x[2] - 1e-9) t = x; }); return t; }
 export function autoTarget(e, location){
   var sets = e.sets || []; if(!sets.length) return '';
@@ -131,7 +138,7 @@ export function liftBadges(a){
     ['Regular','Lift on 20 days', a.days.size, 20],
     ['Time Chamber','Any lift +10% est. 1RM', Math.round(a.maxGain*10)/10, 10],
     ['Maxed the Bowflex','52.5 lb dumbbells at home', a.homeMax, BOWFLEX_MAX],
-    ['Super Saiyan 3','Reach power level 12', a.level, 12]
+    ['Super Saiyan 2','Reach power level 15', a.level, 15]
   ].map(function(b){ return {name:b[0], desc:b[1], cur:b[2], goal:b[3], got:b[2] >= b[3]}; });
 }
 

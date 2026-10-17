@@ -1,7 +1,7 @@
 // Lifts tab: session cards, the lift sheet, save/delete.
 import { $, esc, fmt, fmtLong, fmtShort, pad, todayKey, uid } from '../core/utils.js';
 import { habitById, isActive, state } from '../core/state.js';
-import { autoTarget, fmtW, ironXPFor, isBW, liftBadges, liftKey, liftScore, liftVolume, LSTATUS, LXP, MOOSE_RANKS, mooseRank, norm, REP_TOP, STALL_N, TIERS, topSet, workingText } from '../core/strength.js';
+import { autoTarget, fmtW, ironXPFor, isBW, liftBadges, liftKey, liftScore, liftVolume, LSTATUS, LXP, MOOSE_RANKS, mooseRank, mooseStage, norm, REP_TOP, STALL_N, TIERS, topSet, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
 import { flushLiftOps, persistLocal, sync } from '../core/store.js';
 import { mutateDay } from './today.js';
@@ -25,6 +25,11 @@ function sparkSVG(entries){
   return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-label="Est. 1RM trend, last ' + pts.length + ' sessions"><line x1="0" y1="' + (H-1) + '" x2="' + W + '" y2="' + (H-1) + '" stroke="var(--line)" stroke-width="1"/><path d="' + area + '" fill="var(--spark-fill)"/><path d="' + line + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="3.5" fill="var(--accent)"/></svg>';
 }
 function setsHTML(sets){ return (sets || []).map(function(s){ return '<span class="set">' + (s.w > 0 ? fmtW(s.w) : 'BW') + '<small> × </small>' + s.r + '</span>'; }).join(''); }
+function stageRow(L){
+  var s = mooseStage(L), pips = '';
+  for(var i=1;i<=3;i++) pips += '<i class="' + (i <= s.stage ? 'on' : '') + '"></i>';
+  return '<p class="iron-stage">' + pips + '<span>Stage ' + s.stage + ' of 3</span><em>' + (s.next ? 'Next: ' + esc(s.next.label) + ' at Lv ' + s.next.level : 'Top of the ladder') + '</em></p>';
+}
 function tierInfo(g){
   var tk = g.tier[0], tn = g.tier[1], tmin = g.tier[2];
   var ti = TIERS.map(function(t){ return t[0]; }).indexOf(tk), nxt = TIERS[ti+1];
@@ -86,14 +91,14 @@ function renderLifts(){
   var a = state.liftStats, L = a.level, lo = ironXPFor(L), hi = ironXPFor(L+1), pct = (a.xp - lo)/(hi - lo)*100;
   var h = '<section class="card iron">' +
     '<div class="iron-main"><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Power level ' + L + '. Show the Saiyan ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
-    '<div class="iron-rank"><p class="eyebrow">Power level</p><p class="iron-title">' + esc(mooseRank(L)) + '</p>' +
+    '<div class="iron-rank"><p class="eyebrow">Power level</p><p class="iron-title">' + esc(mooseRank(L)) + '</p>' + stageRow(L) +
     '<div class="bar gold"><span style="width:' + pct.toFixed(1) + '%"></span></div>' +
     '<p class="iron-xp"><span><b>' + fmt(a.xp) + '</b> power XP</span><span>' + fmt(hi - a.xp) + ' to level ' + (L+1) + '</span></p></div></div>';
   if(showLadder){
     h += '<div class="ladder">' + MOOSE_RANKS.map(function(r, i){
       var nextMin = MOOSE_RANKS[i+1] ? MOOSE_RANKS[i+1][0] - 1 : null;
       var now = L >= r[0] && (nextMin === null || L <= nextMin), done = nextMin !== null && L > nextMin;
-      return '<div class="rung' + (now ? ' now' : '') + (done ? ' done' : '') + '"><b>' + esc(r[1]) + '</b><span>Lv ' + r[0] + (nextMin ? '–' + nextMin : '+') + '</span></div>';
+      return '<div class="rung' + (now ? ' now' : '') + (done ? ' done' : '') + '"><b>' + esc(r[1]) + '</b><span>Lv ' + r[0] + (nextMin ? '–' + nextMin : '+') + (now ? ' · stage ' + mooseStage(L).stage + '/3' : '') + '</span></div>';
     }).join('') + '</div>';
   }
   h += '<div class="iron-tiles">' +
@@ -204,7 +209,7 @@ export function celebrateLift(prev, next, id){
   var prevBadges = new Set(liftBadges(prev).filter(function(b){ return b.got; }).map(function(b){ return b.name; }));
   var nb = liftBadges(next).filter(function(b){ return b.got && !prevBadges.has(b.name); })[0];
   var msg;
-  if(next.level > prev.level) msg = 'Power level ' + next.level + ' · ' + mooseRank(next.level);
+  if(next.level > prev.level){ var ms = mooseStage(next.level), ps = mooseStage(prev.level); msg = (ms.form !== ps.form ? 'POWER UP! ' + ms.form + ' unlocked · power level ' : ms.stage !== ps.stage ? ms.form + ' stage ' + ms.stage + ' · power level ' : 'Power level ') + next.level; }
   else if(e._status === 'pr') msg = 'New PR: ' + e.exercise + ', est. 1RM ' + Math.round(liftScore(e));
   else if(nb) msg = 'Badge unlocked: ' + nb.name;
   else if(e._cleared) msg = 'Quest cleared: ' + e.exercise;

@@ -3,7 +3,7 @@ import { COLOR_SLOTS, DEFAULT_TARGETS } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, todayKey, uid } from '../core/utils.js';
 import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
 import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
-import { fmtW, liftKey, LSTATUS, mooseRank, norm, workingText } from '../core/strength.js';
+import { fmtW, liftKey, LSTATUS, mooseRank, mooseStage, norm, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
 import { cleanLift, flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, sync } from '../core/store.js';
 import { lateOpen, mutateDay } from './today.js';
@@ -108,7 +108,7 @@ function coachSnapshot(){
     targets: T(),
     rank: {overall:rankTitle(st.rank.level), totalXP:st.rank.xp, sweepStreak:st.sweepRun, bestSweepStreak:st.bestRun},
     lifts: ls.groups.slice(0, 14).map(function(g){ return {exercise:g.name, location:g.location, last:g.last.date, working:workingText(g.prog.working), nextTarget:g.quest, addWeight:g.prog.addWeight || undefined, stalled:g.prog.stall || undefined}; }),
-    strengthLevel: ls.level + ' (' + mooseRank(ls.level) + ')',
+    strengthLevel: ls.level + ' (' + mooseRank(ls.level) + ', stage ' + mooseStage(ls.level).stage + ' of 3)',
     build: {
       nodes: B.bnodes.map(function(n){ return {id:n.id, name:n.name, kind:n.kind, status:n.status, venture:n.venture || undefined, sendsTo:(n.links || []).map(function(l){ return l.to; })}; }),
       recentShips: B.bships.slice().sort(function(a, b){ return a.date < b.date ? 1 : -1; }).slice(0, 6).map(function(x){ return {id:x.id, date:x.date, kind:x.kind, title:x.title, node:x.node || undefined}; }),
