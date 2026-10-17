@@ -168,7 +168,7 @@ function renderHabits(){
       '<div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3>' +
       '<button class="hrank" type="button" data-act="open-rank" data-h="' + esc(hb.id) + '" aria-label="' + esc(hb.name + ' rank: ' + rankTitle(hr.level) + ', level ' + (hr.level+1)) + '">' + miniBelt(hr.level) + '<span>Lv ' + (hr.level+1) + '</span>' + (hr.capped ? '<em>Test</em>' : '') + '</button>' +
       (streak > 0 ? '<span class="streak" title="Current streak"><svg viewBox="0 0 24 24">' + ICON.flame + '</svg>' + streak + 'd</span>' : '') + '</div>' +
-      '<p class="target">' + esc(hb.id === 'sleep' && lateOf(d) ? lateLine(d) : hb.id === 'sleep' && parseKey(d).getDay() === 6 ? 'In bed by midnight (Saturday)' : habitTarget(hb)) + esc(restText) + (hb.ladder ? ' \u00b7 grows with belt' : '') + '</p>';
+      '<p class="target">' + esc(hb.id === 'sleep' && lateOf(d) ? lateLine(d) : hb.id === 'sleep' && parseKey(d).getDay() === 6 ? 'In bed by midnight (Saturday)' : hb.id === 'sleep' && parseKey(d).getDay() === 5 && T().friBed ? 'In bed by ' + fmtClock(tmin(T().friBed)) + ' (Friday)' : habitTarget(hb)) + esc(restText) + (hb.ladder ? ' \u00b7 grows with belt' : '') + '</p>';
     if(ex.length){
       h += '<div class="extras">';
       ex.forEach(function(x){
@@ -227,6 +227,7 @@ export function lateOpen(d){
   var today = todayKey(), now = new Date(), tg = T();
   if(d !== today) return {ok:false, why:'Late nights are planned for tonight only.'};
   if(parseKey(d).getDay() === 6) return {ok:false, why:'Saturday already runs to midnight.'};
+  if(parseKey(d).getDay() === 5 && tg.friBed) return {ok:false, why:'Friday already runs to ' + fmtClock(tmin(tg.friBed)) + '.'};
   if(lateOf(d)) return {ok:false, why:'Tonight already has a plan.'};
   var used = lateUsed(d); if(used >= LATE.perWeek) return {ok:false, why:'Both late nights this week are used.'};
   if(d !== LATE.grandfather && now.getHours()*60 + now.getMinutes() >= tmin(tg.bed)) return {ok:false, why:'Too late: a late night has to be set before ' + fmtClock(tmin(tg.bed)) + '.'};

@@ -83,7 +83,7 @@ export function T(){ return state.settings.targets || DEFAULT_TARGETS; }
 export function habitById(id){ return state.settings.habits.filter(function(h){ return h.id === id; })[0]; }
 
 /* ---------- planned late nights (Bed on time) ---------- */
-/* A night can carry a planned bedtime (day.m.late on the night's date): up to 2 a week, never on Saturday,
+/* A night can carry a planned bedtime (day.m.late on the night's date): up to 2 a week, never on Friday or Saturday,
    no later than midnight, set before the normal bedtime. Hitting it keeps the habit done; the coach judges its XP (0-20). */
 export var LATE = {perWeek:2, latest:'00:00', pendingXP:10, grandfather:'2026-10-09'};
 export function clockMin(t){ var p = String(t || '').split(':').map(Number); if(p.length < 2 || !Number.isFinite(p[0]) || !Number.isFinite(p[1])) return null; var m = p[0]*60 + p[1]; return m < 720 ? m + 1440 : m; }

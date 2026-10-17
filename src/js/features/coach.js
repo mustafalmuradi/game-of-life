@@ -378,7 +378,7 @@ var COACH_TOOLS = [
    };
  }},
 {name:'set_targets', busy:'Changing targets',
- description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed satBed ("HH:MM"), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
+ description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed ("HH:MM"), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
  schema:{type:'object', properties:{changes:{type:'object', description:'key: new value'}}, required:['changes']},
  run:function(inp){
    var ch = inp.changes && typeof inp.changes === 'object' ? inp.changes : {}, keys = Object.keys(ch);
@@ -387,7 +387,7 @@ var COACH_TOOLS = [
    keys.forEach(function(k){
      if(!(k in DEFAULT_TARGETS)) throw new Error('Unknown target "' + k + '". Keys: ' + Object.keys(DEFAULT_TARGETS).join(', '));
      var v = ch[k];
-     if(k === 'lastMeal' || k === 'bed' || k === 'satBed') v = cTime(v);
+     if(k === 'lastMeal' || k === 'bed' || k === 'friBed' || k === 'satBed') v = cTime(v);
      else { v = Number(v); if(!Number.isFinite(v) || v < 0) throw new Error(k + ' must be a number.'); }
      s2.targets[k] = v; labels.push(k + ' ' + v);
    });
@@ -1122,7 +1122,7 @@ export function initCoach2(){
 
 /* ----- planned late nights ----- */
 COACH_TOOLS.push({name:'late_night', busy:'Late night',
- description:'Planned late nights for Bed on time. plan: tonight only, before his normal bedtime, max 2 a week (not Saturday), latest midnight; needs his reason, and YOUR judged xp (0-20) and a one-line verdict. judge: re-score a plan (new facts only). cancel: drop a plan before that night is scored. status: passes left, tonight’s plan, deadline.',
+ description:'Planned late nights for Bed on time. plan: tonight only, before his normal bedtime, max 2 a week (not Friday or Saturday), latest midnight; needs his reason, and YOUR judged xp (0-20) and a one-line verdict. judge: re-score a plan (new facts only). cancel: drop a plan before that night is scored. status: passes left, tonight’s plan, deadline.',
  schema:{type:'object', properties:{
    action:{type:'string', enum:['plan', 'judge', 'cancel', 'status']},
    date:{type:'string', description:'Night date YYYY-MM-DD (the evening he goes to bed). Default today.'},
@@ -1137,7 +1137,7 @@ COACH_TOOLS.push({name:'late_night', busy:'Late night',
    if(a === 'status'){
      var o = lateOpen(today), wk = [];
      for(var i=0;i<7;i++){ var k = addDays(mondayOf(today), i), l = lateOf(k); if(l) wk.push({date:k, bed:l.bed, reason:l.reason, xp:l.xp, verdict:l.verdict}); }
-     return {normalBedtime:tg.bed, saturdayBedtime:tg.satBed, perWeek:LATE.perWeek, usedThisWeek:wk.length, plansThisWeek:wk, canPlanTonight:o.ok, why:o.ok ? undefined : o.why};
+     return {normalBedtime:tg.bed, fridayBedtime:tg.friBed, saturdayBedtime:tg.satBed, perWeek:LATE.perWeek, usedThisWeek:wk.length, plansThisWeek:wk, canPlanTonight:o.ok, why:o.ok ? undefined : o.why};
    }
    if(a === 'plan'){
      var op = lateOpen(d); if(!op.ok) throw new Error(op.why);
@@ -1170,7 +1170,7 @@ COACH_TOOLS.push({name:'late_night', busy:'Late night',
  }});
 COACH_RULES += '\n\n' + [
 'PLANNED LATE NIGHTS (Bed on time)',
-'- His normal bedtime is in targets.bed (Saturday: satBed, midnight). He gets 2 planned late nights a week, not counting Saturday, latest midnight, and only if set BEFORE his normal bedtime. Use late_night status when unsure.',
+'- His normal bedtime is in targets.bed (Friday: friBed, 11 PM; Saturday: satBed, midnight). He gets 2 planned late nights a week, not counting Friday or Saturday, latest midnight, and only if set BEFORE his normal bedtime. Use late_night status when unsure.',
 '- When he wants one: get the planned time and his reason in his words (ask in one line if missing), judge the points, then late_night plan. If the deadline has passed or both are used, say so plainly; don’t look for a workaround.',
 '- He wakes for Fajr around 4:15-5:10 no matter what, so a late night cuts sleep 1:1. His own data: ~62% average recovery after nights in bed by ~10:30 vs ~46% after 11 PM+; nights under 5h came after late beds. Say the cost in hours of sleep when you confirm.',
 '- XP rubric (0-20; hitting his normal time instead always pays the full 20):',

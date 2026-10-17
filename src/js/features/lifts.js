@@ -85,10 +85,10 @@ function renderLifts(){
   var pcard = view.querySelector('details.prog-card'); if(pcard) progOpen = pcard.open;
   var a = state.liftStats, L = a.level, lo = ironXPFor(L), hi = ironXPFor(L+1), pct = (a.xp - lo)/(hi - lo)*100;
   var h = '<section class="card iron">' +
-    '<div class="iron-main"><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Strength level ' + L + '. Show rank ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
-    '<div class="iron-rank"><p class="eyebrow">Strength rank</p><p class="iron-title">' + esc(mooseRank(L)) + '</p>' +
+    '<div class="iron-main"><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Power level ' + L + '. Show the Saiyan ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
+    '<div class="iron-rank"><p class="eyebrow">Power level</p><p class="iron-title">' + esc(mooseRank(L)) + '</p>' +
     '<div class="bar gold"><span style="width:' + pct.toFixed(1) + '%"></span></div>' +
-    '<p class="iron-xp"><span><b>' + fmt(a.xp) + '</b> strength XP</span><span>' + fmt(hi - a.xp) + ' to level ' + (L+1) + '</span></p></div></div>';
+    '<p class="iron-xp"><span><b>' + fmt(a.xp) + '</b> power XP</span><span>' + fmt(hi - a.xp) + ' to level ' + (L+1) + '</span></p></div></div>';
   if(showLadder){
     h += '<div class="ladder">' + MOOSE_RANKS.map(function(r, i){
       var nextMin = MOOSE_RANKS[i+1] ? MOOSE_RANKS[i+1][0] - 1 : null;
@@ -99,7 +99,7 @@ function renderLifts(){
   h += '<div class="iron-tiles">' +
     '<div><b>' + a.streak + '</b><span>Week streak</span></div><div><b>' + a.prs + '</b><span>PRs set</span></div>' +
     '<div><b>' + a.quests + '</b><span>Quests cleared</span></div><div><b>' + (a.vol/2000).toFixed(a.vol < 20000 ? 1 : 0) + '</b><span>Tons moved</span></div></div>';
-  h += '<p class="iron-note">Belts reward showing up. Strength rank rewards getting stronger. Logging a lift checks off Work out for that day.</p>' +
+  h += '<p class="iron-note">Belts reward showing up. Power level rewards getting stronger. Logging a lift checks off Work out for that day.</p>' +
     '<button class="primary wide" type="button" data-act="open-lift">Log a lift</button></section>';
 
   if(a.groups.length){
@@ -150,7 +150,7 @@ function renderLifts(){
     '<li><b class="g">+' + LXP.up + '</b><span>Beat last session, not a PR (+' + LXP.same + ' for matching it)</span></li>' +
     '<li><b class="g">+' + LXP.quest + '</b><span>Quest cleared: hit the next-session target</span></li>' +
     '<li><b class="g">+' + LXP.base + '</b><span>New lift added, plus +' + LXP.day + ' per training day</span></li>' +
-    '<li><b>Tiers</b><span>Est. 1RM gain since your first session on a lift: Bronze, Silver +5%, Gold +10%, Platinum +20%, Diamond +35%.</span></li></ul>' +
+    '<li><b>Tiers</b><span>Est. 1RM gain since your first session on a lift: Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai’s Planet +20%, Over 9,000 +35%.</span></li></ul>' +
     '<p class="principle">Strength XP is its own track. It doesn’t feed your belts, so a heavy day can’t cover for a skipped habit.</p></section>';
   view.innerHTML = h;
   view.style.display = 'flex'; view.style.flexDirection = 'column'; view.style.gap = '14px';
@@ -204,13 +204,13 @@ export function celebrateLift(prev, next, id){
   var prevBadges = new Set(liftBadges(prev).filter(function(b){ return b.got; }).map(function(b){ return b.name; }));
   var nb = liftBadges(next).filter(function(b){ return b.got && !prevBadges.has(b.name); })[0];
   var msg;
-  if(next.level > prev.level) msg = 'Strength level ' + next.level + ' · ' + mooseRank(next.level);
+  if(next.level > prev.level) msg = 'Power level ' + next.level + ' · ' + mooseRank(next.level);
   else if(e._status === 'pr') msg = 'New PR: ' + e.exercise + ', est. 1RM ' + Math.round(liftScore(e));
   else if(nb) msg = 'Badge unlocked: ' + nb.name;
   else if(e._cleared) msg = 'Quest cleared: ' + e.exercise;
   else msg = e.exercise + ' logged';
   if(next.level > prev.level || e._status === 'pr' || nb || e._cleared) burst();
-  setTimeout(function(){ toast(msg + ' · +' + gained + ' strength XP'); }, 60);
+  setTimeout(function(){ toast(msg + ' · +' + gained + ' power XP'); }, 60);
 }
 export function deleteLift(id){
   if(liftArmed !== id){

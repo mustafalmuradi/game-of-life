@@ -4,8 +4,8 @@ import { addDays, mondayOf, todayKey } from './utils.js';
 /* ---------- lifts: strength log (ported from Iron Log) ---------- */
 var BOWFLEX_MAX = 52.5;
 export var LXP = {set:10, base:20, pr:50, up:25, same:5, dip:0, quest:40, day:25};
-export var MOOSE_RANKS = [[1,'Calf'],[3,'Yearling'],[5,'Young Bull'],[8,'Bull'],[12,'Bull Moose'],[17,'Alpha Bull'],[25,'Legend of the Herd']];
-export var TIERS = [['bronze','Bronze',0],['silver','Silver',5],['gold','Gold',10],['platinum','Platinum',20],['diamond','Diamond',35]];
+export var MOOSE_RANKS = [[1,'Saiyan Warrior'],[3,'Kaioken'],[5,'Super Saiyan'],[8,'Super Saiyan 2'],[12,'Super Saiyan 3'],[17,'Super Saiyan Blue'],[25,'Ultra Instinct']];
+export var TIERS = [['bronze','Weighted Gi',0],['silver','Gravity Room',5],['gold','Time Chamber',10],['platinum','King Kai’s Planet',20],['diamond','Over 9,000',35]];
 export var LSTATUS = {pr:['pr','PR'], up:['up','Up'], same:['same','Matched'], dip:['dip','Dip'], base:['base','New lift']};
 export function norm(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 export function fmtW(w){ return (Math.round(w*10)/10).toString(); }
@@ -129,9 +129,9 @@ export function liftBadges(a){
     ['Fifty Tons','Move 100,000 lb total', Math.round(a.vol), 100000],
     ['Century','100 working sets', a.sets, 100],
     ['Regular','Lift on 20 days', a.days.size, 20],
-    ['Gold Lift','Any lift +10% est. 1RM', Math.round(a.maxGain*10)/10, 10],
+    ['Time Chamber','Any lift +10% est. 1RM', Math.round(a.maxGain*10)/10, 10],
     ['Maxed the Bowflex','52.5 lb dumbbells at home', a.homeMax, BOWFLEX_MAX],
-    ['Bull Moose','Reach strength level 12', a.level, 12]
+    ['Super Saiyan 3','Reach power level 12', a.level, 12]
   ].map(function(b){ return {name:b[0], desc:b[1], cur:b[2], goal:b[3], got:b[2] >= b[3]}; });
 }
 

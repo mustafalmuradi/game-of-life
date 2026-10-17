@@ -61,7 +61,7 @@ A habit can limit its rest days to certain weekdays (`restOn`, 0 = Sunday) and m
 
 ## Planned late nights
 
-Bed on time has 2 planned late nights a week (Saturday, already midnight, doesn't count), latest midnight, set before the normal bedtime. The plan lives on the night's day doc as `m.late = {bed, reason, xp, verdict}`. Hitting the planned time keeps the habit done and pays the coach-judged `xp` (0-20, rubric in the coach rules); in bed by the normal time still pays the full 20. Logic: `LATE`, `lateOf`, `lateXP` in `core/state.js`; `lateOpen` and the Today line in `features/today.js`; the `late_night` tool in `features/coach.js`.
+Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, and Saturday, already `satBed` midnight, don't count), latest midnight, set before the normal bedtime. The plan lives on the night's day doc as `m.late = {bed, reason, xp, verdict}`. Hitting the planned time keeps the habit done and pays the coach-judged `xp` (0-20, rubric in the coach rules); in bed by the normal time still pays the full 20. Logic: `LATE`, `lateOf`, `lateXP` in `core/state.js`; `lateOpen` and the Today line in `features/today.js`; the `late_night` tool in `features/coach.js`.
 
 ## Rules for changes to `src/`
 
@@ -70,3 +70,7 @@ Bed on time has 2 planned late nights a week (Saturday, already midnight, doesn'
 3. State that more than one file changes lives in `core/state.js`.
 4. Run the harness before publishing. Publish by republishing the artifact
    with `src/index.html` as the page and `src/css`, `src/js` as its files.
+
+## Power levels (Lifts tab)
+
+The strength rank is themed on Dragon Ball Z: `MOOSE_RANKS` in `core/strength.js` maps strength level to a form (1 Saiyan Warrior, 3 Kaioken, 5 Super Saiyan, 8 Super Saiyan 2, 12 Super Saiyan 3, 17 Super Saiyan Blue, 25 Ultra Instinct). Per-lift tiers (`TIERS`, est. 1RM gain): Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai's Planet +20%, Over 9,000 +35%. Only labels changed; tier keys (`bronze`…`diamond`) and their colors are unchanged.

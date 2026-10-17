@@ -26,5 +26,5 @@ export var DEFAULT_SETTINGS = {
   ],
   targets: null
 };
-export var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', satBed:'00:00', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
+export var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
 

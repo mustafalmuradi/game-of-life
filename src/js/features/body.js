@@ -42,7 +42,7 @@ function bedMin(t){ var m = tmin(t); if(m === null) return null; return m < 12*6
 function foodMin(t){ var m = tmin(t); if(m === null) return null; return m < 4*60 ? m + 1440 : m; }
 export function fmtClock(mins){ mins = ((Math.round(mins) % 1440) + 1440) % 1440; var h = Math.floor(mins/60), mm = mins % 60; return (h % 12 || 12) + ':' + pad(mm) + (h >= 12 ? ' PM' : ' AM'); }
 function fmtHour(t){ var m = tmin(t); if(m === null) return ''; return m === 0 ? 'midnight' : fmtClock(m).replace(':00', ''); }
-function bedTargetMin(d){ var tg = T(), lt = lateOf(d); if(lt) return bedMin(lt.bed); return (parseKey(d).getDay() === 6 && tg.satBed) ? bedMin(tg.satBed) : bedMin(tg.bed); }
+function bedTargetMin(d){ var tg = T(), lt = lateOf(d); if(lt) return bedMin(lt.bed); var wd = parseKey(d).getDay(); return (wd === 6 && tg.satBed) ? bedMin(tg.satBed) : (wd === 5 && tg.friBed) ? bedMin(tg.friBed) : bedMin(tg.bed); }
 export function metricsOf(d){ var doc = state.days[d]; return (doc && doc.m) || {}; }
 function nightBed(d){ return metricsOf(addDays(d, 1)).bed; }
 function avgOf(a){ return a.length ? a.reduce(function(x, y){ return x + y; }, 0)/a.length : null; }
@@ -169,7 +169,7 @@ export function weekReview(mon){
   function bedNights(ds){ var r = {n:0, late:0}; ds.forEach(function(d){ var nx = addDays(d, 1); if(nx > today || excluded(d) || excluded(nx)) return; var b = bedMin(nightBed(d)); if(b === null) return; r.n++; if(b > bedTargetMin(d)) r.late++; }); return r; }
   var out = {mon:mon, days:days, defs:defs, food:foodNights(days), foodPrev:foodNights(prevDays), bed:bedNights(days), bedPrev:bedNights(prevDays),
     tally:weekTally(mon), prevTally:weekTally(addDays(mon, -7)), complete:addDays(mon, 6) < today || (addDays(mon, 6) === today)};
-  var cand = [], bedLbl = fmtHour(tg.bed) + (tg.satBed ? ' (Saturday ' + fmtHour(tg.satBed) + ')' : '');
+  var cand = [], bedLbl = fmtHour(tg.bed) + (tg.friBed ? ' (Friday ' + fmtHour(tg.friBed) + ')' : '') + (tg.satBed ? ' (Saturday ' + fmtHour(tg.satBed) + ')' : '');
   function add(key, gap, t, x){ if(gap > 0.001) cand.push({key:key, gap:gap, t:t, x:x}); }
   if(out.bed.n >= 3) add('bed', out.bed.late/out.bed.n, 'Be in bed by ' + bedLbl, out.bed.late + ' of ' + out.bed.n + ' nights ran late. Start winding down an hour before, phone out of the room.');
   if(out.food.n >= 3) add('food', out.food.late/out.food.n, 'Last food by ' + fmtHour(tg.lastMeal), out.food.late + ' of ' + out.food.n + ' nights had food after ' + fmtHour(tg.lastMeal) + '. Make dinner the last meal.');
@@ -429,7 +429,7 @@ function renderBody(){
     h += '<div><b>' + (r.cur ? fmtVal(r.cur.v, r) : '–') + '</b><span>' + esc(r.n) + (dv !== null ? ' · ' + fmtDelta(dv, r) : '') + '</span></div>';
   });
   h += '<div><b>' + wr.food.late + '<small>/' + wr.food.n + '</small></b><span>Nights with food after ' + esc(fmtHour(tg.lastMeal)) + (wr.foodPrev.n ? ' · last wk ' + wr.foodPrev.late + '/' + wr.foodPrev.n : '') + '</span></div>';
-  h += '<div><b>' + wr.bed.late + '<small>/' + wr.bed.n + '</small></b><span>Nights in bed after ' + esc(fmtHour(tg.bed)) + (tg.satBed ? ' (Sat ' + esc(fmtHour(tg.satBed)) + ')' : '') + (wr.bedPrev.n ? ' · last wk ' + wr.bedPrev.late + '/' + wr.bedPrev.n : '') + '</span></div>';
+  h += '<div><b>' + wr.bed.late + '<small>/' + wr.bed.n + '</small></b><span>Nights in bed after ' + esc(fmtHour(tg.bed)) + (tg.friBed ? ' (Fri ' + esc(fmtHour(tg.friBed)) + ')' : '') + (tg.satBed ? ' (Sat ' + esc(fmtHour(tg.satBed)) + ')' : '') + (wr.bedPrev.n ? ' · last wk ' + wr.bedPrev.late + '/' + wr.bedPrev.n : '') + '</span></div>';
   h += '<div><b>' + wr.tally.strength + '<small>/' + tg.strengthPerWeek + '</small></b><span>Strength sessions · last wk ' + wr.prevTally.strength + '</span></div>';
   h += '<div><b>' + wr.tally.light + '<small>+' + wr.tally.rest + '</small></b><span>Light + full rest days · cardio ' + wr.tally.cardio + '</span></div>';
   var wt = weightTrend(), lastW = wt.last;
@@ -474,7 +474,7 @@ function renderBody(){
   h += '<section class="card panel"><div class="panel-head"><h3>Targets</h3></div><ul class="rules">' +
     '<li><b>' + fmt(tg.cal) + '</b><span>Calories a day, training included</span></li>' +
     '<li><b>' + tg.pro + 'g</b><span>Protein daily (' + tg.proMax + 'g ceiling) · carbs ~' + tg.carb + 'g · fat ~' + tg.fat + 'g · fiber ' + tg.fib + 'g · sodium ≤' + fmt(tg.sod) + 'mg</span></li>' +
-    '<li><b>' + esc(fmtHour(tg.bed)) + '</b><span>In bed (Saturdays: ' + esc(fmtHour(tg.satBed)) + '). Last food by ' + esc(fmtHour(tg.lastMeal)) + '. Naps under 45 min, before 2 PM. Caffeine cutoff noon.</span></li>' +
+    '<li><b>' + esc(fmtHour(tg.bed)) + '</b><span>In bed (' + (tg.friBed ? 'Fridays: ' + esc(fmtHour(tg.friBed)) + ', ' : '') + 'Saturdays: ' + esc(fmtHour(tg.satBed)) + '). Last food by ' + esc(fmtHour(tg.lastMeal)) + '. Naps under 45 min, before 2 PM. Caffeine cutoff noon.</span></li>' +
     '<li><b>' + tg.strengthPerWeek + '+' + tg.lightDays + '</b><span>Strength days plus a light day each week, ' + tg.restDays + ' full rest. Rotation: chest + biceps → back + triceps → legs. Double progression 8–12 reps. Cardio counts separately.</span></li>' +
     '<li><b>' + tg.ripMin + '–' + tg.ripMax + '×</b><span>RipRight a week, on the light day or at the start of leg day. Never after pressing.</span></li></ul></section>';
   view.innerHTML = h;
