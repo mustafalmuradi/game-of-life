@@ -13,7 +13,7 @@ import { applyCalories, bodyFilter, ciChip, openCheckin, saveBodyFilter, saveChe
 import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, selectNode, toggleBuildLadder, toggleShowAll } from './features/build.js';
 import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSettings, renderSettingsList } from './core/sheets.js';
 import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
-import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, quickAdd, renderTasksCard, saveTaskForm, sheetAct, timerToggle, tkQA, undoDone } from './features/tasks.js';
+import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, quickAdd, saveTaskForm, sheetAct, timerToggle, undoDone } from './features/tasks.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -60,8 +60,6 @@ function bind(){
       case 'tk-timer': { var on = timerToggle(t.getAttribute('data-d'), t.getAttribute('data-id')); toast(on ? 'Timer running' : 'Timer stopped'); break; }
       case 'tk-lock': { lockPlan(t.getAttribute('data-d')); toast('Plan locked'); break; }
       case 'tk-close': { var cr = closeDay(t.getAttribute('data-d')); toast(cr.moved ? 'Day closed · ' + cr.moved + (cr.moved === 1 ? ' task' : ' tasks') + ' moved to ' + fmtWd(cr.to) : 'Day closed'); break; }
-      case 'tk-qa-q': tkQA.q = parseInt(t.getAttribute('data-v'), 10) || 2; renderTasksCard(); break;
-      case 'tk-qa-block': tkQA.block = t.getAttribute('data-v'); renderTasksCard(); break;
       case 'tk-tpl-new': openTemplateSheet(null); break;
       case 'tk-tpl-edit': openTemplateSheet(t.getAttribute('data-id')); break;
       case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;
@@ -84,7 +82,7 @@ function bind(){
   $('#ci-form').addEventListener('submit', function(e){ e.preventDefault(); saveCheckin(); });
   $('#bd-form').addEventListener('submit', function(e){ e.preventDefault(); saveBuildForm(); });
   $('#tk-form').addEventListener('submit', function(e){ e.preventDefault(); saveTaskForm(); });
-  document.addEventListener('submit', function(e){ if(e.target && e.target.id === 'tq-form'){ e.preventDefault(); quickAdd(); } });
+  document.addEventListener('submit', function(e){ if(e.target && e.target.classList && e.target.classList.contains('tq-form')){ e.preventDefault(); quickAdd(e.target); } });
   $('#bd-form').addEventListener('change', function(e){ if(e.target && e.target.id === 'bd-kind') $('#bd-xp').textContent = '+' + (BXP[e.target.value] || BXP.fix) + ' XP'; });
   document.addEventListener('keydown', function(e){ var g = e.target && e.target.closest && e.target.closest('.bn'); if(g && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); g.dispatchEvent(new MouseEvent('click', {bubbles:true})); } });
   $('#lf-add-set').addEventListener('click', function(){

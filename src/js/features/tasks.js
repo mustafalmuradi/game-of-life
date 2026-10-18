@@ -1,6 +1,6 @@
 // Daily tasks: one doc per day (tracker/tasks/YYYY-MM-DD), recurring templates in settings, the Today card, the Tasks tab, the task sheet.
 import { TASK_BLOCKS, TASK_LANES, TASK_Q, TASK_ROLL_DAYS } from '../core/config.js';
-import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
+import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, pad, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
 import { habitById, normalizeTask, normalizeTemplate, state, T } from '../core/state.js';
 import { persistLocal, saveSettings, scheduleSaveTasks } from '../core/store.js';
 import { burst, toast } from '../core/effects.js';
@@ -10,7 +10,7 @@ import { bNode } from './build.js';
 
 /* ---------- daily tasks ---------- */
 /* Pure data, no XP. Every item keeps: when it was created, planned, started (timer), done, dropped or pushed to another day, and what it was for. */
-export var tkQA = {lane:null, q:2, block:null}, tkForm = null, tkArmed = false, tkHistOpen = {}, tkTplOpen = false;
+export var tkQA = {lane:null}, tkForm = null, tkArmed = false, tkHistOpen = {}, tkTplOpen = false;
 var tkTick = null;
 
 export function taskQ(k){ return TASK_Q.filter(function(x){ return x.k === Number(k); })[0] || TASK_Q[1]; }
@@ -56,7 +56,7 @@ export function addTask(d, f, src){
 export function updateTask(d, id, f){
   return mutateTasks(d, function(doc){
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
-    ['title','lane','q','block','est','actual','link','note'].forEach(function(k){ if(f[k] !== undefined) it[k] = f[k]; });
+    ['title','lane','q','block','est','actual','link','note','sortedBy'].forEach(function(k){ if(f[k] !== undefined) it[k] = f[k]; });
     var n = normalizeTask(it); Object.assign(it, n); it.updatedAt = Date.now();
     return it;
   });
@@ -187,9 +187,9 @@ export function taskStats(nDays){
 /* ----- Today card ----- */
 function qaDefaults(){
   if(!tkQA.lane){ var last = null; Object.keys(state.tasks).sort().forEach(function(k){ state.tasks[k].items.forEach(function(it){ if(!last || it.createdAt > last.createdAt) last = it; }); }); tkQA.lane = last ? last.lane : TASK_LANES[0]; }
-  if(!tkQA.block) tkQA.block = blockNow();
 }
 function chip(it){
+  if(sorting[it.id]) return '<span class="tk-sorting">Claude is sorting\u2026</span>';
   var bits = ['<span class="tk-lane">' + esc(it.lane) + '</span>', '<span class="tk-q q' + it.q + '">Q' + it.q + '</span>', '<span class="tk-blk">' + esc(taskBlock(it.block).n) + '</span>'];
   if(it.est || it.actual) bits.push('<span class="tk-min">' + (it.actual ? fmtMin(it.actual) + (it.est ? ' / ' + fmtMin(it.est) : '') : '~' + fmtMin(it.est)) + '</span>');
   if(it.rolled) bits.push('<span class="tk-roll" title="Carried over ' + it.rolled + 'x">↻' + it.rolled + '</span>');
@@ -220,11 +220,7 @@ export function tasksCardHTML(d){
   h += '</div>';
   if(d === today || d === addDays(today, 1)){
     qaDefaults();
-    h += '<form class="tk-add" id="tq-form" autocomplete="off" data-d="' + d + '"><input id="tq-title" type="text" maxlength="120" placeholder="Add a task…" aria-label="New task">' +
-      '<div class="tk-qa"><select id="tq-lane" aria-label="Lane">' + TASK_LANES.map(function(l){ return '<option' + (l === tkQA.lane ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select>' +
-      '<span class="tk-seg" role="group" aria-label="Quadrant">' + TASK_Q.map(function(q){ return '<button type="button" class="q' + q.k + (tkQA.q === q.k ? ' on' : '') + '" data-act="tk-qa-q" data-v="' + q.k + '" title="' + esc(q.t) + '">' + q.n + '</button>'; }).join('') + '</span>' +
-      '<span class="tk-seg" role="group" aria-label="Block">' + TASK_BLOCKS.map(function(b){ return '<button type="button" class="' + (tkQA.block === b.k ? 'on' : '') + '" data-act="tk-qa-block" data-v="' + b.k + '">' + esc(b.n) + '</button>'; }).join('') + '</span>' +
-      '<button class="primary small" type="submit">Add</button></div></form>';
+    h += '<form class="tk-add tq-form" autocomplete="off" data-d="' + d + '"><input class="tq-title" type="text" maxlength="120" placeholder="Add a task… Claude sorts the rest" aria-label="New task"><button class="primary small" type="submit">Add</button></form>';
   }
   if(!items.length) h += '<p class="nudge">' + (d === today ? 'Nothing planned yet. Add what today is for, then lock the plan before deep work (' + esc(tg.planBy || '07:30') + ').' : 'No tasks on this day.') + '</p>';
   if(open.length) h += '<ul class="tk-list">' + open.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>';
@@ -232,11 +228,15 @@ export function tasksCardHTML(d){
   if(gone.length) h += '<details class="tk-done-wrap"><summary>Pushed or dropped · ' + gone.length + '</summary><ul class="tk-list">' + gone.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
   return h;
 }
+/* re-render a container without losing what he is typing in its quick-add box */
+function keepTyping(el, fn){
+  var inp = el.querySelector('.tq-title'), keep = inp ? {v:inp.value, f:document.activeElement === inp} : null;
+  fn();
+  if(keep && keep.v){ var ni = el.querySelector('.tq-title'); if(ni){ ni.value = keep.v; if(keep.f) ni.focus(); } }
+}
 export function renderTasksCard(){
   var el = $('#tasks'); if(!el) return;
-  var inp = $('#tq-title'), keep = inp ? {v:inp.value, f:document.activeElement === inp} : null;
-  el.innerHTML = tasksCardHTML(state.selected);
-  if(keep && keep.v){ var ni = $('#tq-title'); if(ni){ ni.value = keep.v; if(keep.f) ni.focus(); } }
+  keepTyping(el, function(){ el.innerHTML = tasksCardHTML(state.selected); });
   startTick();
 }
 function startTick(){
@@ -250,13 +250,60 @@ function startTick(){
     if(!any){ clearInterval(tkTick); tkTick = null; }
   }, 1000);
 }
-export function quickAdd(){
-  var d = $('#tq-form').getAttribute('data-d') || todayKey(), title = $('#tq-title').value.trim();
-  if(!title){ $('#tq-title').focus(); return; }
-  tkQA.lane = $('#tq-lane').value;
-  var it = addTask(d, {title:title, lane:tkQA.lane, q:tkQA.q, block:tkQA.block}, 'page');
-  var ni = $('#tq-title'); if(ni){ ni.value = ''; ni.focus(); }
+export function quickAdd(form){
+  var d = form.getAttribute('data-d') || todayKey(), inp = form.querySelector('.tq-title'), title = inp ? inp.value.trim() : '';
+  if(!title){ if(inp) inp.focus(); return; }
+  if(inp) inp.value = '';
+  var it = addTask(d, {title:title, lane:tkQA.lane, q:2, block:blockNow()}, 'page');
+  Array.prototype.forEach.call(document.querySelectorAll('.tq-form[data-d="' + d + '"] .tq-title'), function(x){ if(x.offsetParent) x.focus(); });
+  autoSort(d, it.id);
   return it;
+}
+
+/* ----- Claude sorts a typed task: lane, quadrant, block, estimate, what it serves ----- */
+export var sorting = {};
+function sampleCap(){
+  if(!(window.claude && typeof window.claude.use === 'function')) return Promise.resolve(null);
+  return window.claude.use('sample').catch(function(){ return null; });
+}
+function sortPrompt(it){
+  var nodes = state.build.bnodes.map(function(n){ return n.id + ' = ' + n.name + (n.venture ? ' (' + n.venture + ')' : ''); });
+  var habits = state.settings.habits.map(function(h){ return h.id + ' = ' + h.name; });
+  var now = new Date();
+  return [
+    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli), BOSS (its software arm, building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
+    'Task: "' + it.title.replace(/"/g, '\\"') + '"',
+    'Now: ' + now.toLocaleDateString('en-US', {weekday:'long'}) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '.',
+    'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli: staff, inventory, suppliers, SNAP, Adnan/Canarsie partnership), BOSS (DMS software), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',
+    'q: Covey quadrant. 1 = urgent AND important (deadline today, money at risk, someone waiting, something broken). 2 = important, not urgent (builds the business, body, deen or relationships; the default). 3 = urgent, not important (interruptions, small favors, admin with a clock). 4 = neither.',
+    'block: am = needs a sharp brain (building, writing, calls, planning, selling), pm = physical or out of the house (gym, errands, store visits, lake reading, driving), eve = quiet or family time (messages, light admin, reading, prep for tomorrow). Prefer am for anything mental.',
+    'est: honest minutes for a focused person, integer, or null if unknowable.',
+    'link: the ONE thing it most directly serves, or null. Map boxes (use the id): ' + (nodes.length ? nodes.join('; ') : 'none') + '. Habits (use the id): ' + habits.join('; ') + '. A task that IS a habit session (e.g. "read 25 min", "leg day") links the habit; work on a project links its box.',
+    'Return exactly: {"lane":"...","q":1|2|3|4,"block":"am"|"pm"|"eve","est":number|null,"link":{"t":"node"|"habit","id":"..."}|null}'
+  ].join('\n');
+}
+export function autoSort(d, id){
+  var it = findTask(d, id); if(!it) return Promise.resolve(false);
+  return sampleCap().then(function(sample){
+    if(!sample || typeof sample.json !== 'function') return false;
+    sorting[id] = true; render();
+    return sample.json(sortPrompt(it), {modelTier:'complex', cache:false}).then(function(r){
+      delete sorting[id];
+      var cur = findTask(d, id); if(!cur || cur.doneAt || cur.updatedAt){ render(); return false; } // he already edited it
+      var f = {};
+      if(r && typeof r.lane === 'string' && r.lane.trim()) f.lane = r.lane.trim().slice(0, 30);
+      if(r && [1,2,3,4].indexOf(Number(r.q)) >= 0) f.q = Number(r.q);
+      if(r && ['am','pm','eve'].indexOf(r.block) >= 0) f.block = r.block;
+      if(r && Number.isFinite(Number(r.est)) && Number(r.est) > 0) f.est = Math.round(Number(r.est));
+      if(r && r.link && r.link.t === 'node' && bNode(r.link.id)) f.link = {t:'node', id:r.link.id, label:bNode(r.link.id).name};
+      else if(r && r.link && r.link.t === 'habit' && habitById(r.link.id)) f.link = {t:'habit', id:r.link.id, label:habitById(r.link.id).name};
+      else f.link = null;
+      f.sortedBy = 'claude';
+      var u = updateTask(d, id, f); if(u){ u.updatedAt = null; tkQA.lane = u.lane; }
+      toast('Sorted: ' + (f.lane || cur.lane) + ' · Q' + (f.q || cur.q) + ' · ' + taskBlock(f.block || cur.block).n + (f.est ? ' · ~' + fmtMin(f.est) : '') + (f.link ? ' · ' + f.link.label : ''), {label:'Edit', fn:function(){ openTaskSheet(d, id); }});
+      return true;
+    }).catch(function(){ delete sorting[id]; render(); return false; });
+  });
 }
 export function onDone(d, id, btn){
   var it = setDone(d, id); if(!it) return;
@@ -350,7 +397,7 @@ function pct(n, d){ return d ? Math.round(n/d*100) + '%' : '–'; }
 function renderTasks(){
   ensureToday();
   var view = $('#view-tasks'), today = todayKey(), s30 = taskStats(30), s7 = taskStats(7), td = taskDoc(today);
-  var h = '<section class="card tasks-card" id="tasks">' + tasksCardHTML(today) + '</section>';
+  var h = '<section class="card tasks-card">' + tasksCardHTML(today) + '</section>';
   h += '<section class="card"><p class="eyebrow">Last 30 days · ' + s30.days + (s30.days === 1 ? ' day' : ' days') + ' with tasks</p><div class="tk-tiles">' +
     '<div><b>' + (s30.rate === null ? '–' : s30.rate + '%') + '</b><span>Done rate</span><em>7d ' + (s7.rate === null ? '–' : s7.rate + '%') + '</em></div>' +
     '<div><b>' + (s30.q2share === null ? '–' : s30.q2share + '%') + '</b><span>Q2 share of done</span><em>important, not urgent</em></div>' +
@@ -370,7 +417,7 @@ function renderTasks(){
     (tpls.length ? '<ul class="tk-list">' + tpls.map(function(t){ return '<li class="tk' + (t.paused ? ' is-dropped' : '') + '"><span class="tk-check tk-x" aria-hidden="true">↻</span><button class="tk-main" type="button" data-act="tk-tpl-edit" data-id="' + esc(t.id) + '"><span class="tk-title">' + esc(t.title) + (t.paused ? ' (paused)' : '') + '</span><span class="tk-chips"><span class="tk-lane">' + esc(t.lane) + '</span><span class="tk-q q' + t.q + '">Q' + t.q + '</span><span class="tk-blk">' + esc(taskBlock(t.block).n) + '</span><span class="tk-min">' + t.days.map(function(i){ return ['Su','Mo','Tu','We','Th','Fr','Sa'][i]; }).join(' ') + '</span></span></button></li>'; }).join('') + '</ul>' : '<p class="muted small">Things you do on set days (inventory check, invoices, weekly review). They show up on their day by themselves.</p>') + '</section>';
   var hist = Object.keys(state.tasks).filter(function(k){ return k < today; }).sort().reverse().slice(0, 14);
   if(hist.length) h += '<section class="card"><p class="eyebrow">History</p>' + hist.map(function(k){ var doc = state.tasks[k], dn = doc.items.filter(function(x){ return x.doneAt; }).length, n = doc.items.filter(function(x){ return !x.rolledTo; }).length; return '<details class="tk-day"' + (tkHistOpen[k] ? ' open' : '') + ' data-d="' + k + '"><summary><b>' + esc(fmtWd(k)) + '</b><span>' + dn + '/' + n + ' done' + (doc.plannedAt ? ' · planned ' + esc(timeOf(doc.plannedAt)) : '') + (doc.closedAt ? ' · closed' : '') + '</span></summary><ul class="tk-list">' + doc.items.slice().sort(sortOpen).map(function(it){ return itemHTML(k, it, today); }).join('') + '</ul></details>'; }).join('') + '</section>';
-  view.innerHTML = h;
+  keepTyping(view, function(){ view.innerHTML = h; });
   startTick();
 }
 registerTab('tasks', renderTasks);

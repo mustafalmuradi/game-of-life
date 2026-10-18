@@ -70,7 +70,7 @@ export function normalizeTask(x){
     link:x.link && x.link.t && x.link.t !== 'none' ? {t:String(x.link.t), id:String(x.link.id || ''), label:String(x.link.label || '').slice(0, 80)} : null,
     note:String(x.note || '').slice(0, 300), src:String(x.src || 'page'), tpl:x.tpl ? String(x.tpl) : null, origin:String(x.origin || ''), rolled:Math.max(0, parseInt(x.rolled, 10) || 0),
     createdAt:Number(x.createdAt) || 0, doneAt:Number(x.doneAt) || null, droppedAt:Number(x.droppedAt) || null, dropWhy:x.dropWhy ? String(x.dropWhy).slice(0, 120) : null,
-    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0)}};
+    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, sortedBy:x.sortedBy ? String(x.sortedBy) : null, timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0)}};
   return o;
 }
 export function normalizeTaskDoc(d, k){

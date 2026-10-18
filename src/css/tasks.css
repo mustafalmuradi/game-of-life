@@ -4,8 +4,10 @@
 .tk-head .eyebrow{margin-bottom:2px}
 .tk-sum{font-size:13px;color:var(--muted)} .tk-sum b{color:var(--ink)}
 .tk-head-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.tk-add{display:flex;flex-direction:column;gap:8px;padding:0 16px 12px}
-.tk-add input[type=text]{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink)}
+.tk-add{display:flex;gap:8px;padding:0 16px 12px;align-items:stretch}
+.tk-add .primary.small{padding:8px 16px;font-size:14px;flex:none}
+.tk-sorting{font-size:11px;font-weight:800;color:var(--accent-ink);background:var(--accent-soft);border-radius:7px;padding:2px 7px;animation:tkpulse 1.2s ease-in-out infinite}
+.tk-add input[type=text]{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink)}
 .tk-add input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px}
 .tk-qa{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .tk-qa select{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:7px 8px;font-weight:700;font-size:12.5px;max-width:120px}
