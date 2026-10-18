@@ -13,7 +13,7 @@ import { applyCalories, bodyFilter, ciChip, openCheckin, saveBodyFilter, saveChe
 import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, selectNode, toggleBuildLadder, toggleShowAll } from './features/build.js';
 import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSettings, renderSettingsList } from './core/sheets.js';
 import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
-import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, quickAdd, saveTaskForm, sheetAct, timerToggle, undoDone } from './features/tasks.js';
+import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, pickTaskDay, quickAdd, saveTaskForm, sheetAct, stepTaskWeek, timerToggle, undoDone } from './features/tasks.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -60,6 +60,9 @@ function bind(){
       case 'tk-timer': { var on = timerToggle(t.getAttribute('data-d'), t.getAttribute('data-id')); toast(on ? 'Timer running' : 'Timer stopped'); break; }
       case 'tk-lock': { lockPlan(t.getAttribute('data-d')); toast('Plan locked'); break; }
       case 'tk-close': { var cr = closeDay(t.getAttribute('data-d')); toast(cr.moved ? 'Day closed · ' + cr.moved + (cr.moved === 1 ? ' task' : ' tasks') + ' moved to ' + fmtWd(cr.to) : 'Day closed'); break; }
+      case 'tk-pick': pickTaskDay(t.getAttribute('data-d')); break;
+      case 'tk-week-prev': stepTaskWeek(-1); break;
+      case 'tk-week-next': stepTaskWeek(1); break;
       case 'tk-tpl-new': openTemplateSheet(null); break;
       case 'tk-tpl-edit': openTemplateSheet(t.getAttribute('data-id')); break;
       case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;

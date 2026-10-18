@@ -244,6 +244,8 @@ export const steps = [
   { name: 'tasks: done first', run: async (page) => { await click(page, '#tasks .tk [data-act="tk-done"]'); await settle(page); } },
   { name: 'tab: tasks', run: async (page) => tab(page, 'tasks') },
   { name: 'tasks: quick add from the Tasks tab', run: async (page) => { await fill(page, '.tq-title', 'Reorder paper bags'); await submit(page, '#view-tasks .tq-form'); await settle(page); } },
+  { name: 'tasks: plan tomorrow', run: async (page) => { await click(page, '#view-tasks .wday.is-today + .wday'); await settle(page); await fill(page, '.tq-title', 'Prep the Khokha demo'); await submit(page, '#view-tasks .tq-form'); await settle(page); } },
+  { name: 'tasks: next week and back', run: async (page) => { await click(page, '#view-tasks [data-act="tk-week-next"]'); await settle(page); await click(page, '#view-tasks [data-act="tk-week-prev"]'); await settle(page); await click(page, '#view-tasks .wday.is-today'); await settle(page); } },
   { name: 'tasks: recurring template', run: async (page) => { await click(page, '[data-act="tk-tpl-new"]'); await settle(page); await fill(page, '#tk-title', 'Inventory check'); await click(page, '#tk-days [data-v="0"]'); await submit(page, '#tk-form'); await settle(page); } },
   { name: 'tasks: drop one', run: async (page) => { await click(page, '#view-tasks .tk [data-act="tk-open"]'); await settle(page); await fill(page, '#tk-note', 'not today'); await click(page, '[data-act="tk-drop"]'); await settle(page); } },
   { name: 'tasks: close day', run: async (page) => { await click(page, '#view-tasks [data-act="tk-close"]'); await settle(page); } },

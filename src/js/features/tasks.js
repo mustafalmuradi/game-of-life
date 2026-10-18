@@ -1,6 +1,7 @@
 // Daily tasks: one doc per day (tracker/tasks/YYYY-MM-DD), recurring templates in settings, the Today card, the Tasks tab, the task sheet.
 import { TASK_BLOCKS, TASK_LANES, TASK_Q, TASK_ROLL_DAYS } from '../core/config.js';
-import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, pad, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
+import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, fmtWd, mondayOf, pad, parseKey, range7, timeOf, todayKey, uid } from '../core/utils.js';
+import { ICON, miniRing } from '../core/svg.js';
 import { habitById, normalizeTask, normalizeTemplate, state, T } from '../core/state.js';
 import { persistLocal, saveSettings, scheduleSaveTasks } from '../core/store.js';
 import { burst, toast } from '../core/effects.js';
@@ -11,6 +12,8 @@ import { bNode } from './build.js';
 /* ---------- daily tasks ---------- */
 /* Pure data, no XP. Every item keeps: when it was created, planned, started (timer), done, dropped or pushed to another day, and what it was for. */
 export var tkQA = {lane:null}, tkForm = null, tkArmed = false, tkHistOpen = {}, tkTplOpen = false;
+export var tkSel = null, tkWeek = null; // the day the Tasks tab is showing, and its week (Monday)
+var tkDay = null; // which "today" tkSel was last synced to, so a new day moves the tab forward
 var tkTick = null;
 
 export function taskQ(k){ return TASK_Q.filter(function(x){ return x.k === Number(k); })[0] || TASK_Q[1]; }
@@ -218,11 +221,11 @@ export function tasksCardHTML(d){
     (doc.plannedAt ? ' · planned ' + esc(timeOf(doc.plannedAt)) : '') + (doc.closedAt ? ' · closed ' + esc(timeOf(doc.closedAt)) : '') + '</p></div>';
   if(d === today) h += '<div class="tk-head-acts">' + (!doc.plannedAt && items.length ? '<button class="pill-btn" type="button" data-act="tk-lock" data-d="' + d + '">Lock plan</button>' : '') + (!doc.closedAt && items.length ? '<button class="pill-btn" type="button" data-act="tk-close" data-d="' + d + '">Close day</button>' : '') + '</div>';
   h += '</div>';
-  if(d === today || d === addDays(today, 1)){
+  if(d >= today){
     qaDefaults();
     h += '<form class="tk-add tq-form" autocomplete="off" data-d="' + d + '"><input class="tq-title" type="text" maxlength="120" placeholder="Add a task… Claude sorts the rest" aria-label="New task"><button class="primary small" type="submit">Add</button></form>';
   }
-  if(!items.length) h += '<p class="nudge">' + (d === today ? 'Nothing planned yet. Add what today is for, then lock the plan before deep work (' + esc(tg.planBy || '07:30') + ').' : 'No tasks on this day.') + '</p>';
+  if(!items.length) h += '<p class="nudge">' + (d === today ? 'Nothing planned yet. Add what today is for, then lock the plan before deep work (' + esc(tg.planBy || '07:30') + ').' : d > today ? 'Nothing planned for ' + esc(fmtWd(d)) + ' yet. Add it here and it will be waiting.' : 'No tasks on this day.') + '</p>';
   if(open.length) h += '<ul class="tk-list">' + open.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>';
   if(done.length) h += '<details class="tk-done-wrap"' + (open.length ? '' : ' open') + '><summary>Done · ' + done.length + (doc.items.some(function(x){ return x.doneAt && taskMins(x); }) ? ' · ' + fmtMin(done.reduce(function(a, x){ return a + taskMins(x); }, 0)) : '') + '</summary><ul class="tk-list">' + done.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
   if(gone.length) h += '<details class="tk-done-wrap"><summary>Pushed or dropped · ' + gone.length + '</summary><ul class="tk-list">' + gone.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
@@ -394,10 +397,30 @@ export function sheetAct(act, t){
 
 /* ----- Tasks tab ----- */
 function pct(n, d){ return d ? Math.round(n/d*100) + '%' : '–'; }
+function dayTally(d){ var doc = state.tasks[d]; if(!doc) return null; var all = doc.items.filter(function(x){ return !x.rolledTo; }), dn = all.filter(function(x){ return x.doneAt; }).length; return {done:dn, total:all.length, sweep:all.length > 0 && dn === all.length}; }
+function tasksWeekHTML(){
+  var today = todayKey(), mon = tkWeek, days = range7(mon), isThis = mon === mondayOf(today), L = ['M','T','W','T','F','S','S'];
+  var wd = 0, wt = 0; days.forEach(function(d){ var t = dayTally(d); if(t){ wd += t.done; wt += t.total; } });
+  var h = '<div class="week tk-week"><div class="week-head">' +
+    '<button class="arrow" type="button" data-act="tk-week-prev" aria-label="Previous week"><svg viewBox="0 0 24 24">' + ICON.left + '</svg></button>' +
+    '<p class="t">' + (isThis ? 'This week' : fmtShort(days[0]) + ' \u2013 ' + fmtShort(days[6])) + '<span>' + (wt ? wd + '/' + wt + ' done' : 'no tasks') + '</span></p>' +
+    '<button class="arrow" type="button" data-act="tk-week-next" aria-label="Next week"' + (mon >= addDays(mondayOf(today), 28) ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.right + '</svg></button></div><div class="week-grid">';
+  days.forEach(function(d, i){
+    var t = dayTally(d), fut = d > today;
+    var lbl = fmtLong(d) + (t ? ', ' + (fut ? t.total + ' planned' : t.done + ' of ' + t.total + ' done') : '');
+    h += '<button type="button" class="wday' + (d === tkSel ? ' is-sel' : '') + (d === today ? ' is-today' : '') + (fut ? ' is-fut' : '') + '" data-act="tk-pick" data-d="' + d + '"' + (d === today ? ' aria-current="date"' : '') + ' aria-label="' + esc(lbl) + '">' +
+      '<span class="wl">' + L[i] + '</span>' + miniRing(t, parseKey(d).getDate()) + (fut && t && t.total ? '<span class="wplan">' + t.total + '</span>' : '') + '</button>';
+  });
+  return h + '</div></div>';
+}
+export function pickTaskDay(d){ tkSel = d; tkWeek = mondayOf(d); render(); }
+export function stepTaskWeek(n){ var today = todayKey(), nw = addDays(tkWeek || mondayOf(today), 7*n); if(nw > addDays(mondayOf(today), 28)) return; tkWeek = nw; tkSel = mondayOf(today) === nw ? today : nw; render(); }
 function renderTasks(){
   ensureToday();
   var view = $('#view-tasks'), today = todayKey(), s30 = taskStats(30), s7 = taskStats(7), td = taskDoc(today);
-  var h = '<section class="card tasks-card">' + tasksCardHTML(today) + '</section>';
+  if(!tkSel || (tkSel === tkDay && tkDay !== today)){ tkSel = today; tkWeek = mondayOf(today); }
+  tkDay = today; if(!tkWeek) tkWeek = mondayOf(tkSel);
+  var h = tasksWeekHTML() + '<section class="card tasks-card">' + tasksCardHTML(tkSel) + '</section>';
   h += '<section class="card"><p class="eyebrow">Last 30 days · ' + s30.days + (s30.days === 1 ? ' day' : ' days') + ' with tasks</p><div class="tk-tiles">' +
     '<div><b>' + (s30.rate === null ? '–' : s30.rate + '%') + '</b><span>Done rate</span><em>7d ' + (s7.rate === null ? '–' : s7.rate + '%') + '</em></div>' +
     '<div><b>' + (s30.q2share === null ? '–' : s30.q2share + '%') + '</b><span>Q2 share of done</span><em>important, not urgent</em></div>' +

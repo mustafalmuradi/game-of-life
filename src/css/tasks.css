@@ -47,6 +47,10 @@
 .tk-done-wrap[open]>summary::before{transform:rotate(90deg)}
 /* tab */
 #view-tasks{display:flex;flex-direction:column;gap:14px}
+.tk-week .wday.is-fut .wl{color:var(--accent-ink);opacity:.7}
+.tk-week .wday.is-fut svg{opacity:.75}
+.tk-week .wday{position:relative}
+.tk-week .wplan{position:absolute;top:3px;right:4px;font-size:10px;font-weight:800;line-height:1;color:var(--accent-ink);background:var(--accent-soft);border-radius:8px;padding:2px 5px}
 #view-tasks .card>.eyebrow{padding:14px 16px 0}
 #view-tasks .card>.muted{padding:0 16px 14px}
 #view-tasks .tk-head{padding:14px 16px}
