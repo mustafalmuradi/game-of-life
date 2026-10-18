@@ -65,7 +65,7 @@ function bind(){
       case 'tk-week-next': stepTaskWeek(1); break;
       case 'tk-tpl-new': openTemplateSheet(null); break;
       case 'tk-tpl-edit': openTemplateSheet(t.getAttribute('data-id')); break;
-      case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;
+      case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-move': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;
       case 'pick-day': state.selected = t.getAttribute('data-d'); render(); break;
       case 'go-today': state.selected = todayKey(); state.weekOf = mondayOf(state.selected); render(); break;
       case 'week-prev': state.weekOf = addDays(state.weekOf, -7); state.selected = addDays(state.weekOf, 6); render(); break;

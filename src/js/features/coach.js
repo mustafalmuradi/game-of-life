@@ -13,7 +13,7 @@ import { celebrateLift, sessOpen } from './lifts.js';
 import { CI_NUMS, CI_TIMES, commitMetrics, daysBetween, metricsOf, patternData, readiness, SESS, TAGS, watchList, weekReview, weekTally, weightTrend } from './body.js';
 import { BCOLS, bKind, BKINDS, bNode, bRank, bRemove, bSel, BSTATUS, bStatus, buildStats, bWrite, BXP, setSelected, shortName } from './build.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
-import { addTask, closeDay, dropTask, findTask, fmtMin, isOpen, linkLabel, lockPlan, removeTemplate, saveTemplate, setDone, taskDoc, taskStats, timerToggle, undoDone, undropTask, updateTask } from './tasks.js';
+import { addTask, closeDay, dropTask, findTask, fmtMin, isOpen, linkLabel, lockPlan, moveTask, removeTemplate, saveTemplate, setDone, taskDoc, taskStats, timerToggle, undoDone, undropTask, updateTask } from './tasks.js';
 
 /* ---------- coach: chat with Claude, which reads and writes this tracker ---------- */
 /* Claude runs through the sample capability; every change goes through the same functions the page's own buttons use. */
@@ -1211,8 +1211,8 @@ function tDate(v){
   if(!s || s === 'today') return todayKey();
   if(s === 'tomorrow') return addDays(todayKey(), 1);
   if(s === 'yesterday') return addDays(todayKey(), -1);
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) throw new Error('Dates are YYYY-MM-DD, today or tomorrow, got "' + v + '".');
-  if(s > addDays(todayKey(), 1)) throw new Error('Tasks can be planned for today or tomorrow only.');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) throw new Error('Dates are YYYY-MM-DD, today, tomorrow or yesterday, got "' + v + '".');
+  if(s > addDays(todayKey(), 28)) throw new Error('Tasks can be planned up to 4 weeks ahead.');
   return s;
 }
 function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return laneOf(hit || s); }
@@ -1235,10 +1235,11 @@ var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One 
   block:{type:'string', enum:['am', 'pm', 'eve'], description:'am = deep work morning, pm = physical afternoon, eve = evening.'}, est:{type:'integer', description:'Estimated minutes.'},
   for_project:{type:'string', description:'Map box name or id this task pushes forward.'}, for_habit:{type:'string', description:'Habit id or name it serves.'}, for_win:{type:'string', description:'This week’s win it advances, in a few words.'}, note:{type:'string', description:'Outcome or context, up to 300 chars.'}};
 COACH_TOOLS.push({name:'tasks', busy:'Tasks',
- description:'His daily task list (pure data, no XP). list: a day’s tasks with ids. add: a new task for today or tomorrow. done: check one off (pass minutes if he says how long). undo_done, drop (with why), update (any field), timer (start/stop), lock_plan (stamps when the day was planned), close_day (stamps the day and pushes open tasks to tomorrow), stats (last N days: done rate, Q2 share, pushed, lanes, estimate accuracy).',
+ description:'His daily task list (pure data, no XP). list: a day’s tasks with ids. add: a new task for today or any later day. done: check one off (pass minutes if he says how long). undo_done, drop (with why), update (any field), move (an open task to another day; it counts as pushed), timer (start/stop), lock_plan (stamps when the day was planned), close_day (stamps the day and pushes open tasks to tomorrow), stats (last N days: done rate, Q2 share, pushed, lanes, estimate accuracy).',
  schema:{type:'object', properties:Object.assign({
-   action:{type:'string', enum:['list', 'add', 'done', 'undo_done', 'drop', 'update', 'timer', 'lock_plan', 'close_day', 'stats']},
-   date:{type:'string', description:'YYYY-MM-DD, today (default), tomorrow or yesterday.'},
+   action:{type:'string', enum:['list', 'add', 'done', 'undo_done', 'drop', 'update', 'move', 'timer', 'lock_plan', 'close_day', 'stats']},
+   to:{type:'string', description:'move: the day it goes to, YYYY-MM-DD or tomorrow (today or later).'},
+   date:{type:'string', description:'YYYY-MM-DD (up to 4 weeks ahead), today (default), tomorrow or yesterday.'},
    id:{type:'string', description:'Task id from list / live data, or the exact task title for done/drop/update/timer.'},
    minutes:{type:'integer', description:'done: actual minutes it took.'}, why:{type:'string', description:'drop: his reason.'}, timer:{type:'string', enum:['start', 'stop']},
    days:{type:'integer', description:'stats: window in days, default 30.'}}, TASK_FIELDS), required:['action']},
@@ -1265,6 +1266,12 @@ COACH_TOOLS.push({name:'tasks', busy:'Tasks',
      var dn = setDone(d, t.id, mins); var left = taskDoc(d).items.filter(isOpen).length;
      addAct('Done · ' + t.title + (dn.actual ? ' · ' + fmtMin(dn.actual) : ''), function(){ restoreTasks(snap); });
      return {ok:true, task:taskBrief(d, dn), openLeft:left};
+   }
+   if(a === 'move'){
+     var mto = tDate(inp.to); if(mto < todayKey()) throw new Error('Tasks move to today or later.'); if(!isOpen(t)) throw new Error('Only open tasks move; this one is ' + (t.doneAt ? 'done' : t.droppedAt ? 'dropped' : 'already pushed') + '.');
+     var snapM = snapTasks([d, mto]); var mv = moveTask(d, t.id, mto);
+     addAct('Moved \u00b7 ' + t.title + ' \u2192 ' + fmtShort(mto), function(){ restoreTasks(snapM); });
+     return {ok:true, task:taskBrief(mto, mv), movedTo:mto, timesPushed:mv.rolled};
    }
    if(a === 'undo_done'){ undoDone(d, t.id); addAct('Reopened · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true}; }
    if(a === 'drop'){ if(t.droppedAt) undropTask(d, t.id); else { dropTask(d, t.id, cleanStr(inp.why, 120)); } addAct((t.droppedAt ? 'Brought back' : 'Dropped') + ' · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true, status:t.droppedAt ? 'open' : 'dropped'}; }

@@ -90,6 +90,14 @@ export function dropTask(d, id, why){
   });
 }
 export function undropTask(d, id){ return mutateTasks(d, function(doc){ var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(it){ it.droppedAt = null; it.dropWhy = null; } return it; }); }
+/* Move an open task to another day: the original stays on its day marked pushed, the copy lands on `to` with rolled + 1. */
+export function moveTask(d, id, to){
+  var it = findTask(d, id); if(!it || !isOpen(it) || !to || to === d) return null;
+  var c = clone(it); c.id = 't' + uid(); c.rolled = (it.rolled || 0) + 1; c.src = 'moved'; c.rolledTo = null; c.createdAt = Date.now(); c.doneAt = null; c.timer = {on:null, ms:0, log:[]}; c.actual = null;
+  mutateTasks(d, function(doc){ var x = doc.items.filter(function(y){ return y.id === id; })[0]; if(x){ stopTimer(x); x.rolledTo = to; } }, {silent:true});
+  mutateTasks(to, function(doc){ doc.items.push(c); });
+  return c;
+}
 export function deleteTask(d, id){ return mutateTasks(d, function(doc){ var n = doc.items.length; doc.items = doc.items.filter(function(x){ return x.id !== id; }); return doc.items.length < n; }); }
 export function timerToggle(d, id){
   var started = false;
@@ -366,8 +374,9 @@ function formFields(it, tpl){
     (tpl ? '<div class="lf-field"><span>Days</span><div class="tk-days" id="tk-days">' + ['S','M','T','W','T','F','S'].map(function(l, i){ return '<button type="button" class="' + ((it.days || []).indexOf(i) >= 0 ? 'on' : '') + '" data-act="tk-day" data-v="' + i + '" aria-label="' + ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][i] + '">' + l + '</button>'; }).join('') + '</div></div>' :
       '<label class="lf-field" for="tk-actual"><span>Actual (min)</span><input id="tk-actual" type="number" inputmode="numeric" min="1" max="720" value="' + (it.actual || '') + '"></label>') +
     '<label class="lf-field full" for="tk-link"><span>For</span><select id="tk-link">' + linkOptions(it.link) + '</select></label>' +
+    (!tpl && !it.doneAt && !it.droppedAt && !it.rolledTo ? '<div class="lf-field full tk-move"><span>Move to another day</span><div class="tk-move-row"><button type="button" class="ghost small" data-act="tk-move" data-to="' + addDays(todayKey(), 1) + '">Tomorrow</button><input id="tk-move-date" type="date" min="' + todayKey() + '" value="' + addDays(todayKey(), 1) + '" aria-label="Move to date"><button type="button" class="ghost small" data-act="tk-move">Move</button></div></div>' : '') +
     (!tpl ? '<label class="lf-field full" for="tk-note"><span>Outcome / note</span><input id="tk-note" maxlength="300" value="' + esc(it.note || '') + '" placeholder="What happened, what’s next"></label>' : '');
-  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) + (it.timer.log && it.timer.log.length > 1 ? ' over ' + it.timer.log.length + ' runs' : '') : ''].filter(Boolean).join(' · ') + '</p>';
+  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day', moved:'moved by you'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) + (it.timer.log && it.timer.log.length > 1 ? ' over ' + it.timer.log.length + ' runs' : '') : ''].filter(Boolean).join(' · ') + '</p>';
   return f;
 }
 export function saveTaskForm(){
@@ -399,6 +408,11 @@ export function sheetAct(act, t){
     closeSheets(); toast('Deleted'); return;
   }
   if(act === 'tk-drop'){ dropTask(m.date, m.id, $('#tk-note') ? $('#tk-note').value.trim() : ''); closeSheets(); toast('Dropped. It stays in the record.'); return; }
+  if(act === 'tk-move'){
+    var to = t.getAttribute('data-to') || ($('#tk-move-date') ? $('#tk-move-date').value : ''); if(!/^\d{4}-\d{2}-\d{2}$/.test(to)) return;
+    if(to < todayKey()){ var mg = $('#tk-msg'); mg.className = 'lf-msg full err'; mg.textContent = 'Pick today or later.'; return; }
+    var mv = moveTask(m.date, m.id, to); closeSheets(); if(mv) toast('Moved to ' + fmtWd(to) + ' \u00b7 pushed ' + mv.rolled + (mv.rolled === 1 ? ' time' : ' times')); return;
+  }
   if(act === 'tk-undrop'){ undropTask(m.date, m.id); closeSheets(); toast('Back on the list'); return; }
   if(act === 'tk-tpl-pause' || act === 'tk-tpl-resume'){ var tp = (state.settings.taskTemplates || []).filter(function(x){ return x.id === m.id; })[0]; if(tp){ var c = clone(tp); c.paused = act === 'tk-tpl-pause'; saveTemplate(c); } closeSheets(); return; }
 }

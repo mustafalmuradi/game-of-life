@@ -82,6 +82,8 @@
 .tk-qgrid>.q1,.tk-qgrid>button.q1.on{border-color:var(--z-red)} .tk-qgrid>.q2,.tk-qgrid>button.q2.on{border-color:var(--z-green)} .tk-qgrid>.q3,.tk-qgrid>button.q3.on{border-color:var(--gold)} .tk-qgrid>.q4{border-color:var(--line)}
 .tk-qgrid>button{border-width:2px;border-color:var(--line)} .tk-qgrid>button.on{background:var(--accent-soft)}
 .tk-qgrid>button.q4.on{border-color:var(--muted)}
+.tk-move-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tk-move-row input[type=date]{flex:1;min-width:140px;border:2px solid var(--line);background:var(--surface-2);border-radius:12px;padding:8px 10px;font-size:14px;color:var(--ink)}
 .tk-days{display:flex;gap:4px}
 .tk-days button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);font-weight:800;font-size:12px;color:var(--muted)}
 .tk-days button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
