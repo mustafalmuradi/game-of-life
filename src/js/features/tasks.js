@@ -22,6 +22,13 @@ export function blockNow(){ var h = new Date().getHours(); return h < 12 ? 'am' 
 export function taskDoc(d){ return state.tasks[d] || {date:d, schema:1, items:[]}; }
 export function isOpen(it){ return !it.doneAt && !it.droppedAt && !it.rolledTo; }
 export function taskMins(it){ return it.actual || it.est || 0; }
+/* stop a running timer: close its log entry and add the run to the total */
+export function stopTimer(it){
+  if(!(it.timer && it.timer.on)) return false;
+  var now = Date.now(); it.timer.ms += now - it.timer.on; it.timer.log = it.timer.log || [];
+  var last = it.timer.log[it.timer.log.length - 1]; if(last && !last.e) last.e = now; else it.timer.log.push({s:it.timer.on, e:now});
+  it.timer.on = null; return true;
+}
 export function timerMs(it){ return (it.timer ? it.timer.ms : 0) + (it.timer && it.timer.on ? Date.now() - it.timer.on : 0); }
 export function fmtMin(n){ n = Math.round(n || 0); return n >= 60 ? Math.floor(n/60) + 'h' + (n % 60 ? ' ' + (n % 60) + 'm' : '') : n + 'm'; }
 export function linkLabel(l){
@@ -67,7 +74,7 @@ export function updateTask(d, id, f){
 export function setDone(d, id, actual){
   return mutateTasks(d, function(doc){
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
-    if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+    stopTimer(it);
     it.doneAt = Date.now(); it.droppedAt = null; it.dropWhy = null;
     if(Number.isFinite(actual) && actual > 0) it.actual = Math.round(actual);
     else if(!it.actual && it.timer && it.timer.ms >= 60000) it.actual = Math.round(it.timer.ms/60000);
@@ -78,7 +85,7 @@ export function undoDone(d, id){ return mutateTasks(d, function(doc){ var it = d
 export function dropTask(d, id, why){
   return mutateTasks(d, function(doc){
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
-    if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+    stopTimer(it);
     it.droppedAt = Date.now(); it.dropWhy = why ? String(why).slice(0, 120) : null; it.doneAt = null; return it;
   });
 }
@@ -88,11 +95,11 @@ export function timerToggle(d, id){
   var started = false;
   mutateTasks(d, function(doc){
     var now = Date.now();
-    doc.items.forEach(function(x){ if(x.id !== id && x.timer && x.timer.on){ x.timer.ms += now - x.timer.on; x.timer.on = null; } });
+    doc.items.forEach(function(x){ if(x.id !== id) stopTimer(x); });
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return;
-    it.timer = it.timer || {on:null, ms:0};
-    if(it.timer.on){ it.timer.ms += now - it.timer.on; it.timer.on = null; }
-    else { it.timer.on = now; if(!it.startedAt) it.startedAt = now; started = true; }
+    it.timer = it.timer || {on:null, ms:0, log:[]}; it.timer.log = it.timer.log || [];
+    if(it.timer.on) stopTimer(it);
+    else { it.timer.on = now; it.timer.log.push({s:now, e:null}); if(!it.startedAt) it.startedAt = now; started = true; }
   });
   return started;
 }
@@ -117,9 +124,9 @@ export function rollInto(d, fromDays){
     mutateTasks(k, function(od){
       od.items.forEach(function(it){
         if(!isOpen(it) || it.tpl) return;
-        if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+        stopTimer(it);
         it.rolledTo = d;
-        var c = clone(it); c.id = 't' + uid(); c.rolled = (it.rolled || 0) + 1; c.src = 'rollover'; c.rolledTo = null; c.createdAt = Date.now(); c.doneAt = null; c.timer = {on:null, ms:0}; c.actual = null;
+        var c = clone(it); c.id = 't' + uid(); c.rolled = (it.rolled || 0) + 1; c.src = 'rollover'; c.rolledTo = null; c.createdAt = Date.now(); c.doneAt = null; c.timer = {on:null, ms:0, log:[]}; c.actual = null;
         copies.push(c);
       });
     }, {silent:true});
@@ -274,10 +281,10 @@ function sortPrompt(it){
   var habits = state.settings.habits.map(function(h){ return h.id + ' = ' + h.name; });
   var now = new Date();
   return [
-    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli), BOSS (its software arm, building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
+    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli, with BOSS as its software arm building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
     'Task: "' + it.title.replace(/"/g, '\\"') + '"',
     'Now: ' + now.toLocaleDateString('en-US', {weekday:'long'}) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '.',
-    'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli: staff, inventory, suppliers, SNAP, Adnan/Canarsie partnership), BOSS (DMS software), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',
+    'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli and its software arm BOSS/DMS: staff, inventory, suppliers, SNAP, the Adnan/Canarsie partnership, the Deli Management System, franchise work), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',
     'q: Covey quadrant. 1 = urgent AND important (deadline today, money at risk, someone waiting, something broken). 2 = important, not urgent (builds the business, body, deen or relationships; the default). 3 = urgent, not important (interruptions, small favors, admin with a clock). 4 = neither.',
     'block: am = needs a sharp brain (building, writing, calls, planning, selling), pm = physical or out of the house (gym, errands, store visits, lake reading, driving), eve = quiet or family time (messages, light admin, reading, prep for tomorrow). Prefer am for anything mental.',
     'est: honest minutes for a focused person, integer, or null if unknowable.',
@@ -359,7 +366,7 @@ function formFields(it, tpl){
       '<label class="lf-field" for="tk-actual"><span>Actual (min)</span><input id="tk-actual" type="number" inputmode="numeric" min="1" max="720" value="' + (it.actual || '') + '"></label>') +
     '<label class="lf-field full" for="tk-link"><span>For</span><select id="tk-link">' + linkOptions(it.link) + '</select></label>' +
     (!tpl ? '<label class="lf-field full" for="tk-note"><span>Outcome / note</span><input id="tk-note" maxlength="300" value="' + esc(it.note || '') + '" placeholder="What happened, what’s next"></label>' : '');
-  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) : ''].filter(Boolean).join(' · ') + '</p>';
+  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) + (it.timer.log && it.timer.log.length > 1 ? ' over ' + it.timer.log.length + ' runs' : '') : ''].filter(Boolean).join(' · ') + '</p>';
   return f;
 }
 export function saveTaskForm(){

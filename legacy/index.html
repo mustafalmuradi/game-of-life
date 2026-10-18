@@ -1172,7 +1172,8 @@ var DEFAULT_SETTINGS = {
 var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', planBy:'07:30', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
 
 /* ---------- daily tasks ---------- */
-var TASK_LANES = ['Body', 'Islam', 'Family', 'Home', 'Money', 'Ock Spot', 'BOSS', 'Upsurge', 'Build'];
+var TASK_LANES = ['Body', 'Islam', 'Family', 'Home', 'Money', 'Ock Spot', 'Upsurge', 'Build'];
+var TASK_LANE_ALIASES = {BOSS:'Ock Spot', DMS:'Ock Spot'}; // merged lanes: old names map to the lane that absorbed them
 var TASK_Q = [{k:1, n:'Q1', t:'Urgent + important'}, {k:2, n:'Q2', t:'Important, not urgent'}, {k:3, n:'Q3', t:'Urgent, not important'}, {k:4, n:'Q4', t:'Neither'}];
 var TASK_BLOCKS = [{k:'am', n:'Deep work', t:'Morning'}, {k:'pm', n:'Physical', t:'Afternoon'}, {k:'eve', n:'Evening', t:'Evening'}];
 var TASK_ROLL_DAYS = 30; // how far back open items are pulled forward from
@@ -1273,15 +1274,18 @@ function normalizeDay(d, k){
 /* ---------- daily tasks: one doc per day, tracker/tasks/YYYY-MM-DD ---------- */
 function normalizeTask(x){
   if(!x || !x.id || !x.title) return null;
-  var o = {id:String(x.id), title:String(x.title).slice(0, 120), lane:String(x.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(x.q)) >= 0 ? Number(x.q) : 2,
+  var o = {id:String(x.id), title:String(x.title).slice(0, 120), lane:laneOf(x.lane), q:[1,2,3,4].indexOf(Number(x.q)) >= 0 ? Number(x.q) : 2,
     block:['am','pm','eve'].indexOf(x.block) >= 0 ? x.block : 'am', est:Number.isFinite(Number(x.est)) && Number(x.est) > 0 ? Math.round(Number(x.est)) : null,
     actual:Number.isFinite(Number(x.actual)) && Number(x.actual) > 0 ? Math.round(Number(x.actual)) : null,
     link:x.link && x.link.t && x.link.t !== 'none' ? {t:String(x.link.t), id:String(x.link.id || ''), label:String(x.link.label || '').slice(0, 80)} : null,
     note:String(x.note || '').slice(0, 300), src:String(x.src || 'page'), tpl:x.tpl ? String(x.tpl) : null, origin:String(x.origin || ''), rolled:Math.max(0, parseInt(x.rolled, 10) || 0),
     createdAt:Number(x.createdAt) || 0, doneAt:Number(x.doneAt) || null, droppedAt:Number(x.droppedAt) || null, dropWhy:x.dropWhy ? String(x.dropWhy).slice(0, 120) : null,
-    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, sortedBy:x.sortedBy ? String(x.sortedBy) : null, timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0)}};
+    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, sortedBy:x.sortedBy ? String(x.sortedBy) : null,
+    timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0), log:Array.isArray(x.timer && x.timer.log) ? x.timer.log.filter(function(r){ return r && Number(r.s) > 0; }).map(function(r){ return {s:Number(r.s), e:Number(r.e) || null}; }) : []}};
   return o;
 }
+/* lanes that were merged keep resolving to the lane that absorbed them */
+function laneOf(v){ var s = String(v || 'Home').slice(0, 30); return TASK_LANE_ALIASES[s] || s; }
 function normalizeTaskDoc(d, k){
   var out = {date:k, schema:1, items:[]};
   if(d && d.plannedAt) out.plannedAt = Number(d.plannedAt) || null;
@@ -1291,7 +1295,7 @@ function normalizeTaskDoc(d, k){
 }
 function normalizeTemplate(t){
   if(!t || !t.id || !t.title) return null;
-  return {id:String(t.id), title:String(t.title).slice(0, 120), lane:String(t.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(t.q)) >= 0 ? Number(t.q) : 2,
+  return {id:String(t.id), title:String(t.title).slice(0, 120), lane:laneOf(t.lane), q:[1,2,3,4].indexOf(Number(t.q)) >= 0 ? Number(t.q) : 2,
     block:['am','pm','eve'].indexOf(t.block) >= 0 ? t.block : 'am', est:Number.isFinite(Number(t.est)) && Number(t.est) > 0 ? Math.round(Number(t.est)) : null,
     days:Array.isArray(t.days) ? t.days.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : [1,2,3,4,5], link:t.link && t.link.t && t.link.t !== 'none' ? {t:String(t.link.t), id:String(t.link.id || ''), label:String(t.link.label || '').slice(0, 80)} : null,
     since:t.since || '2000-01-01', paused:!!t.paused, createdAt:Number(t.createdAt) || 0};
@@ -3481,6 +3485,13 @@ function blockNow(){ var h = new Date().getHours(); return h < 12 ? 'am' : h < 1
 function taskDoc(d){ return state.tasks[d] || {date:d, schema:1, items:[]}; }
 function isOpen(it){ return !it.doneAt && !it.droppedAt && !it.rolledTo; }
 function taskMins(it){ return it.actual || it.est || 0; }
+/* stop a running timer: close its log entry and add the run to the total */
+function stopTimer(it){
+  if(!(it.timer && it.timer.on)) return false;
+  var now = Date.now(); it.timer.ms += now - it.timer.on; it.timer.log = it.timer.log || [];
+  var last = it.timer.log[it.timer.log.length - 1]; if(last && !last.e) last.e = now; else it.timer.log.push({s:it.timer.on, e:now});
+  it.timer.on = null; return true;
+}
 function timerMs(it){ return (it.timer ? it.timer.ms : 0) + (it.timer && it.timer.on ? Date.now() - it.timer.on : 0); }
 function fmtMin(n){ n = Math.round(n || 0); return n >= 60 ? Math.floor(n/60) + 'h' + (n % 60 ? ' ' + (n % 60) + 'm' : '') : n + 'm'; }
 function linkLabel(l){
@@ -3526,7 +3537,7 @@ function updateTask(d, id, f){
 function setDone(d, id, actual){
   return mutateTasks(d, function(doc){
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
-    if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+    stopTimer(it);
     it.doneAt = Date.now(); it.droppedAt = null; it.dropWhy = null;
     if(Number.isFinite(actual) && actual > 0) it.actual = Math.round(actual);
     else if(!it.actual && it.timer && it.timer.ms >= 60000) it.actual = Math.round(it.timer.ms/60000);
@@ -3537,7 +3548,7 @@ function undoDone(d, id){ return mutateTasks(d, function(doc){ var it = doc.item
 function dropTask(d, id, why){
   return mutateTasks(d, function(doc){
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
-    if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+    stopTimer(it);
     it.droppedAt = Date.now(); it.dropWhy = why ? String(why).slice(0, 120) : null; it.doneAt = null; return it;
   });
 }
@@ -3547,11 +3558,11 @@ function timerToggle(d, id){
   var started = false;
   mutateTasks(d, function(doc){
     var now = Date.now();
-    doc.items.forEach(function(x){ if(x.id !== id && x.timer && x.timer.on){ x.timer.ms += now - x.timer.on; x.timer.on = null; } });
+    doc.items.forEach(function(x){ if(x.id !== id) stopTimer(x); });
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return;
-    it.timer = it.timer || {on:null, ms:0};
-    if(it.timer.on){ it.timer.ms += now - it.timer.on; it.timer.on = null; }
-    else { it.timer.on = now; if(!it.startedAt) it.startedAt = now; started = true; }
+    it.timer = it.timer || {on:null, ms:0, log:[]}; it.timer.log = it.timer.log || [];
+    if(it.timer.on) stopTimer(it);
+    else { it.timer.on = now; it.timer.log.push({s:now, e:null}); if(!it.startedAt) it.startedAt = now; started = true; }
   });
   return started;
 }
@@ -3576,9 +3587,9 @@ function rollInto(d, fromDays){
     mutateTasks(k, function(od){
       od.items.forEach(function(it){
         if(!isOpen(it) || it.tpl) return;
-        if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+        stopTimer(it);
         it.rolledTo = d;
-        var c = clone(it); c.id = 't' + uid(); c.rolled = (it.rolled || 0) + 1; c.src = 'rollover'; c.rolledTo = null; c.createdAt = Date.now(); c.doneAt = null; c.timer = {on:null, ms:0}; c.actual = null;
+        var c = clone(it); c.id = 't' + uid(); c.rolled = (it.rolled || 0) + 1; c.src = 'rollover'; c.rolledTo = null; c.createdAt = Date.now(); c.doneAt = null; c.timer = {on:null, ms:0, log:[]}; c.actual = null;
         copies.push(c);
       });
     }, {silent:true});
@@ -3733,10 +3744,10 @@ function sortPrompt(it){
   var habits = state.settings.habits.map(function(h){ return h.id + ' = ' + h.name; });
   var now = new Date();
   return [
-    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli), BOSS (its software arm, building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
+    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli, with BOSS as its software arm building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
     'Task: "' + it.title.replace(/"/g, '\\"') + '"',
     'Now: ' + now.toLocaleDateString('en-US', {weekday:'long'}) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '.',
-    'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli: staff, inventory, suppliers, SNAP, Adnan/Canarsie partnership), BOSS (DMS software), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',
+    'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli and its software arm BOSS/DMS: staff, inventory, suppliers, SNAP, the Adnan/Canarsie partnership, the Deli Management System, franchise work), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',
     'q: Covey quadrant. 1 = urgent AND important (deadline today, money at risk, someone waiting, something broken). 2 = important, not urgent (builds the business, body, deen or relationships; the default). 3 = urgent, not important (interruptions, small favors, admin with a clock). 4 = neither.',
     'block: am = needs a sharp brain (building, writing, calls, planning, selling), pm = physical or out of the house (gym, errands, store visits, lake reading, driving), eve = quiet or family time (messages, light admin, reading, prep for tomorrow). Prefer am for anything mental.',
     'est: honest minutes for a focused person, integer, or null if unknowable.',
@@ -3818,7 +3829,7 @@ function formFields(it, tpl){
       '<label class="lf-field" for="tk-actual"><span>Actual (min)</span><input id="tk-actual" type="number" inputmode="numeric" min="1" max="720" value="' + (it.actual || '') + '"></label>') +
     '<label class="lf-field full" for="tk-link"><span>For</span><select id="tk-link">' + linkOptions(it.link) + '</select></label>' +
     (!tpl ? '<label class="lf-field full" for="tk-note"><span>Outcome / note</span><input id="tk-note" maxlength="300" value="' + esc(it.note || '') + '" placeholder="What happened, what’s next"></label>' : '');
-  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) : ''].filter(Boolean).join(' · ') + '</p>';
+  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) + (it.timer.log && it.timer.log.length > 1 ? ' over ' + it.timer.log.length + ' runs' : '') : ''].filter(Boolean).join(' · ') + '</p>';
   return f;
 }
 function saveTaskForm(){
@@ -4687,7 +4698,7 @@ var EXPORT_README = [
   'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
   'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
   'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
-  'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, how many times it was pushed, timestamps in UTC.',
+  'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, timer total, every timer run as start>end (UTC), how many times it was pushed, timestamps in UTC.',
   'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
   'photos/        Every photo sent to Coach, named by date.',
   '',
@@ -4725,8 +4736,8 @@ async function buildExport(withPhotos, onStep){
   files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
-  var trows = []; Object.keys(state.tasks).sort().forEach(function(k){ var td = state.tasks[k]; td.items.forEach(function(it){ trows.push([k, it.title, it.lane, 'Q' + it.q, it.block, it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed' : 'open', it.est || '', it.actual || '', it.timer && it.timer.ms ? Math.round(it.timer.ms/60000) : '', it.rolled || 0, it.origin || k, it.src, linkLabel(it.link), it.note || '', iso(it.createdAt), iso(td.plannedAt), iso(it.startedAt), iso(it.doneAt), iso(it.droppedAt), it.dropWhy || '', it.rolledTo || '', iso(td.closedAt), it.id]); }); });
-  files.push({name:'tasks.csv', data:toCSV(['date', 'task', 'lane', 'quadrant', 'block', 'status', 'est_min', 'actual_min', 'timer_min', 'times_pushed', 'first_planned_on', 'source', 'for', 'note', 'created', 'day_plan_locked', 'started', 'done', 'dropped', 'drop_reason', 'pushed_to', 'day_closed', 'id'], trows)});
+  var trows = []; Object.keys(state.tasks).sort().forEach(function(k){ var td = state.tasks[k]; td.items.forEach(function(it){ trows.push([k, it.title, it.lane, 'Q' + it.q, it.block, it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed' : 'open', it.est || '', it.actual || '', it.timer && it.timer.ms ? Math.round(it.timer.ms/60000) : '', (it.timer && it.timer.log || []).length, (it.timer && it.timer.log || []).map(function(r){ return iso(r.s) + '>' + iso(r.e); }).join(' '), it.rolled || 0, it.origin || k, it.src, linkLabel(it.link), it.note || '', iso(it.createdAt), iso(td.plannedAt), iso(it.startedAt), iso(it.doneAt), iso(it.droppedAt), it.dropWhy || '', it.rolledTo || '', iso(td.closedAt), it.id]); }); });
+  files.push({name:'tasks.csv', data:toCSV(['date', 'task', 'lane', 'quadrant', 'block', 'status', 'est_min', 'actual_min', 'timer_min', 'timer_runs', 'timer_log', 'times_pushed', 'first_planned_on', 'source', 'for', 'note', 'created', 'day_plan_locked', 'started', 'done', 'dropped', 'drop_reason', 'pushed_to', 'day_closed', 'id'], trows)});
   files.push({name:'notes.csv', data:toCSV(['date', 'tags', 'text', 'id'], state.notes.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ return [x.date, (x.tags || []).join('; '), x.text, x.id]; }))});
   var crow = []; log.forEach(function(d){ (d.turns || []).forEach(function(t){ crow.push([new Date(t.at).toISOString(), t.role, t.text, (t.changes || []).join('; '), (t.photos || []).length || '']); }); });
   files.push({name:'coach-log.csv', data:toCSV(['time_utc', 'who', 'message', 'changes_made', 'photos'], crow)});
@@ -5088,7 +5099,7 @@ COACH_RULES += '\n\n' + [
 /* ----- daily tasks ----- */
 function taskBrief(d, it){
   var o = {id:it.id, title:it.title, lane:it.lane, q:it.q, block:it.block, status:it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed to ' + it.rolledTo : 'open'};
-  if(it.est) o.estMin = it.est; if(it.actual) o.actualMin = it.actual; if(it.timer && it.timer.on) o.timerRunning = true; else if(it.timer && it.timer.ms >= 60000) o.timerMin = Math.round(it.timer.ms/60000);
+  if(it.est) o.estMin = it.est; if(it.actual) o.actualMin = it.actual; if(it.timer && it.timer.on) o.timerRunning = true; else if(it.timer && it.timer.ms >= 60000) o.timerMin = Math.round(it.timer.ms/60000); if(it.timer && it.timer.log && it.timer.log.length) o.timerRuns = it.timer.log.length;
   if(it.link) o.for = linkLabel(it.link); if(it.note) o.note = it.note; if(it.rolled) o.timesPushed = it.rolled; if(it.src !== 'page') o.from = it.src; if(it.doneAt) o.doneAt = timeOf(it.doneAt); if(it.dropWhy) o.dropWhy = it.dropWhy;
   return o;
 }
@@ -5103,7 +5114,7 @@ function tDate(v){
   if(s > addDays(todayKey(), 1)) throw new Error('Tasks can be planned for today or tomorrow only.');
   return s;
 }
-function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return hit || s; }
+function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return laneOf(hit || s); }
 function tLink(inp){
   if(inp.for_project){ var n = findNode(inp.for_project); if(!n) throw new Error('No map box called "' + inp.for_project + '". Use the exact name from build.nodes, or leave it off.'); return {t:'node', id:n.id, label:n.name}; }
   if(inp.for_habit){ var h = findHabit(inp.for_habit); if(!h) throw new Error('No habit called "' + inp.for_habit + '".'); return {t:'habit', id:h.id, label:h.name}; }
@@ -5119,7 +5130,7 @@ function tFind(d, ref){
   if(hits.length > 1) throw new Error('"' + s + '" matches ' + hits.length + ' open tasks: ' + hits.map(function(x){ return x.title + ' (' + x.id + ')'; }).join('; ') + '. Use the id.');
   throw new Error('No task "' + s + '" on ' + d + '. Use tasks list to see ids.');
 }
-var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One of: ' + TASK_LANES.join(', ') + '.'}, q:{type:'integer', description:'Quadrant 1-4: 1 urgent+important, 2 important not urgent (default), 3 urgent not important, 4 neither.'},
+var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One of: ' + TASK_LANES.join(', ') + '. BOSS / DMS work is Ock Spot.'}, q:{type:'integer', description:'Quadrant 1-4: 1 urgent+important, 2 important not urgent (default), 3 urgent not important, 4 neither.'},
   block:{type:'string', enum:['am', 'pm', 'eve'], description:'am = deep work morning, pm = physical afternoon, eve = evening.'}, est:{type:'integer', description:'Estimated minutes.'},
   for_project:{type:'string', description:'Map box name or id this task pushes forward.'}, for_habit:{type:'string', description:'Habit id or name it serves.'}, for_win:{type:'string', description:'This week’s win it advances, in a few words.'}, note:{type:'string', description:'Outcome or context, up to 300 chars.'}};
 COACH_TOOLS.push({name:'tasks', busy:'Tasks',

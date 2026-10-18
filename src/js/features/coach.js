@@ -1,7 +1,7 @@
 // Coach: rules, the tracker snapshot Claude sees, the tools it can call, the conversation, the chat UI.
 import { COLOR_SLOTS, DEFAULT_TARGETS, TASK_LANES } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
-import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
+import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, laneOf, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
 import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
 import { fmtW, liftKey, LSTATUS, mooseRank, mooseStage, norm, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
@@ -798,7 +798,7 @@ var EXPORT_README = [
   'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
   'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
   'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
-  'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, how many times it was pushed, timestamps in UTC.',
+  'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, timer total, every timer run as start>end (UTC), how many times it was pushed, timestamps in UTC.',
   'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
   'photos/        Every photo sent to Coach, named by date.',
   '',
@@ -836,8 +836,8 @@ async function buildExport(withPhotos, onStep){
   files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
-  var trows = []; Object.keys(state.tasks).sort().forEach(function(k){ var td = state.tasks[k]; td.items.forEach(function(it){ trows.push([k, it.title, it.lane, 'Q' + it.q, it.block, it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed' : 'open', it.est || '', it.actual || '', it.timer && it.timer.ms ? Math.round(it.timer.ms/60000) : '', it.rolled || 0, it.origin || k, it.src, linkLabel(it.link), it.note || '', iso(it.createdAt), iso(td.plannedAt), iso(it.startedAt), iso(it.doneAt), iso(it.droppedAt), it.dropWhy || '', it.rolledTo || '', iso(td.closedAt), it.id]); }); });
-  files.push({name:'tasks.csv', data:toCSV(['date', 'task', 'lane', 'quadrant', 'block', 'status', 'est_min', 'actual_min', 'timer_min', 'times_pushed', 'first_planned_on', 'source', 'for', 'note', 'created', 'day_plan_locked', 'started', 'done', 'dropped', 'drop_reason', 'pushed_to', 'day_closed', 'id'], trows)});
+  var trows = []; Object.keys(state.tasks).sort().forEach(function(k){ var td = state.tasks[k]; td.items.forEach(function(it){ trows.push([k, it.title, it.lane, 'Q' + it.q, it.block, it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed' : 'open', it.est || '', it.actual || '', it.timer && it.timer.ms ? Math.round(it.timer.ms/60000) : '', (it.timer && it.timer.log || []).length, (it.timer && it.timer.log || []).map(function(r){ return iso(r.s) + '>' + iso(r.e); }).join(' '), it.rolled || 0, it.origin || k, it.src, linkLabel(it.link), it.note || '', iso(it.createdAt), iso(td.plannedAt), iso(it.startedAt), iso(it.doneAt), iso(it.droppedAt), it.dropWhy || '', it.rolledTo || '', iso(td.closedAt), it.id]); }); });
+  files.push({name:'tasks.csv', data:toCSV(['date', 'task', 'lane', 'quadrant', 'block', 'status', 'est_min', 'actual_min', 'timer_min', 'timer_runs', 'timer_log', 'times_pushed', 'first_planned_on', 'source', 'for', 'note', 'created', 'day_plan_locked', 'started', 'done', 'dropped', 'drop_reason', 'pushed_to', 'day_closed', 'id'], trows)});
   files.push({name:'notes.csv', data:toCSV(['date', 'tags', 'text', 'id'], state.notes.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ return [x.date, (x.tags || []).join('; '), x.text, x.id]; }))});
   var crow = []; log.forEach(function(d){ (d.turns || []).forEach(function(t){ crow.push([new Date(t.at).toISOString(), t.role, t.text, (t.changes || []).join('; '), (t.photos || []).length || '']); }); });
   files.push({name:'coach-log.csv', data:toCSV(['time_utc', 'who', 'message', 'changes_made', 'photos'], crow)});
@@ -1200,7 +1200,7 @@ COACH_RULES += '\n\n' + [
 /* ----- daily tasks ----- */
 function taskBrief(d, it){
   var o = {id:it.id, title:it.title, lane:it.lane, q:it.q, block:it.block, status:it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed to ' + it.rolledTo : 'open'};
-  if(it.est) o.estMin = it.est; if(it.actual) o.actualMin = it.actual; if(it.timer && it.timer.on) o.timerRunning = true; else if(it.timer && it.timer.ms >= 60000) o.timerMin = Math.round(it.timer.ms/60000);
+  if(it.est) o.estMin = it.est; if(it.actual) o.actualMin = it.actual; if(it.timer && it.timer.on) o.timerRunning = true; else if(it.timer && it.timer.ms >= 60000) o.timerMin = Math.round(it.timer.ms/60000); if(it.timer && it.timer.log && it.timer.log.length) o.timerRuns = it.timer.log.length;
   if(it.link) o.for = linkLabel(it.link); if(it.note) o.note = it.note; if(it.rolled) o.timesPushed = it.rolled; if(it.src !== 'page') o.from = it.src; if(it.doneAt) o.doneAt = timeOf(it.doneAt); if(it.dropWhy) o.dropWhy = it.dropWhy;
   return o;
 }
@@ -1215,7 +1215,7 @@ function tDate(v){
   if(s > addDays(todayKey(), 1)) throw new Error('Tasks can be planned for today or tomorrow only.');
   return s;
 }
-function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return hit || s; }
+function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return laneOf(hit || s); }
 function tLink(inp){
   if(inp.for_project){ var n = findNode(inp.for_project); if(!n) throw new Error('No map box called "' + inp.for_project + '". Use the exact name from build.nodes, or leave it off.'); return {t:'node', id:n.id, label:n.name}; }
   if(inp.for_habit){ var h = findHabit(inp.for_habit); if(!h) throw new Error('No habit called "' + inp.for_habit + '".'); return {t:'habit', id:h.id, label:h.name}; }
@@ -1231,7 +1231,7 @@ function tFind(d, ref){
   if(hits.length > 1) throw new Error('"' + s + '" matches ' + hits.length + ' open tasks: ' + hits.map(function(x){ return x.title + ' (' + x.id + ')'; }).join('; ') + '. Use the id.');
   throw new Error('No task "' + s + '" on ' + d + '. Use tasks list to see ids.');
 }
-var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One of: ' + TASK_LANES.join(', ') + '.'}, q:{type:'integer', description:'Quadrant 1-4: 1 urgent+important, 2 important not urgent (default), 3 urgent not important, 4 neither.'},
+var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One of: ' + TASK_LANES.join(', ') + '. BOSS / DMS work is Ock Spot.'}, q:{type:'integer', description:'Quadrant 1-4: 1 urgent+important, 2 important not urgent (default), 3 urgent not important, 4 neither.'},
   block:{type:'string', enum:['am', 'pm', 'eve'], description:'am = deep work morning, pm = physical afternoon, eve = evening.'}, est:{type:'integer', description:'Estimated minutes.'},
   for_project:{type:'string', description:'Map box name or id this task pushes forward.'}, for_habit:{type:'string', description:'Habit id or name it serves.'}, for_win:{type:'string', description:'This week’s win it advances, in a few words.'}, note:{type:'string', description:'Outcome or context, up to 300 chars.'}};
 COACH_TOOLS.push({name:'tasks', busy:'Tasks',

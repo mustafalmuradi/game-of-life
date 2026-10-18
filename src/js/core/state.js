@@ -1,5 +1,5 @@
 // The one state object, the normalizers that keep stored data well-formed, and the habit activity rules.
-import { BASE_XP, COLOR_SLOTS, DEFAULT_SETTINGS, DEFAULT_TARGETS, EXTRA_CAP } from './config.js';
+import { BASE_XP, COLOR_SLOTS, DEFAULT_SETTINGS, DEFAULT_TARGETS, EXTRA_CAP, TASK_LANE_ALIASES } from './config.js';
 import { addDays, clone, fmt, mondayOf, todayKey, uid } from './utils.js';
 import { beltOf } from './xp.js';
 
@@ -64,15 +64,18 @@ export function normalizeDay(d, k){
 /* ---------- daily tasks: one doc per day, tracker/tasks/YYYY-MM-DD ---------- */
 export function normalizeTask(x){
   if(!x || !x.id || !x.title) return null;
-  var o = {id:String(x.id), title:String(x.title).slice(0, 120), lane:String(x.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(x.q)) >= 0 ? Number(x.q) : 2,
+  var o = {id:String(x.id), title:String(x.title).slice(0, 120), lane:laneOf(x.lane), q:[1,2,3,4].indexOf(Number(x.q)) >= 0 ? Number(x.q) : 2,
     block:['am','pm','eve'].indexOf(x.block) >= 0 ? x.block : 'am', est:Number.isFinite(Number(x.est)) && Number(x.est) > 0 ? Math.round(Number(x.est)) : null,
     actual:Number.isFinite(Number(x.actual)) && Number(x.actual) > 0 ? Math.round(Number(x.actual)) : null,
     link:x.link && x.link.t && x.link.t !== 'none' ? {t:String(x.link.t), id:String(x.link.id || ''), label:String(x.link.label || '').slice(0, 80)} : null,
     note:String(x.note || '').slice(0, 300), src:String(x.src || 'page'), tpl:x.tpl ? String(x.tpl) : null, origin:String(x.origin || ''), rolled:Math.max(0, parseInt(x.rolled, 10) || 0),
     createdAt:Number(x.createdAt) || 0, doneAt:Number(x.doneAt) || null, droppedAt:Number(x.droppedAt) || null, dropWhy:x.dropWhy ? String(x.dropWhy).slice(0, 120) : null,
-    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, sortedBy:x.sortedBy ? String(x.sortedBy) : null, timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0)}};
+    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, sortedBy:x.sortedBy ? String(x.sortedBy) : null,
+    timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0), log:Array.isArray(x.timer && x.timer.log) ? x.timer.log.filter(function(r){ return r && Number(r.s) > 0; }).map(function(r){ return {s:Number(r.s), e:Number(r.e) || null}; }) : []}};
   return o;
 }
+/* lanes that were merged keep resolving to the lane that absorbed them */
+export function laneOf(v){ var s = String(v || 'Home').slice(0, 30); return TASK_LANE_ALIASES[s] || s; }
 export function normalizeTaskDoc(d, k){
   var out = {date:k, schema:1, items:[]};
   if(d && d.plannedAt) out.plannedAt = Number(d.plannedAt) || null;
@@ -82,7 +85,7 @@ export function normalizeTaskDoc(d, k){
 }
 export function normalizeTemplate(t){
   if(!t || !t.id || !t.title) return null;
-  return {id:String(t.id), title:String(t.title).slice(0, 120), lane:String(t.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(t.q)) >= 0 ? Number(t.q) : 2,
+  return {id:String(t.id), title:String(t.title).slice(0, 120), lane:laneOf(t.lane), q:[1,2,3,4].indexOf(Number(t.q)) >= 0 ? Number(t.q) : 2,
     block:['am','pm','eve'].indexOf(t.block) >= 0 ? t.block : 'am', est:Number.isFinite(Number(t.est)) && Number(t.est) > 0 ? Math.round(Number(t.est)) : null,
     days:Array.isArray(t.days) ? t.days.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : [1,2,3,4,5], link:t.link && t.link.t && t.link.t !== 'none' ? {t:String(t.link.t), id:String(t.link.id || ''), label:String(t.link.label || '').slice(0, 80)} : null,
     since:t.since || '2000-01-01', paused:!!t.paused, createdAt:Number(t.createdAt) || 0};

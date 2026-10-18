@@ -29,7 +29,8 @@ export var DEFAULT_SETTINGS = {
 export var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', planBy:'07:30', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
 
 /* ---------- daily tasks ---------- */
-export var TASK_LANES = ['Body', 'Islam', 'Family', 'Home', 'Money', 'Ock Spot', 'BOSS', 'Upsurge', 'Build'];
+export var TASK_LANES = ['Body', 'Islam', 'Family', 'Home', 'Money', 'Ock Spot', 'Upsurge', 'Build'];
+export var TASK_LANE_ALIASES = {BOSS:'Ock Spot', DMS:'Ock Spot'}; // merged lanes: old names map to the lane that absorbed them
 export var TASK_Q = [{k:1, n:'Q1', t:'Urgent + important'}, {k:2, n:'Q2', t:'Important, not urgent'}, {k:3, n:'Q3', t:'Urgent, not important'}, {k:4, n:'Q4', t:'Neither'}];
 export var TASK_BLOCKS = [{k:'am', n:'Deep work', t:'Morning'}, {k:'pm', n:'Physical', t:'Afternoon'}, {k:'eve', n:'Evening', t:'Evening'}];
 export var TASK_ROLL_DAYS = 30; // how far back open items are pulled forward from
