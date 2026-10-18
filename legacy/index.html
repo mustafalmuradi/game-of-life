@@ -888,6 +888,11 @@ details.prog-card>p{padding-bottom:16px;margin-top:10px}
 .tk-timer.on{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent} .tk-timer.on i{border-radius:2px;background:var(--accent-ink);animation:tkpulse 1.2s ease-in-out infinite}
 @keyframes tkpulse{0%,100%{opacity:1}50%{opacity:.35}}
 .tk.is-timing{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.tk-fin{border-top:2px solid var(--line);background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
+.tk-fin-h{display:flex;justify-content:space-between;align-items:baseline;padding:10px 16px 4px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tk-fin-h em{font-style:normal;letter-spacing:0;text-transform:none;font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tk-fin-empty{padding:4px 16px 12px;font-size:12.5px;color:var(--muted)}
+.tk-fin .tk-list .tk:first-child{border-top:0}
 .tk-done-wrap{border-top:1px solid var(--line)}
 .tk-done-wrap>summary{list-style:none;cursor:pointer;padding:9px 16px;font-size:12.5px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
 .tk-done-wrap>summary::-webkit-details-marker{display:none}
@@ -3697,7 +3702,8 @@ function tasksCardHTML(d){
   }
   if(!items.length) h += '<p class="nudge">' + (d === today ? 'Nothing planned yet. Add what today is for, then lock the plan before deep work (' + esc(tg.planBy || '07:30') + ').' : d > today ? 'Nothing planned for ' + esc(fmtWd(d)) + ' yet. Add it here and it will be waiting.' : 'No tasks on this day.') + '</p>';
   if(open.length) h += '<ul class="tk-list">' + open.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>';
-  if(done.length) h += '<details class="tk-done-wrap"' + (open.length ? '' : ' open') + '><summary>Done · ' + done.length + (doc.items.some(function(x){ return x.doneAt && taskMins(x); }) ? ' · ' + fmtMin(done.reduce(function(a, x){ return a + taskMins(x); }, 0)) : '') + '</summary><ul class="tk-list">' + done.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
+  if(items.length) h += '<div class="tk-fin"><p class="tk-fin-h"><span>Finished' + (d === today ? ' today' : '') + ' \u00b7 ' + done.length + (open.length + done.length ? ' of ' + (open.length + done.length) : '') + '</span>' + (done.some(function(x){ return taskMins(x); }) ? '<em>' + fmtMin(done.reduce(function(a, x){ return a + taskMins(x); }, 0)) + '</em>' : '') + '</p>' +
+    (done.length ? '<ul class="tk-list">' + done.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>' : '<p class="tk-fin-empty">' + (d <= today ? 'Nothing checked off yet. Done tasks land here.' : 'Done tasks will land here on the day.') + '</p>') + '</div>';
   if(gone.length) h += '<details class="tk-done-wrap"><summary>Pushed or dropped · ' + gone.length + '</summary><ul class="tk-list">' + gone.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
   return h;
 }

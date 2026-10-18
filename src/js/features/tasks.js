@@ -234,7 +234,8 @@ export function tasksCardHTML(d){
   }
   if(!items.length) h += '<p class="nudge">' + (d === today ? 'Nothing planned yet. Add what today is for, then lock the plan before deep work (' + esc(tg.planBy || '07:30') + ').' : d > today ? 'Nothing planned for ' + esc(fmtWd(d)) + ' yet. Add it here and it will be waiting.' : 'No tasks on this day.') + '</p>';
   if(open.length) h += '<ul class="tk-list">' + open.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>';
-  if(done.length) h += '<details class="tk-done-wrap"' + (open.length ? '' : ' open') + '><summary>Done · ' + done.length + (doc.items.some(function(x){ return x.doneAt && taskMins(x); }) ? ' · ' + fmtMin(done.reduce(function(a, x){ return a + taskMins(x); }, 0)) : '') + '</summary><ul class="tk-list">' + done.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
+  if(items.length) h += '<div class="tk-fin"><p class="tk-fin-h"><span>Finished' + (d === today ? ' today' : '') + ' \u00b7 ' + done.length + (open.length + done.length ? ' of ' + (open.length + done.length) : '') + '</span>' + (done.some(function(x){ return taskMins(x); }) ? '<em>' + fmtMin(done.reduce(function(a, x){ return a + taskMins(x); }, 0)) + '</em>' : '') + '</p>' +
+    (done.length ? '<ul class="tk-list">' + done.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>' : '<p class="tk-fin-empty">' + (d <= today ? 'Nothing checked off yet. Done tasks land here.' : 'Done tasks will land here on the day.') + '</p>') + '</div>';
   if(gone.length) h += '<details class="tk-done-wrap"><summary>Pushed or dropped · ' + gone.length + '</summary><ul class="tk-list">' + gone.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
   return h;
 }
