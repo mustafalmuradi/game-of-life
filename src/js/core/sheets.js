@@ -11,7 +11,7 @@ import { habitRankRow } from './render.js';
 export var extraFor = null, lastFocus = null;
 export function openSheet(id){ lastFocus = document.activeElement; var el = $(id); el.hidden = false; var f = el.querySelector('button, input'); if(f) setTimeout(function(){ f.focus(); }, 30); }
 export function closeSheets(){
-  ['#extra-sheet','#settings-sheet','#rank-sheet','#lift-sheet','#checkin-sheet','#build-sheet','#chat-sheet'].forEach(function(s){ $(s).hidden = true; });
+  ['#extra-sheet','#settings-sheet','#rank-sheet','#lift-sheet','#checkin-sheet','#build-sheet','#task-sheet','#chat-sheet'].forEach(function(s){ $(s).hidden = true; });
   if(lastFocus && document.contains(lastFocus)) try { lastFocus.focus(); } catch(e){}
 }
 function heldHTML(rk){

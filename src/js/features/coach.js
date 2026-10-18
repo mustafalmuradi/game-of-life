@@ -1,11 +1,11 @@
 // Coach: rules, the tracker snapshot Claude sees, the tools it can call, the conversation, the chat UI.
-import { COLOR_SLOTS, DEFAULT_TARGETS } from '../core/config.js';
-import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, todayKey, uid } from '../core/utils.js';
+import { COLOR_SLOTS, DEFAULT_TARGETS, TASK_LANES } from '../core/config.js';
+import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
 import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
 import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
 import { fmtW, liftKey, LSTATUS, mooseRank, mooseStage, norm, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
-import { cleanLift, flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, sync } from '../core/store.js';
+import { cleanLift, flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, scheduleSaveTasks, sync } from '../core/store.js';
 import { lateOpen, mutateDay } from './today.js';
 import { burst, toast } from '../core/effects.js';
 import { render } from '../core/render.js';
@@ -13,6 +13,7 @@ import { celebrateLift, sessOpen } from './lifts.js';
 import { CI_NUMS, CI_TIMES, commitMetrics, daysBetween, metricsOf, patternData, readiness, SESS, TAGS, watchList, weekReview, weekTally, weightTrend } from './body.js';
 import { BCOLS, bKind, BKINDS, bNode, bRank, bRemove, bSel, BSTATUS, bStatus, buildStats, bWrite, BXP, setSelected, shortName } from './build.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
+import { addTask, closeDay, dropTask, findTask, fmtMin, isOpen, linkLabel, lockPlan, removeTemplate, saveTemplate, setDone, taskDoc, taskStats, timerToggle, undoDone, undropTask, updateTask } from './tasks.js';
 
 /* ---------- coach: chat with Claude, which reads and writes this tracker ---------- */
 /* Claude runs through the sample capability; every change goes through the same functions the page's own buttons use. */
@@ -378,7 +379,7 @@ var COACH_TOOLS = [
    };
  }},
 {name:'set_targets', busy:'Changing targets',
- description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed ("HH:MM"), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
+ description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed planBy ("HH:MM"; planBy = when the day’s task plan should be locked by), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
  schema:{type:'object', properties:{changes:{type:'object', description:'key: new value'}}, required:['changes']},
  run:function(inp){
    var ch = inp.changes && typeof inp.changes === 'object' ? inp.changes : {}, keys = Object.keys(ch);
@@ -387,7 +388,7 @@ var COACH_TOOLS = [
    keys.forEach(function(k){
      if(!(k in DEFAULT_TARGETS)) throw new Error('Unknown target "' + k + '". Keys: ' + Object.keys(DEFAULT_TARGETS).join(', '));
      var v = ch[k];
-     if(k === 'lastMeal' || k === 'bed' || k === 'friBed' || k === 'satBed') v = cTime(v);
+     if(k === 'lastMeal' || k === 'bed' || k === 'friBed' || k === 'satBed' || k === 'planBy') v = cTime(v);
      else { v = Number(v); if(!Number.isFinite(v) || v < 0) throw new Error(k + ' must be a number.'); }
      s2.targets[k] = v; labels.push(k + ' ' + v);
    });
@@ -704,13 +705,13 @@ function noteRemove(id){
 /* ----- storage numbers ----- */
 function recordCounts(){
   var B = state.build;
-  return {days:Object.keys(state.days).length, lifts:state.lifts.length, mapBoxes:B.bnodes.length, ships:B.bships.length, skills:B.bskills.length, notes:state.notes.length, coachLogDays:coach.logDays || 0};
+  return {days:Object.keys(state.days).length, lifts:state.lifts.length, mapBoxes:B.bnodes.length, ships:B.bships.length, skills:B.bskills.length, notes:state.notes.length, taskDays:Object.keys(state.tasks).length, coachLogDays:coach.logDays || 0};
 }
 async function storageStatus(){
   var c = recordCounts(), used = 3 + Object.keys(c).reduce(function(a, k){ return a + c[k]; }, 0);
   var since = addDays(todayKey(), -90);
   var lifts90 = state.lifts.filter(function(l){ return l.date >= since; }).length;
-  var perYear = Math.round(365 + 365 + lifts90*365/90 + 60);
+  var perYear = Math.round(365 + 365 + 365 + lifts90*365/90 + 60);
   var out = {records:{used:used, cap:DB_CAP, pct:Math.round(used/DB_CAP*1000)/10, breakdown:c}, growthPerYear:perYear, yearsLeft:Math.round((DB_CAP - used)/Math.max(perYear, 1)*10)/10};
   if(coach.assets){
     try { var l = await coach.assets.list(); out.photos = {files:l.usage.files, maxFiles:l.usage.maxFiles, mb:Math.round(l.usage.bytes/1048576*10)/10, maxMb:Math.round(l.usage.maxBytes/1048576), pct:l.usage.maxBytes ? Math.round(l.usage.bytes/l.usage.maxBytes*1000)/10 : 0}; }
@@ -797,6 +798,7 @@ var EXPORT_README = [
   'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
   'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
   'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
+  'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, how many times it was pushed, timestamps in UTC.',
   'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
   'photos/        Every photo sent to Coach, named by date.',
   '',
@@ -804,6 +806,7 @@ var EXPORT_README = [
   'strain, napMin minutes, bed / wake times (bed = the night before this date), cal, pro / carb / fat / fib grams, sod mg, first / meal = first and last food times,',
   'meals count, weight lb, waist inches, sess sessions, tags, patch = nicotine patch worn overnight, vape, wo = WHOOP workouts, naps.'
 ].join('\r\n');
+function iso(ts){ return ts ? new Date(ts).toISOString() : ''; }
 async function buildExport(withPhotos, onStep){
   onStep = onStep || function(){};
   var now = new Date(), stamp = todayKey(), files = [];
@@ -814,7 +817,7 @@ async function buildExport(withPhotos, onStep){
   if(coach.assets){ try { photos = (await coach.assets.list()).assets; } catch(e){} }
   var lifts = state.lifts.map(cleanLift).sort(function(a, b){ return liftKey(a) < liftKey(b) ? -1 : 1; });
   var dayKeys = Object.keys(state.days).sort();
-  var json = {app:'Game Of Life', exportedAt:now.toISOString(), format:1, settings:state.settings, days:dayKeys.map(function(k){ return state.days[k]; }), lifts:lifts, build:{mapBoxes:state.build.bnodes, ships:state.build.bships, skills:state.build.bskills}, notes:state.notes, coachLog:log,
+  var json = {app:'Game Of Life', exportedAt:now.toISOString(), format:1, settings:state.settings, days:dayKeys.map(function(k){ return state.days[k]; }), lifts:lifts, build:{mapBoxes:state.build.bnodes, ships:state.build.bships, skills:state.build.bskills}, notes:state.notes, tasks:Object.keys(state.tasks).sort().map(function(k){ return state.tasks[k]; }), taskTemplates:state.settings.taskTemplates || [], coachLog:log,
     photos:photos.map(function(p){ return {id:p.id, file:'photos/' + p.createdAt.slice(0, 10) + '_' + p.id.slice(0, 8) + (p.contentType === 'image/png' ? '.png' : '.jpg'), createdAt:p.createdAt, contentType:p.contentType, bytes:p.sizeBytes}; })};
   files.push({name:'README.txt', data:EXPORT_README});
   files.push({name:'data.json', data:JSON.stringify(json, null, 1)});
@@ -833,6 +836,8 @@ async function buildExport(withPhotos, onStep){
   files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
+  var trows = []; Object.keys(state.tasks).sort().forEach(function(k){ var td = state.tasks[k]; td.items.forEach(function(it){ trows.push([k, it.title, it.lane, 'Q' + it.q, it.block, it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed' : 'open', it.est || '', it.actual || '', it.timer && it.timer.ms ? Math.round(it.timer.ms/60000) : '', it.rolled || 0, it.origin || k, it.src, linkLabel(it.link), it.note || '', iso(it.createdAt), iso(td.plannedAt), iso(it.startedAt), iso(it.doneAt), iso(it.droppedAt), it.dropWhy || '', it.rolledTo || '', iso(td.closedAt), it.id]); }); });
+  files.push({name:'tasks.csv', data:toCSV(['date', 'task', 'lane', 'quadrant', 'block', 'status', 'est_min', 'actual_min', 'timer_min', 'times_pushed', 'first_planned_on', 'source', 'for', 'note', 'created', 'day_plan_locked', 'started', 'done', 'dropped', 'drop_reason', 'pushed_to', 'day_closed', 'id'], trows)});
   files.push({name:'notes.csv', data:toCSV(['date', 'tags', 'text', 'id'], state.notes.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ return [x.date, (x.tags || []).join('; '), x.text, x.id]; }))});
   var crow = []; log.forEach(function(d){ (d.turns || []).forEach(function(t){ crow.push([new Date(t.at).toISOString(), t.role, t.text, (t.changes || []).join('; '), (t.photos || []).length || '']); }); });
   files.push({name:'coach-log.csv', data:toCSV(['time_utc', 'who', 'message', 'changes_made', 'photos'], crow)});
@@ -1030,10 +1035,10 @@ COACH_TOOLS.push(
    return exportAll(function(s){ coach.status = s; coachRender(); }).then(function(x){ return {ok:true, filename:x.filename, files:x.files, photos:x.photos, photosMissed:x.photosMissed, sizeMB:x.mb, records:x.counts}; });
  }},
 {name:'navigate', busy:'Opening',
- description:'Show him something on the page behind the chat: a tab (today, lifts, body, progress, build) and optionally a date to open on Today. Closes the chat so he can see it.',
- schema:{type:'object', properties:{tab:{type:'string', enum:['today', 'lifts', 'body', 'progress', 'build']}, date:{type:'string'}}, required:['tab']},
+ description:'Show him something on the page behind the chat: a tab (today, tasks, lifts, body, progress, build) and optionally a date to open on Today. Closes the chat so he can see it.',
+ schema:{type:'object', properties:{tab:{type:'string', enum:['today', 'tasks', 'lifts', 'body', 'progress', 'build']}, date:{type:'string'}}, required:['tab']},
  run:function(inp){
-   var tab = ['today', 'lifts', 'body', 'progress', 'build'].indexOf(inp.tab) >= 0 ? inp.tab : 'today';
+   var tab = ['today', 'tasks', 'lifts', 'body', 'progress', 'build'].indexOf(inp.tab) >= 0 ? inp.tab : 'today';
    if(inp.date){ var d = cDate(inp.date); state.selected = d; state.weekOf = mondayOf(d); tab = 'today'; }
    state.tab = tab;
    setTimeout(function(){ closeSheets(); render(); window.scrollTo({top:0, behavior:'auto'}); }, 900);
@@ -1188,6 +1193,134 @@ COACH_RULES += '\n\n' + [
   coachSnapshot = function(){
     var s = base(), t = todayKey(), o = lateOpen(t), lt = lateOf(t);
     s.lateNights = {normalBedtime:T().bed, usedThisWeek:lateUsed(t) + (lt ? 1 : 0), perWeek:LATE.perWeek, tonight:lt || null, canPlanTonight:o.ok, why:o.ok ? undefined : o.why};
+    return s;
+  };
+})();
+
+/* ----- daily tasks ----- */
+function taskBrief(d, it){
+  var o = {id:it.id, title:it.title, lane:it.lane, q:it.q, block:it.block, status:it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed to ' + it.rolledTo : 'open'};
+  if(it.est) o.estMin = it.est; if(it.actual) o.actualMin = it.actual; if(it.timer && it.timer.on) o.timerRunning = true; else if(it.timer && it.timer.ms >= 60000) o.timerMin = Math.round(it.timer.ms/60000);
+  if(it.link) o.for = linkLabel(it.link); if(it.note) o.note = it.note; if(it.rolled) o.timesPushed = it.rolled; if(it.src !== 'page') o.from = it.src; if(it.doneAt) o.doneAt = timeOf(it.doneAt); if(it.dropWhy) o.dropWhy = it.dropWhy;
+  return o;
+}
+function snapTasks(keys){ var s = {}; keys.forEach(function(k){ s[k] = state.tasks[k] ? clone(state.tasks[k]) : null; }); return s; }
+function restoreTasks(s){ Object.keys(s).forEach(function(k){ if(s[k]) state.tasks[k] = clone(s[k]); else delete state.tasks[k]; scheduleSaveTasks(k); }); render(); }
+function tDate(v){
+  var s = String(v == null ? '' : v).trim().toLowerCase();
+  if(!s || s === 'today') return todayKey();
+  if(s === 'tomorrow') return addDays(todayKey(), 1);
+  if(s === 'yesterday') return addDays(todayKey(), -1);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) throw new Error('Dates are YYYY-MM-DD, today or tomorrow, got "' + v + '".');
+  if(s > addDays(todayKey(), 1)) throw new Error('Tasks can be planned for today or tomorrow only.');
+  return s;
+}
+function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return hit || s; }
+function tLink(inp){
+  if(inp.for_project){ var n = findNode(inp.for_project); if(!n) throw new Error('No map box called "' + inp.for_project + '". Use the exact name from build.nodes, or leave it off.'); return {t:'node', id:n.id, label:n.name}; }
+  if(inp.for_habit){ var h = findHabit(inp.for_habit); if(!h) throw new Error('No habit called "' + inp.for_habit + '".'); return {t:'habit', id:h.id, label:h.name}; }
+  if(inp.for_win) return {t:'win', id:'', label:cleanStr(inp.for_win, 80)};
+  return undefined;
+}
+function tFind(d, ref){
+  var doc = taskDoc(d), s = String(ref || '').trim();
+  var it = doc.items.filter(function(x){ return x.id === s; })[0]; if(it) return it;
+  var open = doc.items.filter(isOpen), hits = open.filter(function(x){ return norm(x.title) === norm(s); });
+  if(!hits.length) hits = open.filter(function(x){ return norm(x.title).indexOf(norm(s)) >= 0; });
+  if(hits.length === 1) return hits[0];
+  if(hits.length > 1) throw new Error('"' + s + '" matches ' + hits.length + ' open tasks: ' + hits.map(function(x){ return x.title + ' (' + x.id + ')'; }).join('; ') + '. Use the id.');
+  throw new Error('No task "' + s + '" on ' + d + '. Use tasks list to see ids.');
+}
+var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One of: ' + TASK_LANES.join(', ') + '.'}, q:{type:'integer', description:'Quadrant 1-4: 1 urgent+important, 2 important not urgent (default), 3 urgent not important, 4 neither.'},
+  block:{type:'string', enum:['am', 'pm', 'eve'], description:'am = deep work morning, pm = physical afternoon, eve = evening.'}, est:{type:'integer', description:'Estimated minutes.'},
+  for_project:{type:'string', description:'Map box name or id this task pushes forward.'}, for_habit:{type:'string', description:'Habit id or name it serves.'}, for_win:{type:'string', description:'This week’s win it advances, in a few words.'}, note:{type:'string', description:'Outcome or context, up to 300 chars.'}};
+COACH_TOOLS.push({name:'tasks', busy:'Tasks',
+ description:'His daily task list (pure data, no XP). list: a day’s tasks with ids. add: a new task for today or tomorrow. done: check one off (pass minutes if he says how long). undo_done, drop (with why), update (any field), timer (start/stop), lock_plan (stamps when the day was planned), close_day (stamps the day and pushes open tasks to tomorrow), stats (last N days: done rate, Q2 share, pushed, lanes, estimate accuracy).',
+ schema:{type:'object', properties:Object.assign({
+   action:{type:'string', enum:['list', 'add', 'done', 'undo_done', 'drop', 'update', 'timer', 'lock_plan', 'close_day', 'stats']},
+   date:{type:'string', description:'YYYY-MM-DD, today (default), tomorrow or yesterday.'},
+   id:{type:'string', description:'Task id from list / live data, or the exact task title for done/drop/update/timer.'},
+   minutes:{type:'integer', description:'done: actual minutes it took.'}, why:{type:'string', description:'drop: his reason.'}, timer:{type:'string', enum:['start', 'stop']},
+   days:{type:'integer', description:'stats: window in days, default 30.'}}, TASK_FIELDS), required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), d = tDate(inp.date);
+   if(a === 'list'){ var doc = taskDoc(d); return {date:d, plannedAt:doc.plannedAt ? timeOf(doc.plannedAt) : null, closedAt:doc.closedAt ? timeOf(doc.closedAt) : null, tasks:doc.items.map(function(it){ return taskBrief(d, it); })}; }
+   if(a === 'stats'){
+     var st = taskStats(intIn(inp.days || 30, 1, 365, 'days'));
+     return {days:st.days, created:st.created, done:st.done, dropped:st.dropped, pushed:st.rolled, doneRatePct:st.rate, q2SharePct:st.q2share, doneByQuadrant:st.qDone, addedByQuadrant:st.q, lanes:st.lanes, doneByBlock:st.blocks, minutesLogged:st.mins, actualVsEstimateMedian:st.estMedian ? Math.round(st.estMedian*100) + '%' : null, daysPlanLocked:st.planned, daysPlannedByTarget:st.plannedBy, daysClosed:st.closed, doneRateByRecovery:st.rec, mostPushedOpenToday:st.pushed.map(function(it){ return it.title + ' (' + it.rolled + 'x)'; })};
+   }
+   if(a === 'lock_plan'){ var snapL = snapTasks([d]); var at = lockPlan(d); addAct('Plan locked · ' + fmtShort(d), function(){ restoreTasks(snapL); }); return {ok:true, plannedAt:timeOf(at)}; }
+   if(a === 'close_day'){ var to = addDays(d, 1), snapC = snapTasks([d, to]); var r = closeDay(d); addAct('Day closed · ' + fmtShort(d) + (r.moved ? ' · ' + r.moved + ' pushed to ' + fmtShort(r.to) : ''), function(){ restoreTasks(snapC); }); return {ok:true, moved:r.moved, to:r.to}; }
+   if(a === 'add'){
+     var title = cleanStr(inp.title, 120); if(!title) throw new Error('title is required.');
+     var snapA = snapTasks([d]);
+     var it = addTask(d, {title:title, lane:tLane(inp.lane), q:inp.q ? intIn(inp.q, 1, 4, 'q') : 2, block:inp.block, est:inp.est ? intIn(inp.est, 1, 720, 'est') : null, link:tLink(inp) || null, note:cleanStr(inp.note, 300)}, 'coach');
+     addAct('Task · ' + it.title + ' (' + it.lane + ', Q' + it.q + (d !== todayKey() ? ', ' + fmtShort(d) : '') + ')', function(){ restoreTasks(snapA); });
+     return {ok:true, task:taskBrief(d, it), openToday:taskDoc(todayKey()).items.filter(isOpen).length};
+   }
+   var t = tFind(d, inp.id), snap = snapTasks([d]);
+   if(a === 'done'){
+     if(t.doneAt) return {ok:true, alreadyDone:true};
+     var mins = inp.minutes ? intIn(inp.minutes, 1, 720, 'minutes') : null;
+     var dn = setDone(d, t.id, mins); var left = taskDoc(d).items.filter(isOpen).length;
+     addAct('Done · ' + t.title + (dn.actual ? ' · ' + fmtMin(dn.actual) : ''), function(){ restoreTasks(snap); });
+     return {ok:true, task:taskBrief(d, dn), openLeft:left};
+   }
+   if(a === 'undo_done'){ undoDone(d, t.id); addAct('Reopened · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true}; }
+   if(a === 'drop'){ if(t.droppedAt) undropTask(d, t.id); else { dropTask(d, t.id, cleanStr(inp.why, 120)); } addAct((t.droppedAt ? 'Brought back' : 'Dropped') + ' · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true, status:t.droppedAt ? 'open' : 'dropped'}; }
+   if(a === 'timer'){ var want = inp.timer === 'start', on = !!(t.timer && t.timer.on); if(want === on) return {ok:true, running:on, note:'already ' + (on ? 'running' : 'stopped')}; timerToggle(d, t.id); addAct('Timer ' + (want ? 'started' : 'stopped') + ' · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true, running:want}; }
+   if(a === 'update'){
+     var f = {}; if(inp.title !== undefined) f.title = cleanStr(inp.title, 120) || t.title; if(inp.lane !== undefined) f.lane = tLane(inp.lane); if(inp.q !== undefined) f.q = intIn(inp.q, 1, 4, 'q'); if(inp.block !== undefined) f.block = inp.block;
+     if(inp.est !== undefined) f.est = inp.est ? intIn(inp.est, 1, 720, 'est') : null; if(inp.minutes !== undefined) f.actual = inp.minutes ? intIn(inp.minutes, 1, 720, 'minutes') : null; if(inp.note !== undefined) f.note = cleanStr(inp.note, 300);
+     var lk = tLink(inp); if(lk !== undefined) f.link = lk;
+     var u = updateTask(d, t.id, f); addAct('Task edited · ' + u.title, function(){ restoreTasks(snap); });
+     return {ok:true, task:taskBrief(d, u)};
+   }
+   throw new Error('Unknown action ' + a + '.');
+ }});
+COACH_TOOLS.push({name:'task_templates', busy:'Recurring tasks',
+ description:'Recurring tasks that appear on set weekdays by themselves (inventory check Mon/Thu, invoices Friday). list / add / update / pause / resume / delete.',
+ schema:{type:'object', properties:Object.assign({action:{type:'string', enum:['list', 'add', 'update', 'pause', 'resume', 'delete']}, id:{type:'string'}, days:{type:'array', items:{type:'integer'}, description:'Weekdays 0 = Sunday ... 6 = Saturday.'}}, TASK_FIELDS), required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), list = state.settings.taskTemplates || [];
+   if(a === 'list') return {templates:list.map(function(t){ return {id:t.id, title:t.title, lane:t.lane, q:t.q, block:t.block, estMin:t.est || undefined, days:t.days, paused:t.paused || undefined, for:linkLabel(t.link) || undefined}; })};
+   var oldList = clone(list);
+   if(a === 'add'){
+     var title = cleanStr(inp.title, 120); if(!title) throw new Error('title is required.');
+     var days = (Array.isArray(inp.days) ? inp.days : []).map(Number).filter(function(n){ return n >= 0 && n <= 6; }); if(!days.length) throw new Error('days is required (0 = Sunday ... 6 = Saturday).');
+     var t = {id:'r' + uid(), title:title, lane:tLane(inp.lane) || 'Home', q:inp.q ? intIn(inp.q, 1, 4, 'q') : 2, block:inp.block || 'am', est:inp.est ? intIn(inp.est, 1, 720, 'est') : null, days:days, link:tLink(inp) || null, since:todayKey(), paused:false, createdAt:Date.now()};
+     saveTemplate(t); addAct('Recurring task · ' + title, function(){ state.settings.taskTemplates = oldList; saveSettings(); render(); });
+     return {ok:true, id:t.id};
+   }
+   var cur = list.filter(function(x){ return x.id === String(inp.id || '') || norm(x.title) === norm(inp.id || ''); })[0]; if(!cur) throw new Error('No recurring task "' + inp.id + '". Use list.');
+   if(a === 'delete'){ removeTemplate(cur.id); addAct('Recurring task deleted · ' + cur.title, function(){ state.settings.taskTemplates = oldList; saveSettings(); render(); }); return {ok:true}; }
+   var c = clone(cur);
+   if(a === 'pause') c.paused = true; else if(a === 'resume') c.paused = false;
+   else if(a === 'update'){
+     if(inp.title !== undefined) c.title = cleanStr(inp.title, 120) || c.title; if(inp.lane !== undefined) c.lane = tLane(inp.lane); if(inp.q !== undefined) c.q = intIn(inp.q, 1, 4, 'q'); if(inp.block !== undefined) c.block = inp.block;
+     if(inp.est !== undefined) c.est = inp.est ? intIn(inp.est, 1, 720, 'est') : null; if(Array.isArray(inp.days) && inp.days.length) c.days = inp.days.map(Number).filter(function(n){ return n >= 0 && n <= 6; });
+     var lk = tLink(inp); if(lk !== undefined) c.link = lk;
+   } else throw new Error('Unknown action ' + a + '.');
+   saveTemplate(c); addAct('Recurring task ' + a + 'd · ' + c.title, function(){ state.settings.taskTemplates = oldList; saveSettings(); render(); });
+   return {ok:true, id:c.id};
+ }});
+COACH_RULES += '\n\n' + [
+'DAILY TASKS (pure data, no XP; the tasks tool)',
+'- When he says he needs to, has to, should, or wants to get something done, or asks to be reminded: add it as a task right away (today unless he says tomorrow). Infer the lane (' + TASK_LANES.join(', ') + '), quadrant (default Q2; Q1 only if it is both urgent and important), block (am deep work for thinking and building, pm physical, eve evening) and attach the map box or habit it serves when one clearly fits. Never ask for these; he can fix them on the page.',
+'- When he says he did / finished / done with something that is an open task, mark it done (pass minutes if he said how long). If several match, ask which with numbered options.',
+'- "Skip it", "not doing that", "forget that task" = drop with his reason. Dropped tasks stay in the record; nothing is ever deleted.',
+'- Morning: if he is planning the day with you, add the tasks, then lock_plan. Evening: close_day pushes what is open to tomorrow and stamps the day. If he asks how the day went, list today and say what is open.',
+'- Tasks marked from "sched" are the daily one move from his scheduled check-in; treat them as the priority of the day.',
+'- A task pushed 2+ times (timesPushed) is a flag: say so plainly and ask whether it gets done today, dropped, or isn’t really a task.',
+'- Recurring things he does on set weekdays go in task_templates, not as repeated tasks.',
+'- Tasks never feed habits or XP. A task like "train legs" does not check off Train; logging the lift does.'
+].join('\n');
+(function(){
+  var base = coachSnapshot;
+  coachSnapshot = function(){
+    var s = base(), t = todayKey(), doc = taskDoc(t), s7 = taskStats(7);
+    s.tasks = {today:{plannedAt:doc.plannedAt ? timeOf(doc.plannedAt) : null, closedAt:doc.closedAt ? timeOf(doc.closedAt) : null, open:doc.items.filter(isOpen).map(function(it){ return taskBrief(t, it); }), done:doc.items.filter(function(it){ return it.doneAt; }).map(function(it){ return taskBrief(t, it); }), droppedOrPushed:doc.items.filter(function(it){ return it.droppedAt || it.rolledTo; }).length},
+      last7Days:{doneRatePct:s7.rate, pushed:s7.rolled, q2SharePct:s7.q2share}, recurring:(state.settings.taskTemplates || []).length, lanes:TASK_LANES};
     return s;
   };
 })();

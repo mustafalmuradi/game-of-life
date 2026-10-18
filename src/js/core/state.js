@@ -10,6 +10,7 @@ export var state = {
   lifts: [],
   build: {bnodes:[], bships:[], bskills:[]},
   notes: [],
+  tasks: {},
   liftStats: null,
   tab: 'today',
   selected: todayKey(),
@@ -42,6 +43,7 @@ export function normalizeSettings(s){
     });
   });
   if(!out.habits.length){ var dflt = clone(DEFAULT_SETTINGS); dflt.targets = out.targets; return normalizeSettings(dflt); }
+  out.taskTemplates = Array.isArray(s && s.taskTemplates) ? s.taskTemplates.map(normalizeTemplate).filter(Boolean) : [];
   out.rewards = {}; out.rewardsClaimed = {};
   if(s && s.rewards && typeof s.rewards === 'object') Object.keys(s.rewards).forEach(function(k){ var v = String(s.rewards[k] || '').trim().slice(0, 80); if(v) out.rewards[k] = v; });
   if(s && s.rewardsClaimed && typeof s.rewardsClaimed === 'object') Object.keys(s.rewardsClaimed).forEach(function(k){ if(s.rewardsClaimed[k]) out.rewardsClaimed[k] = String(s.rewardsClaimed[k]); });
@@ -59,6 +61,33 @@ export function normalizeDay(d, k){
   }
   return out;
 }
+/* ---------- daily tasks: one doc per day, tracker/tasks/YYYY-MM-DD ---------- */
+export function normalizeTask(x){
+  if(!x || !x.id || !x.title) return null;
+  var o = {id:String(x.id), title:String(x.title).slice(0, 120), lane:String(x.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(x.q)) >= 0 ? Number(x.q) : 2,
+    block:['am','pm','eve'].indexOf(x.block) >= 0 ? x.block : 'am', est:Number.isFinite(Number(x.est)) && Number(x.est) > 0 ? Math.round(Number(x.est)) : null,
+    actual:Number.isFinite(Number(x.actual)) && Number(x.actual) > 0 ? Math.round(Number(x.actual)) : null,
+    link:x.link && x.link.t && x.link.t !== 'none' ? {t:String(x.link.t), id:String(x.link.id || ''), label:String(x.link.label || '').slice(0, 80)} : null,
+    note:String(x.note || '').slice(0, 300), src:String(x.src || 'page'), tpl:x.tpl ? String(x.tpl) : null, origin:String(x.origin || ''), rolled:Math.max(0, parseInt(x.rolled, 10) || 0),
+    createdAt:Number(x.createdAt) || 0, doneAt:Number(x.doneAt) || null, droppedAt:Number(x.droppedAt) || null, dropWhy:x.dropWhy ? String(x.dropWhy).slice(0, 120) : null,
+    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0)}};
+  return o;
+}
+export function normalizeTaskDoc(d, k){
+  var out = {date:k, schema:1, items:[]};
+  if(d && d.plannedAt) out.plannedAt = Number(d.plannedAt) || null;
+  if(d && d.closedAt) out.closedAt = Number(d.closedAt) || null;
+  if(d && Array.isArray(d.items)) out.items = d.items.map(normalizeTask).filter(Boolean);
+  return out;
+}
+export function normalizeTemplate(t){
+  if(!t || !t.id || !t.title) return null;
+  return {id:String(t.id), title:String(t.title).slice(0, 120), lane:String(t.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(t.q)) >= 0 ? Number(t.q) : 2,
+    block:['am','pm','eve'].indexOf(t.block) >= 0 ? t.block : 'am', est:Number.isFinite(Number(t.est)) && Number(t.est) > 0 ? Math.round(Number(t.est)) : null,
+    days:Array.isArray(t.days) ? t.days.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : [1,2,3,4,5], link:t.link && t.link.t && t.link.t !== 'none' ? {t:String(t.link.t), id:String(t.link.id || ''), label:String(t.link.label || '').slice(0, 80)} : null,
+    since:t.since || '2000-01-01', paused:!!t.paused, createdAt:Number(t.createdAt) || 0};
+}
+export function isEmptyTaskDoc(d){ return !d || (!d.items.length && !d.plannedAt && !d.closedAt); }
 export function hasHabitData(d){ return !!d && (Object.keys(d.done||{}).length > 0 || Object.keys(d.extras||{}).length > 0 || Object.keys(d.rest||{}).length > 0); }
 export function isEmptyDay(d){ return !d || (!hasHabitData(d) && !Object.keys(d.m||{}).length); }
 export function ladderStep(h, level){ if(!h || !h.ladder || !h.ladder.length) return null; var b = beltOf(level || 0).b; return h.ladder[Math.min(b, h.ladder.length - 1)]; }

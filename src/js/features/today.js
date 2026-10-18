@@ -9,6 +9,7 @@ import { burst, floatXP, queuePromos, toast } from '../core/effects.js';
 import { ICON, miniBelt, miniRing, scoreRing } from '../core/svg.js';
 import { registerTab, render, renderSync } from '../core/render.js';
 import { FLAG_ICON, fmtClock, metricsOf, readiness, sessName, sessOf, TAGS, tagsOf, tmin } from './body.js';
+import { ensureToday, renderTasksCard } from './tasks.js';
 
 /* ---------- mutations ---------- */
 export function mutateDay(date, fn, opts){
@@ -215,7 +216,7 @@ function renderHabits(){
 }
 
 /* the Today tab renders four parts; render() calls this through the registry */
-function renderToday(){ renderWeek(); renderDay(); renderHabits(); renderSync(); }
+function renderToday(){ ensureToday(); renderWeek(); renderDay(); renderHabits(); renderTasksCard(); renderSync(); }
 registerTab('today', renderToday);
 
 /* planned late nights: the Bed on time line, and whether one can still be planned for d */

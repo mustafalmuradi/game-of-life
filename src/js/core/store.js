@@ -1,7 +1,7 @@
 // Persistence: the localStorage cache, the cloud database sync, the retry queues. The only file that talks to the db.
 import { LS_KEY } from './config.js';
 import { clone, sleepMs } from './utils.js';
-import { isEmptyDay, normalizeDay, normalizeSettings, state } from './state.js';
+import { isEmptyDay, isEmptyTaskDoc, normalizeDay, normalizeSettings, normalizeTaskDoc, state } from './state.js';
 import { recompute } from './stats.js';
 import { toast } from './effects.js';
 import { render, renderSync } from './render.js';
@@ -12,7 +12,7 @@ var dirty = new Map(), writing = new Set(), timers = {}, unsynced = new Set();
 export function testLS(){ try { localStorage.setItem('__dl','1'); localStorage.removeItem('__dl'); return true; } catch(e){ return false; } }
 export function persistLocal(){
   if(!sync.lsOK) return;
-  try { localStorage.setItem(LS_KEY, JSON.stringify({v:1, settings:state.settings, days:state.days, unsynced:Array.from(unsynced), lifts:state.lifts.map(cleanLift), liftOps:sync.liftOps, build:state.build, notes:state.notes})); } catch(e){}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({v:1, settings:state.settings, days:state.days, unsynced:Array.from(unsynced), lifts:state.lifts.map(cleanLift), liftOps:sync.liftOps, build:state.build, notes:state.notes, tasks:state.tasks})); } catch(e){}
 }
 export function loadLocal(){
   if(!sync.lsOK) return;
@@ -25,6 +25,7 @@ export function loadLocal(){
     if(Array.isArray(c.lifts)) state.lifts = c.lifts.filter(function(l){ return l && l.id && Array.isArray(l.sets); });
     if(c.liftOps && typeof c.liftOps === 'object') sync.liftOps = c.liftOps;
     if(Array.isArray(c.notes)) state.notes = c.notes.filter(function(x){ return x && x.id; });
+    if(c.tasks && typeof c.tasks === 'object') Object.keys(c.tasks).forEach(function(k){ var td = normalizeTaskDoc(c.tasks[k], k); if(!isEmptyTaskDoc(td)) state.tasks[k] = td; });
     if(c.build && typeof c.build === 'object') ['bnodes','bships','bskills'].forEach(function(k){ if(Array.isArray(c.build[k])) state.build[k] = c.build[k].filter(function(x){ return x && x.id; }); });
   } catch(e){}
 }
@@ -57,6 +58,15 @@ export function connectCloud(){
         state.notes = snap.docs.map(function(doc){ return Object.assign({id:doc.id}, doc.data()); });
         persistLocal();
       }, onCloudError);
+      var tasksCol = settingsRef.collection('tasks'); sync.cloud.tasks = tasksCol;
+      tasksCol.onSnapshot(function(snap){
+        if(snap.metadata.fromCache && snap.empty) return;
+        var next = {};
+        snap.docs.forEach(function(doc){ var td = normalizeTaskDoc(doc.data(), doc.id); if(!isEmptyTaskDoc(td)) next[doc.id] = td; });
+        Array.from(dirty.keys()).concat(Array.from(unsynced)).forEach(function(k){ if(k.indexOf('tasks:') !== 0) return; var d = k.slice(6); if(state.tasks[d]) next[d] = state.tasks[d]; else delete next[d]; });
+        state.tasks = next;
+        persistLocal(); render();
+      }, onCloudError);
       var liftsFlushed = false;
       liftsCol.onSnapshot(function(snap){
         if(snap.metadata.fromCache && snap.empty) return;
@@ -79,7 +89,7 @@ export function connectCloud(){
         if(snap.metadata.fromCache && snap.empty) return;
         var next = {};
         snap.docs.forEach(function(doc){ var d = doc.data(); if(d){ var nd = normalizeDay(d, doc.id); if(!isEmptyDay(nd)) next[doc.id] = nd; } });
-        var keep = Array.from(dirty.keys()).concat(Array.from(unsynced));
+        var keep = Array.from(dirty.keys()).concat(Array.from(unsynced)).filter(function(k){ return k.indexOf('tasks:') !== 0; });
         keep.forEach(function(k){ if(state.days[k]) next[k] = state.days[k]; else delete next[k]; });
         state.days = next;
         if(!snap.metadata.fromCache && !sync.flushedOnce){ sync.flushedOnce = true; flushUnsynced(); }
@@ -121,12 +131,20 @@ export function scheduleSave(date){
   timers[date] = setTimeout(function(){ flush(date); }, 400);
 }
 function writeDay(date){
+  if(date.indexOf('tasks:') === 0){
+    var tk = date.slice(6), tref = sync.cloud.tasks.doc(tk), tdoc = state.tasks[tk];
+    if(!tdoc || isEmptyTaskDoc(tdoc)) return tref.delete();
+    var tbody = clone(tdoc); tbody.updatedAt = Date.now();
+    return tref.set(tbody);
+  }
   var ref = sync.cloud.daysCol.doc(date);
   var doc = state.days[date];
   if(!doc || isEmptyDay(doc)) return ref.delete();
   var body = clone(doc); body.updatedAt = Date.now();
   return ref.set(body);
 }
+/* task docs ride the same dirty / retry queue as days, keyed "tasks:YYYY-MM-DD" */
+export function scheduleSaveTasks(date){ scheduleSave('tasks:' + date); }
 export function flush(date){
   if(!sync.cloud || writing.has(date)) return;
   writing.add(date);

@@ -1,0 +1,84 @@
+/* Daily tasks: the Today card, the Tasks tab, the task sheet. */
+.tasks-card{overflow:hidden}
+.tk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 16px 10px}
+.tk-head .eyebrow{margin-bottom:2px}
+.tk-sum{font-size:13px;color:var(--muted)} .tk-sum b{color:var(--ink)}
+.tk-head-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tk-add{display:flex;flex-direction:column;gap:8px;padding:0 16px 12px}
+.tk-add input[type=text]{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink)}
+.tk-add input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tk-qa{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tk-qa select{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:7px 8px;font-weight:700;font-size:12.5px;max-width:120px}
+.tk-seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
+.tk-seg button{border:0;background:transparent;border-radius:8px;padding:6px 8px;font-size:12px;font-weight:800;color:var(--muted);transition:background .2s,color .2s}
+.tk-seg button.on{background:var(--accent);color:var(--on-accent)}
+.tk-seg button.q1.on{background:var(--z-red);color:#fff} .tk-seg button.q2.on{background:var(--z-green);color:#fff} .tk-seg button.q3.on{background:var(--gold);color:#2A1600} .tk-seg button.q4.on{background:var(--muted);color:#fff}
+.tk-qa .primary.small{margin-left:auto;padding:8px 14px;font-size:13px}
+.tk-list{list-style:none;margin:0;padding:0}
+.tk{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 14px 10px 16px;border-top:1px solid var(--line);transition:background .3s}
+.tk-check{width:36px;height:36px;border-radius:50%;border:2.5px solid var(--accent);background:transparent;display:grid;place-items:center;padding:0;transition:background .2s,transform .3s var(--spring)}
+.tk-check svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
+.tk-check:active{transform:scale(.9)}
+.tk.is-done .tk-check{background:var(--accent);border-color:var(--accent)} .tk.is-done .tk-check svg{opacity:1}
+.tk-check.tk-x{border-color:var(--line);color:var(--muted);font-weight:800;font-size:14px}
+.tk-main{border:0;background:transparent;text-align:left;padding:0;min-width:0;display:flex;flex-direction:column;gap:4px;color:var(--ink)}
+.tk-title{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.tk.is-done .tk-title{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 50%,transparent)}
+.tk.is-dropped .tk-title,.tk.is-rolled .tk-title{color:var(--muted)}
+.tk-chips{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tk-chips span{font-size:10.5px;font-weight:800;letter-spacing:.02em;border-radius:7px;padding:2px 6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.tk-chips .tk-lane{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent}
+.tk-chips .tk-q{border-color:transparent;color:#fff} .tk-q.q1{background:var(--z-red)} .tk-q.q2{background:var(--z-green)} .tk-q.q3{background:var(--gold);color:#2A1600} .tk-q.q4{background:var(--muted)}
+.tk-chips .tk-roll{background:var(--gold-soft);color:var(--gold-ink);border-color:transparent}
+.tk-chips .tk-win{background:var(--accent-2);color:#fff;border-color:transparent}
+.tk-chips .tk-at{background:transparent;border-color:transparent;padding-left:0;font-weight:600}
+.tk-note{font-size:12.5px;color:var(--ink-2)}
+.tk-timer{border:1px solid var(--line);background:var(--surface-2);border-radius:99px;padding:6px 8px 6px 10px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);min-height:32px}
+.tk-timer i{width:10px;height:10px;border-radius:50%;background:var(--accent);display:block}
+.tk-timer.on{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent} .tk-timer.on i{border-radius:2px;background:var(--accent-ink);animation:tkpulse 1.2s ease-in-out infinite}
+@keyframes tkpulse{0%,100%{opacity:1}50%{opacity:.35}}
+.tk.is-timing{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.tk-done-wrap{border-top:1px solid var(--line)}
+.tk-done-wrap>summary{list-style:none;cursor:pointer;padding:9px 16px;font-size:12.5px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tk-done-wrap>summary::-webkit-details-marker{display:none}
+.tk-done-wrap>summary::before{content:"";width:0;height:0;border-left:5px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .2s}
+.tk-done-wrap[open]>summary::before{transform:rotate(90deg)}
+/* tab */
+#view-tasks{display:flex;flex-direction:column;gap:14px}
+#view-tasks .card>.eyebrow{padding:14px 16px 0}
+#view-tasks .card>.muted{padding:0 16px 14px}
+#view-tasks .tk-head{padding:14px 16px}
+.tk-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px 14px 14px}
+.tk-tiles.three{grid-template-columns:repeat(3,1fr)}
+.tk-tiles div{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;min-width:0}
+.tk-tiles b{font-family:var(--font-display);font-weight:800;font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.tk-tiles span{font-size:11.5px;color:var(--ink-2);font-weight:700;margin-top:4px}
+.tk-tiles em{font-style:normal;font-size:11px;color:var(--muted);margin-top:2px}
+.tk-tiles .z-green b{color:var(--z-green)} .tk-tiles .z-yellow b{color:var(--z-yellow)} .tk-tiles .z-red b{color:var(--z-red)}
+.tk-lanes{display:flex;flex-direction:column;gap:8px;padding:10px 16px 14px}
+.tk-lrow{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:center;font-size:12.5px}
+.tk-lname{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-lbar{height:10px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.tk-lbar>span{display:block;height:100%;background:var(--accent-soft);border-radius:99px;overflow:hidden}
+.tk-lbar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.tk-lnum{color:var(--muted);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tk-qgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tk-qgrid.big{padding:10px 16px 6px}
+.tk-qgrid>*{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--surface-2);text-align:left;display:flex;flex-direction:column;gap:2px;color:var(--ink);min-width:0}
+.tk-qgrid b{font-family:var(--font-display);font-size:16px;font-weight:800;line-height:1}
+.tk-qgrid.big b{font-size:22px} .tk-qgrid b small{font-size:12px;color:var(--muted);font-weight:700}
+.tk-qgrid span{font-size:11px;color:var(--muted);font-weight:700}
+.tk-qgrid>.q1,.tk-qgrid>button.q1.on{border-color:var(--z-red)} .tk-qgrid>.q2,.tk-qgrid>button.q2.on{border-color:var(--z-green)} .tk-qgrid>.q3,.tk-qgrid>button.q3.on{border-color:var(--gold)} .tk-qgrid>.q4{border-color:var(--line)}
+.tk-qgrid>button{border-width:2px;border-color:var(--line)} .tk-qgrid>button.on{background:var(--accent-soft)}
+.tk-qgrid>button.q4.on{border-color:var(--muted)}
+.tk-days{display:flex;gap:4px}
+.tk-days button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);font-weight:800;font-size:12px;color:var(--muted)}
+.tk-days button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.tk-day{border-top:1px solid var(--line)}
+.tk-day>summary{list-style:none;cursor:pointer;padding:11px 16px;display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.tk-day>summary::-webkit-details-marker{display:none}
+.tk-day>summary span{color:var(--muted);font-weight:600;text-align:right}
+.ghost.armed{color:var(--z-red);border-color:var(--z-red)}
+.lf-field .muted.small.full{grid-column:1/-1}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .tk-check svg{stroke:var(--on-accent)} }
+:root[data-theme="dark"] .tk-check svg{stroke:var(--on-accent)}

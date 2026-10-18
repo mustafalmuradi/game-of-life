@@ -104,7 +104,7 @@ async function shots(run, dir) {
   await run.page.addStyleTag({ content: KILL_MOTION });
   for (const scheme of ['light', 'dark']) {
     await run.page.emulateMedia({ colorScheme: scheme });
-    for (const t of ['today', 'lifts', 'body', 'progress', 'build']) {
+    for (const t of ['today', 'tasks', 'lifts', 'body', 'progress', 'build']) {
       await run.page.locator('[data-tab="' + t + '"]').click({ force: true });
       await run.page.evaluate(() => window.scrollTo(0, 0));
       const f = path.join(dir, scheme + '-' + t + '.png');

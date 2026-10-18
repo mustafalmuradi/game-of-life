@@ -157,8 +157,8 @@ main>section>*:nth-child(5){animation-delay:.24s}
 .next b{color:var(--ink);font-variant-numeric:tabular-nums}
 
 /* tabs */
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:5px;gap:4px;box-shadow:var(--shadow)}
-.tabs button{border:0;background:transparent;border-radius:13px;padding:10px 2px;font-weight:800;font-size:13px;color:var(--muted);transition:color .2s,background .25s var(--ease),transform .25s var(--spring),box-shadow .25s}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:5px;gap:4px;box-shadow:var(--shadow)}
+.tabs button{border:0;background:transparent;border-radius:13px;padding:10px 0;font-weight:800;font-size:12px;color:var(--muted);transition:color .2s,background .25s var(--ease),transform .25s var(--spring),box-shadow .25s}
 .tabs button:hover{color:var(--ink);background:var(--surface-2)}
 .tabs button:active{transform:scale(.95)}
 .tabs button[aria-selected="true"]{background:var(--grad);background-size:200% 200%;color:#fff;box-shadow:0 6px 16px -6px rgba(108,61,255,.6);animation:hue 4s ease-in-out infinite alternate,tabpop .35s var(--spring)}
@@ -847,6 +847,90 @@ details.prog-card>p{padding-bottom:16px;margin-top:10px}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+.tasks-card{overflow:hidden}
+.tk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 16px 10px}
+.tk-head .eyebrow{margin-bottom:2px}
+.tk-sum{font-size:13px;color:var(--muted)} .tk-sum b{color:var(--ink)}
+.tk-head-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tk-add{display:flex;flex-direction:column;gap:8px;padding:0 16px 12px}
+.tk-add input[type=text]{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--ink)}
+.tk-add input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px}
+.tk-qa{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tk-qa select{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:7px 8px;font-weight:700;font-size:12.5px;max-width:120px}
+.tk-seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
+.tk-seg button{border:0;background:transparent;border-radius:8px;padding:6px 8px;font-size:12px;font-weight:800;color:var(--muted);transition:background .2s,color .2s}
+.tk-seg button.on{background:var(--accent);color:var(--on-accent)}
+.tk-seg button.q1.on{background:var(--z-red);color:#fff} .tk-seg button.q2.on{background:var(--z-green);color:#fff} .tk-seg button.q3.on{background:var(--gold);color:#2A1600} .tk-seg button.q4.on{background:var(--muted);color:#fff}
+.tk-qa .primary.small{margin-left:auto;padding:8px 14px;font-size:13px}
+.tk-list{list-style:none;margin:0;padding:0}
+.tk{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 14px 10px 16px;border-top:1px solid var(--line);transition:background .3s}
+.tk-check{width:36px;height:36px;border-radius:50%;border:2.5px solid var(--accent);background:transparent;display:grid;place-items:center;padding:0;transition:background .2s,transform .3s var(--spring)}
+.tk-check svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
+.tk-check:active{transform:scale(.9)}
+.tk.is-done .tk-check{background:var(--accent);border-color:var(--accent)} .tk.is-done .tk-check svg{opacity:1}
+.tk-check.tk-x{border-color:var(--line);color:var(--muted);font-weight:800;font-size:14px}
+.tk-main{border:0;background:transparent;text-align:left;padding:0;min-width:0;display:flex;flex-direction:column;gap:4px;color:var(--ink)}
+.tk-title{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.tk.is-done .tk-title{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--muted) 50%,transparent)}
+.tk.is-dropped .tk-title,.tk.is-rolled .tk-title{color:var(--muted)}
+.tk-chips{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tk-chips span{font-size:10.5px;font-weight:800;letter-spacing:.02em;border-radius:7px;padding:2px 6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.tk-chips .tk-lane{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent}
+.tk-chips .tk-q{border-color:transparent;color:#fff} .tk-q.q1{background:var(--z-red)} .tk-q.q2{background:var(--z-green)} .tk-q.q3{background:var(--gold);color:#2A1600} .tk-q.q4{background:var(--muted)}
+.tk-chips .tk-roll{background:var(--gold-soft);color:var(--gold-ink);border-color:transparent}
+.tk-chips .tk-win{background:var(--accent-2);color:#fff;border-color:transparent}
+.tk-chips .tk-at{background:transparent;border-color:transparent;padding-left:0;font-weight:600}
+.tk-note{font-size:12.5px;color:var(--ink-2)}
+.tk-timer{border:1px solid var(--line);background:var(--surface-2);border-radius:99px;padding:6px 8px 6px 10px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);min-height:32px}
+.tk-timer i{width:10px;height:10px;border-radius:50%;background:var(--accent);display:block}
+.tk-timer.on{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent} .tk-timer.on i{border-radius:2px;background:var(--accent-ink);animation:tkpulse 1.2s ease-in-out infinite}
+@keyframes tkpulse{0%,100%{opacity:1}50%{opacity:.35}}
+.tk.is-timing{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.tk-done-wrap{border-top:1px solid var(--line)}
+.tk-done-wrap>summary{list-style:none;cursor:pointer;padding:9px 16px;font-size:12.5px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tk-done-wrap>summary::-webkit-details-marker{display:none}
+.tk-done-wrap>summary::before{content:"";width:0;height:0;border-left:5px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .2s}
+.tk-done-wrap[open]>summary::before{transform:rotate(90deg)}
+/* tab */
+#view-tasks{display:flex;flex-direction:column;gap:14px}
+#view-tasks .card>.eyebrow{padding:14px 16px 0}
+#view-tasks .card>.muted{padding:0 16px 14px}
+#view-tasks .tk-head{padding:14px 16px}
+.tk-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px 14px 14px}
+.tk-tiles.three{grid-template-columns:repeat(3,1fr)}
+.tk-tiles div{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;min-width:0}
+.tk-tiles b{font-family:var(--font-display);font-weight:800;font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.tk-tiles span{font-size:11.5px;color:var(--ink-2);font-weight:700;margin-top:4px}
+.tk-tiles em{font-style:normal;font-size:11px;color:var(--muted);margin-top:2px}
+.tk-tiles .z-green b{color:var(--z-green)} .tk-tiles .z-yellow b{color:var(--z-yellow)} .tk-tiles .z-red b{color:var(--z-red)}
+.tk-lanes{display:flex;flex-direction:column;gap:8px;padding:10px 16px 14px}
+.tk-lrow{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:center;font-size:12.5px}
+.tk-lname{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-lbar{height:10px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.tk-lbar>span{display:block;height:100%;background:var(--accent-soft);border-radius:99px;overflow:hidden}
+.tk-lbar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.tk-lnum{color:var(--muted);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tk-qgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tk-qgrid.big{padding:10px 16px 6px}
+.tk-qgrid>*{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--surface-2);text-align:left;display:flex;flex-direction:column;gap:2px;color:var(--ink);min-width:0}
+.tk-qgrid b{font-family:var(--font-display);font-size:16px;font-weight:800;line-height:1}
+.tk-qgrid.big b{font-size:22px} .tk-qgrid b small{font-size:12px;color:var(--muted);font-weight:700}
+.tk-qgrid span{font-size:11px;color:var(--muted);font-weight:700}
+.tk-qgrid>.q1,.tk-qgrid>button.q1.on{border-color:var(--z-red)} .tk-qgrid>.q2,.tk-qgrid>button.q2.on{border-color:var(--z-green)} .tk-qgrid>.q3,.tk-qgrid>button.q3.on{border-color:var(--gold)} .tk-qgrid>.q4{border-color:var(--line)}
+.tk-qgrid>button{border-width:2px;border-color:var(--line)} .tk-qgrid>button.on{background:var(--accent-soft)}
+.tk-qgrid>button.q4.on{border-color:var(--muted)}
+.tk-days{display:flex;gap:4px}
+.tk-days button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);font-weight:800;font-size:12px;color:var(--muted)}
+.tk-days button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.tk-day{border-top:1px solid var(--line)}
+.tk-day>summary{list-style:none;cursor:pointer;padding:11px 16px;display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.tk-day>summary::-webkit-details-marker{display:none}
+.tk-day>summary span{color:var(--muted);font-weight:600;text-align:right}
+.ghost.armed{color:var(--z-red);border-color:var(--z-red)}
+.lf-field .muted.small.full{grid-column:1/-1}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .tk-check svg{stroke:var(--on-accent)} }
+:root[data-theme="dark"] .tk-check svg{stroke:var(--on-accent)}
+
 </style>
 
 <div class="app">
@@ -864,6 +948,7 @@ details.prog-card>p{padding-bottom:16px;margin-top:10px}
 
   <nav class="tabs" role="tablist" aria-label="Views">
     <button type="button" role="tab" id="tab-today" data-tab="today" aria-selected="true" aria-controls="view-today">Today</button>
+    <button type="button" role="tab" id="tab-tasks" data-tab="tasks" aria-selected="false" aria-controls="view-tasks">Tasks</button>
     <button type="button" role="tab" id="tab-lifts" data-tab="lifts" aria-selected="false" aria-controls="view-lifts">Lifts</button>
     <button type="button" role="tab" id="tab-body" data-tab="body" aria-selected="false" aria-controls="view-body">Body</button>
     <button type="button" role="tab" id="tab-progress" data-tab="progress" aria-selected="false" aria-controls="view-progress">Progress</button>
@@ -875,8 +960,10 @@ details.prog-card>p{padding-bottom:16px;margin-top:10px}
       <div class="week" id="week"></div>
       <div class="card day-card" id="day"></div>
       <div class="card habits" id="habits"></div>
+      <div class="card tasks-card" id="tasks"></div>
       <p class="sync" id="sync"></p>
     </section>
+    <section id="view-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden></section>
     <section id="view-lifts" role="tabpanel" aria-labelledby="tab-lifts" hidden></section>
     <section id="view-body" role="tabpanel" aria-labelledby="tab-body" hidden></section>
     <section id="view-progress" role="tabpanel" aria-labelledby="tab-progress" hidden></section>
@@ -1009,6 +1096,14 @@ details.prog-card>p{padding-bottom:16px;margin-top:10px}
 
 <div class="promo-back" id="promo" hidden></div>
 <div id="toast-host"></div>
+<div class="sheet-back" id="task-sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tk-h">
+    <div class="grip"></div>
+    <div class="sheet-head"><h3 id="tk-h">Task</h3><span class="muted small">No XP · pure data</span></div>
+    <form id="tk-form" class="lift-form" novalidate autocomplete="off"></form>
+  </div>
+</div>
+
 <div class="sheet-back" id="build-sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="bd-h">
     <div class="grip"></div>
@@ -1068,7 +1163,13 @@ var DEFAULT_SETTINGS = {
   ],
   targets: null
 };
-var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
+var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', planBy:'07:30', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
+
+/* ---------- daily tasks ---------- */
+var TASK_LANES = ['Body', 'Islam', 'Family', 'Home', 'Money', 'Ock Spot', 'BOSS', 'Upsurge', 'Build'];
+var TASK_Q = [{k:1, n:'Q1', t:'Urgent + important'}, {k:2, n:'Q2', t:'Important, not urgent'}, {k:3, n:'Q3', t:'Urgent, not important'}, {k:4, n:'Q4', t:'Neither'}];
+var TASK_BLOCKS = [{k:'am', n:'Deep work', t:'Morning'}, {k:'pm', n:'Physical', t:'Afternoon'}, {k:'eve', n:'Evening', t:'Evening'}];
+var TASK_ROLL_DAYS = 30; // how far back open items are pulled forward from
 
 /* ---------- utils ---------- */
 function $(s){ return document.querySelector(s); }
@@ -1101,6 +1202,7 @@ var state = {
   lifts: [],
   build: {bnodes:[], bships:[], bskills:[]},
   notes: [],
+  tasks: {},
   liftStats: null,
   tab: 'today',
   selected: todayKey(),
@@ -1144,6 +1246,7 @@ function normalizeSettings(s){
     });
   });
   if(!out.habits.length){ var dflt = clone(DEFAULT_SETTINGS); dflt.targets = out.targets; return normalizeSettings(dflt); }
+  out.taskTemplates = Array.isArray(s && s.taskTemplates) ? s.taskTemplates.map(normalizeTemplate).filter(Boolean) : [];
   out.rewards = {}; out.rewardsClaimed = {};
   if(s && s.rewards && typeof s.rewards === 'object') Object.keys(s.rewards).forEach(function(k){ var v = String(s.rewards[k] || '').trim().slice(0, 80); if(v) out.rewards[k] = v; });
   if(s && s.rewardsClaimed && typeof s.rewardsClaimed === 'object') Object.keys(s.rewardsClaimed).forEach(function(k){ if(s.rewardsClaimed[k]) out.rewardsClaimed[k] = String(s.rewardsClaimed[k]); });
@@ -1161,6 +1264,33 @@ function normalizeDay(d, k){
   }
   return out;
 }
+/* ---------- daily tasks: one doc per day, tracker/tasks/YYYY-MM-DD ---------- */
+function normalizeTask(x){
+  if(!x || !x.id || !x.title) return null;
+  var o = {id:String(x.id), title:String(x.title).slice(0, 120), lane:String(x.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(x.q)) >= 0 ? Number(x.q) : 2,
+    block:['am','pm','eve'].indexOf(x.block) >= 0 ? x.block : 'am', est:Number.isFinite(Number(x.est)) && Number(x.est) > 0 ? Math.round(Number(x.est)) : null,
+    actual:Number.isFinite(Number(x.actual)) && Number(x.actual) > 0 ? Math.round(Number(x.actual)) : null,
+    link:x.link && x.link.t && x.link.t !== 'none' ? {t:String(x.link.t), id:String(x.link.id || ''), label:String(x.link.label || '').slice(0, 80)} : null,
+    note:String(x.note || '').slice(0, 300), src:String(x.src || 'page'), tpl:x.tpl ? String(x.tpl) : null, origin:String(x.origin || ''), rolled:Math.max(0, parseInt(x.rolled, 10) || 0),
+    createdAt:Number(x.createdAt) || 0, doneAt:Number(x.doneAt) || null, droppedAt:Number(x.droppedAt) || null, dropWhy:x.dropWhy ? String(x.dropWhy).slice(0, 120) : null,
+    rolledTo:x.rolledTo ? String(x.rolledTo) : null, startedAt:Number(x.startedAt) || null, updatedAt:Number(x.updatedAt) || null, timer:{on:Number(x.timer && x.timer.on) || null, ms:Math.max(0, Number(x.timer && x.timer.ms) || 0)}};
+  return o;
+}
+function normalizeTaskDoc(d, k){
+  var out = {date:k, schema:1, items:[]};
+  if(d && d.plannedAt) out.plannedAt = Number(d.plannedAt) || null;
+  if(d && d.closedAt) out.closedAt = Number(d.closedAt) || null;
+  if(d && Array.isArray(d.items)) out.items = d.items.map(normalizeTask).filter(Boolean);
+  return out;
+}
+function normalizeTemplate(t){
+  if(!t || !t.id || !t.title) return null;
+  return {id:String(t.id), title:String(t.title).slice(0, 120), lane:String(t.lane || 'Home').slice(0, 30), q:[1,2,3,4].indexOf(Number(t.q)) >= 0 ? Number(t.q) : 2,
+    block:['am','pm','eve'].indexOf(t.block) >= 0 ? t.block : 'am', est:Number.isFinite(Number(t.est)) && Number(t.est) > 0 ? Math.round(Number(t.est)) : null,
+    days:Array.isArray(t.days) ? t.days.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : [1,2,3,4,5], link:t.link && t.link.t && t.link.t !== 'none' ? {t:String(t.link.t), id:String(t.link.id || ''), label:String(t.link.label || '').slice(0, 80)} : null,
+    since:t.since || '2000-01-01', paused:!!t.paused, createdAt:Number(t.createdAt) || 0};
+}
+function isEmptyTaskDoc(d){ return !d || (!d.items.length && !d.plannedAt && !d.closedAt); }
 function hasHabitData(d){ return !!d && (Object.keys(d.done||{}).length > 0 || Object.keys(d.extras||{}).length > 0 || Object.keys(d.rest||{}).length > 0); }
 function isEmptyDay(d){ return !d || (!hasHabitData(d) && !Object.keys(d.m||{}).length); }
 function ladderStep(h, level){ if(!h || !h.ladder || !h.ladder.length) return null; var b = beltOf(level || 0).b; return h.ladder[Math.min(b, h.ladder.length - 1)]; }
@@ -1522,7 +1652,7 @@ function recompute(){
 function testLS(){ try { localStorage.setItem('__dl','1'); localStorage.removeItem('__dl'); return true; } catch(e){ return false; } }
 function persistLocal(){
   if(!lsOK) return;
-  try { localStorage.setItem(LS_KEY, JSON.stringify({v:1, settings:state.settings, days:state.days, unsynced:Array.from(unsynced), lifts:state.lifts.map(cleanLift), liftOps:liftOps, build:state.build, notes:state.notes})); } catch(e){}
+  try { localStorage.setItem(LS_KEY, JSON.stringify({v:1, settings:state.settings, days:state.days, unsynced:Array.from(unsynced), lifts:state.lifts.map(cleanLift), liftOps:liftOps, build:state.build, notes:state.notes, tasks:state.tasks})); } catch(e){}
 }
 function loadLocal(){
   if(!lsOK) return;
@@ -1535,6 +1665,7 @@ function loadLocal(){
     if(Array.isArray(c.lifts)) state.lifts = c.lifts.filter(function(l){ return l && l.id && Array.isArray(l.sets); });
     if(c.liftOps && typeof c.liftOps === 'object') liftOps = c.liftOps;
     if(Array.isArray(c.notes)) state.notes = c.notes.filter(function(x){ return x && x.id; });
+    if(c.tasks && typeof c.tasks === 'object') Object.keys(c.tasks).forEach(function(k){ var td = normalizeTaskDoc(c.tasks[k], k); if(!isEmptyTaskDoc(td)) state.tasks[k] = td; });
     if(c.build && typeof c.build === 'object') ['bnodes','bships','bskills'].forEach(function(k){ if(Array.isArray(c.build[k])) state.build[k] = c.build[k].filter(function(x){ return x && x.id; }); });
   } catch(e){}
 }
@@ -1567,6 +1698,15 @@ function connectCloud(){
         state.notes = snap.docs.map(function(doc){ return Object.assign({id:doc.id}, doc.data()); });
         persistLocal();
       }, onCloudError);
+      var tasksCol = settingsRef.collection('tasks'); cloud.tasks = tasksCol;
+      tasksCol.onSnapshot(function(snap){
+        if(snap.metadata.fromCache && snap.empty) return;
+        var next = {};
+        snap.docs.forEach(function(doc){ var td = normalizeTaskDoc(doc.data(), doc.id); if(!isEmptyTaskDoc(td)) next[doc.id] = td; });
+        Array.from(dirty.keys()).concat(Array.from(unsynced)).forEach(function(k){ if(k.indexOf('tasks:') !== 0) return; var d = k.slice(6); if(state.tasks[d]) next[d] = state.tasks[d]; else delete next[d]; });
+        state.tasks = next;
+        persistLocal(); render();
+      }, onCloudError);
       var liftsFlushed = false;
       liftsCol.onSnapshot(function(snap){
         if(snap.metadata.fromCache && snap.empty) return;
@@ -1589,7 +1729,7 @@ function connectCloud(){
         if(snap.metadata.fromCache && snap.empty) return;
         var next = {};
         snap.docs.forEach(function(doc){ var d = doc.data(); if(d){ var nd = normalizeDay(d, doc.id); if(!isEmptyDay(nd)) next[doc.id] = nd; } });
-        var keep = Array.from(dirty.keys()).concat(Array.from(unsynced));
+        var keep = Array.from(dirty.keys()).concat(Array.from(unsynced)).filter(function(k){ return k.indexOf('tasks:') !== 0; });
         keep.forEach(function(k){ if(state.days[k]) next[k] = state.days[k]; else delete next[k]; });
         state.days = next;
         if(!snap.metadata.fromCache && !flushedOnce){ flushedOnce = true; flushUnsynced(); }
@@ -1631,12 +1771,20 @@ function scheduleSave(date){
   timers[date] = setTimeout(function(){ flush(date); }, 400);
 }
 function writeDay(date){
+  if(date.indexOf('tasks:') === 0){
+    var tk = date.slice(6), tref = cloud.tasks.doc(tk), tdoc = state.tasks[tk];
+    if(!tdoc || isEmptyTaskDoc(tdoc)) return tref.delete();
+    var tbody = clone(tdoc); tbody.updatedAt = Date.now();
+    return tref.set(tbody);
+  }
   var ref = cloud.daysCol.doc(date);
   var doc = state.days[date];
   if(!doc || isEmptyDay(doc)) return ref.delete();
   var body = clone(doc); body.updatedAt = Date.now();
   return ref.set(body);
 }
+/* task docs ride the same dirty / retry queue as days, keyed "tasks:YYYY-MM-DD" */
+function scheduleSaveTasks(date){ scheduleSave('tasks:' + date); }
 function flush(date){
   if(!cloud || writing.has(date)) return;
   writing.add(date);
@@ -1940,9 +2088,10 @@ var ICON = {
 /* ---------- render ---------- */
 function render(){
   renderBelt();
-  ['today','lifts','body','progress','build'].forEach(function(t){ $('#tab-' + t).setAttribute('aria-selected', state.tab === t); $('#view-' + t).hidden = state.tab !== t; });
+  ['today','tasks','lifts','body','progress','build'].forEach(function(t){ $('#tab-' + t).setAttribute('aria-selected', state.tab === t); $('#view-' + t).hidden = state.tab !== t; });
   $('#view-today').style.display = state.tab === 'today' ? 'flex' : 'none';
-  if(state.tab === 'today'){ renderWeek(); renderDay(); renderHabits(); renderSync(); }
+  if(state.tab === 'today'){ ensureToday(); renderWeek(); renderDay(); renderHabits(); renderTasksCard(); renderSync(); }
+  else if(state.tab === 'tasks') renderTasks();
   else if(state.tab === 'lifts') renderLifts();
   else if(state.tab === 'body') renderBody();
   else if(state.tab === 'build') renderBuild();
@@ -3248,7 +3397,7 @@ function bUnlink(id, to){
 var extraFor = null, lastFocus = null;
 function openSheet(id){ lastFocus = document.activeElement; var el = $(id); el.hidden = false; var f = el.querySelector('button, input'); if(f) setTimeout(function(){ f.focus(); }, 30); }
 function closeSheets(){
-  ['#extra-sheet','#settings-sheet','#rank-sheet','#lift-sheet','#checkin-sheet','#build-sheet','#chat-sheet'].forEach(function(s){ $(s).hidden = true; });
+  ['#extra-sheet','#settings-sheet','#rank-sheet','#lift-sheet','#checkin-sheet','#build-sheet','#task-sheet','#chat-sheet'].forEach(function(s){ $(s).hidden = true; });
   if(lastFocus && document.contains(lastFocus)) try { lastFocus.focus(); } catch(e){}
 }
 function heldHTML(rk){
@@ -3310,6 +3459,375 @@ function renderSettingsList(){
   }).join('');
 }
 function draftHabit(id){ return draft.habits.filter(function(h){ return h.id === id; })[0]; }
+
+
+/* ---------- daily tasks ---------- */
+/* ---------- daily tasks ---------- */
+/* Pure data, no XP. Every item keeps: when it was created, planned, started (timer), done, dropped or pushed to another day, and what it was for. */
+var tkQA = {lane:null, q:2, block:null}, tkForm = null, tkArmed = false, tkHistOpen = {}, tkTplOpen = false;
+var tkTick = null;
+
+function taskQ(k){ return TASK_Q.filter(function(x){ return x.k === Number(k); })[0] || TASK_Q[1]; }
+function taskBlock(k){ return TASK_BLOCKS.filter(function(x){ return x.k === k; })[0] || TASK_BLOCKS[0]; }
+function blockNow(){ var h = new Date().getHours(); return h < 12 ? 'am' : h < 17 ? 'pm' : 'eve'; }
+function taskDoc(d){ return state.tasks[d] || {date:d, schema:1, items:[]}; }
+function isOpen(it){ return !it.doneAt && !it.droppedAt && !it.rolledTo; }
+function taskMins(it){ return it.actual || it.est || 0; }
+function timerMs(it){ return (it.timer ? it.timer.ms : 0) + (it.timer && it.timer.on ? Date.now() - it.timer.on : 0); }
+function fmtMin(n){ n = Math.round(n || 0); return n >= 60 ? Math.floor(n/60) + 'h' + (n % 60 ? ' ' + (n % 60) + 'm' : '') : n + 'm'; }
+function linkLabel(l){
+  if(!l) return '';
+  if(l.t === 'node'){ var n = bNode(l.id); return n ? n.name : (l.label || 'Project'); }
+  if(l.t === 'habit'){ var h = habitById(l.id); return h ? h.name : (l.label || 'Habit'); }
+  return l.label || (l.t === 'win' ? 'Weekly win' : '');
+}
+function findTask(d, id){ var doc = state.tasks[d]; return doc ? doc.items.filter(function(x){ return x.id === id; })[0] : null; }
+function findTaskAnyDay(id){
+  var out = null; Object.keys(state.tasks).forEach(function(d){ state.tasks[d].items.forEach(function(x){ if(x.id === id) out = {date:d, item:x}; }); }); return out;
+}
+
+/* ----- mutations: every change goes through here so it is saved and rendered the same way ----- */
+function mutateTasks(d, fn, opts){
+  opts = opts || {};
+  var doc = clone(taskDoc(d));
+  var r = fn(doc);
+  if(doc.items.length || doc.plannedAt || doc.closedAt) state.tasks[d] = doc; else delete state.tasks[d];
+  scheduleSaveTasks(d);
+  if(!opts.silent) render();
+  return r;
+}
+function newTask(f, src){
+  var now = Date.now();
+  return normalizeTask({id:'t' + uid(), title:f.title, lane:f.lane || tkQA.lane || TASK_LANES[0], q:f.q || 2, block:f.block || blockNow(), est:f.est, link:f.link || null, note:f.note || '',
+    src:src || 'page', tpl:f.tpl || null, origin:f.origin || f.date || todayKey(), rolled:f.rolled || 0, createdAt:now});
+}
+function addTask(d, f, src){
+  var it = newTask(Object.assign({date:d}, f), src);
+  mutateTasks(d, function(doc){ doc.items.push(it); });
+  tkQA.lane = it.lane;
+  return it;
+}
+function updateTask(d, id, f){
+  return mutateTasks(d, function(doc){
+    var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
+    ['title','lane','q','block','est','actual','link','note'].forEach(function(k){ if(f[k] !== undefined) it[k] = f[k]; });
+    var n = normalizeTask(it); Object.assign(it, n); it.updatedAt = Date.now();
+    return it;
+  });
+}
+function setDone(d, id, actual){
+  return mutateTasks(d, function(doc){
+    var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
+    if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+    it.doneAt = Date.now(); it.droppedAt = null; it.dropWhy = null;
+    if(Number.isFinite(actual) && actual > 0) it.actual = Math.round(actual);
+    else if(!it.actual && it.timer && it.timer.ms >= 60000) it.actual = Math.round(it.timer.ms/60000);
+    return it;
+  });
+}
+function undoDone(d, id){ return mutateTasks(d, function(doc){ var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(it){ it.doneAt = null; } return it; }); }
+function dropTask(d, id, why){
+  return mutateTasks(d, function(doc){
+    var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
+    if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+    it.droppedAt = Date.now(); it.dropWhy = why ? String(why).slice(0, 120) : null; it.doneAt = null; return it;
+  });
+}
+function undropTask(d, id){ return mutateTasks(d, function(doc){ var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(it){ it.droppedAt = null; it.dropWhy = null; } return it; }); }
+function deleteTask(d, id){ return mutateTasks(d, function(doc){ var n = doc.items.length; doc.items = doc.items.filter(function(x){ return x.id !== id; }); return doc.items.length < n; }); }
+function timerToggle(d, id){
+  var started = false;
+  mutateTasks(d, function(doc){
+    var now = Date.now();
+    doc.items.forEach(function(x){ if(x.id !== id && x.timer && x.timer.on){ x.timer.ms += now - x.timer.on; x.timer.on = null; } });
+    var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return;
+    it.timer = it.timer || {on:null, ms:0};
+    if(it.timer.on){ it.timer.ms += now - it.timer.on; it.timer.on = null; }
+    else { it.timer.on = now; if(!it.startedAt) it.startedAt = now; started = true; }
+  });
+  return started;
+}
+function lockPlan(d){ return mutateTasks(d, function(doc){ if(!doc.plannedAt) doc.plannedAt = Date.now(); return doc.plannedAt; }); }
+/* Close the day: stamp it and push whatever is still open onto tomorrow. */
+function closeDay(d){
+  var moved = 0, to = addDays(d, 1);
+  mutateTasks(d, function(doc){ doc.closedAt = Date.now(); }, {silent:true});
+  moved = rollInto(to, [d]);
+  render();
+  return {moved:moved, to:to};
+}
+/* Pull open items from earlier days into `d`. Each pushed item is marked rolledTo on its old day and copied with rolled+1, so nothing is pulled twice. Recurring tasks stay on their day: a miss is a miss. */
+function rollInto(d, fromDays){
+  var moved = 0, today = todayKey();
+  if(d > addDays(today, 1)) return 0;
+  var src = fromDays || Object.keys(state.tasks).filter(function(k){ return k < d && k >= addDays(d, -TASK_ROLL_DAYS); }).sort();
+  var copies = [];
+  src.forEach(function(k){
+    var doc = state.tasks[k]; if(!doc) return;
+    var open = doc.items.filter(function(it){ return isOpen(it) && !it.tpl; }); if(!open.length) return;
+    mutateTasks(k, function(od){
+      od.items.forEach(function(it){
+        if(!isOpen(it) || it.tpl) return;
+        if(it.timer && it.timer.on){ it.timer.ms += Date.now() - it.timer.on; it.timer.on = null; }
+        it.rolledTo = d;
+        var c = clone(it); c.id = 't' + uid(); c.rolled = (it.rolled || 0) + 1; c.src = 'rollover'; c.rolledTo = null; c.createdAt = Date.now(); c.doneAt = null; c.timer = {on:null, ms:0}; c.actual = null;
+        copies.push(c);
+      });
+    }, {silent:true});
+  });
+  if(copies.length) mutateTasks(d, function(doc){ copies.forEach(function(c){ doc.items.push(c); moved++; }); }, {silent:true});
+  return moved;
+}
+/* Recurring templates: put today's ones in place (once per template per day) */
+function materialize(d){
+  var tpls = (state.settings.taskTemplates || []).filter(function(t){ return !t.paused && t.since <= d && t.days.indexOf(parseKey(d).getDay()) >= 0; });
+  if(!tpls.length) return 0;
+  var doc = taskDoc(d), have = {}; doc.items.forEach(function(x){ if(x.tpl) have[x.tpl] = 1; });
+  var add = tpls.filter(function(t){ return !have[t.id]; }); if(!add.length) return 0;
+  mutateTasks(d, function(dd){ add.forEach(function(t){ dd.items.push(newTask({title:t.title, lane:t.lane, q:t.q, block:t.block, est:t.est, link:t.link, tpl:t.id, date:d}, 'recur')); }); }, {silent:true});
+  return add.length;
+}
+/* Called before rendering today: roll yesterday's leftovers in, then add today's recurring tasks. */
+function ensureToday(){
+  var t = todayKey(), since = addDays(t, -TASK_ROLL_DAYS);
+  var pending = Object.keys(state.tasks).some(function(k){ return k < t && k >= since && state.tasks[k].items.some(function(it){ return isOpen(it) && !it.tpl; }); });
+  if(pending){
+    var n = rollInto(t);
+    if(n) setTimeout(function(){ toast(n + (n === 1 ? ' task' : ' tasks') + ' carried over from before'); }, 400);
+  }
+  materialize(t);
+}
+function saveTemplate(t){
+  var s = clone(state.settings); s.taskTemplates = s.taskTemplates || [];
+  var i = s.taskTemplates.map(function(x){ return x.id; }).indexOf(t.id);
+  if(i >= 0) s.taskTemplates[i] = t; else s.taskTemplates.push(t);
+  state.settings.taskTemplates = s.taskTemplates.map(normalizeTemplate).filter(Boolean);
+  persistLocal(); saveSettings(); materialize(todayKey()); render();
+}
+function removeTemplate(id){
+  state.settings.taskTemplates = (state.settings.taskTemplates || []).filter(function(x){ return x.id !== id; });
+  persistLocal(); saveSettings(); render();
+}
+
+/* ----- stats, computed from the docs every time (nothing derived is stored) ----- */
+function taskStats(nDays){
+  var today = todayKey(), since = addDays(today, -(nDays - 1)), tg = T();
+  var days = Object.keys(state.tasks).filter(function(k){ return k >= since && k <= today; }).sort();
+  var o = {days:days.length, created:0, done:0, dropped:0, rolled:0, open:0, q:{1:0, 2:0, 3:0, 4:0}, qDone:{1:0, 2:0, 3:0, 4:0}, lanes:{}, blocks:{am:0, pm:0, eve:0}, mins:0, estPairs:[], planned:0, plannedBy:0, closed:0, rec:{green:[0,0], yellow:[0,0], red:[0,0]}, pushed:[]};
+  var planMin = tg.planBy ? Number(tg.planBy.split(':')[0])*60 + Number(tg.planBy.split(':')[1]) : null;
+  days.forEach(function(k){
+    var doc = state.tasks[k], dDone = 0, dAll = 0;
+    if(doc.plannedAt){ o.planned++; var pd = new Date(doc.plannedAt); if(planMin !== null && pd.getHours()*60 + pd.getMinutes() <= planMin) o.plannedBy++; }
+    if(doc.closedAt) o.closed++;
+    doc.items.forEach(function(it){
+      if(it.rolledTo){ o.rolled++; return; } // counted on the day it landed
+      o.created++; dAll++;
+      var L = o.lanes[it.lane] = o.lanes[it.lane] || {n:0, done:0, mins:0};
+      L.n++; o.q[it.q]++;
+      if(it.doneAt){ o.done++; dDone++; L.done++; o.qDone[it.q]++; o.blocks[it.block]++; var m = taskMins(it); L.mins += m; o.mins += m; if(it.est && it.actual) o.estPairs.push(it.actual/it.est); }
+      else if(it.droppedAt) o.dropped++;
+      else if(k === today) o.open++;
+    });
+    if(dAll){ var dm = state.days[k] && state.days[k].m, rec = dm ? dm.rec : null; if(Number.isFinite(rec)){ var z = rec >= 67 ? 'green' : rec >= 34 ? 'yellow' : 'red'; o.rec[z][0] += dDone; o.rec[z][1] += dAll; } }
+  });
+  var td = state.tasks[today];
+  if(td) o.pushed = td.items.filter(function(it){ return isOpen(it) && it.rolled >= 2; }).sort(function(a, b){ return b.rolled - a.rolled; }).slice(0, 5);
+  o.rate = o.created ? Math.round(o.done/o.created*100) : null;
+  o.q2share = o.done ? Math.round(o.qDone[2]/o.done*100) : null;
+  if(o.estPairs.length){ var s = o.estPairs.slice().sort(function(a, b){ return a - b; }); o.estMedian = s[Math.floor(s.length/2)]; }
+  return o;
+}
+
+/* ----- Today card ----- */
+function qaDefaults(){
+  if(!tkQA.lane){ var last = null; Object.keys(state.tasks).sort().forEach(function(k){ state.tasks[k].items.forEach(function(it){ if(!last || it.createdAt > last.createdAt) last = it; }); }); tkQA.lane = last ? last.lane : TASK_LANES[0]; }
+  if(!tkQA.block) tkQA.block = blockNow();
+}
+function chip(it){
+  var bits = ['<span class="tk-lane">' + esc(it.lane) + '</span>', '<span class="tk-q q' + it.q + '">Q' + it.q + '</span>', '<span class="tk-blk">' + esc(taskBlock(it.block).n) + '</span>'];
+  if(it.est || it.actual) bits.push('<span class="tk-min">' + (it.actual ? fmtMin(it.actual) + (it.est ? ' / ' + fmtMin(it.est) : '') : '~' + fmtMin(it.est)) + '</span>');
+  if(it.rolled) bits.push('<span class="tk-roll" title="Carried over ' + it.rolled + 'x">↻' + it.rolled + '</span>');
+  var ll = linkLabel(it.link); if(ll) bits.push('<span class="tk-link">' + esc(ll) + '</span>');
+  if(it.src === 'sched') bits.push('<span class="tk-win">One move</span>');
+  return bits.join('');
+}
+function itemHTML(d, it, today){
+  var on = it.timer && it.timer.on, ms = timerMs(it), state_ = it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'rolled' : 'open';
+  var h = '<li class="tk' + (state_ !== 'open' ? ' is-' + state_ : '') + (on ? ' is-timing' : '') + '" data-id="' + esc(it.id) + '">';
+  if(state_ === 'open' || state_ === 'done') h += '<button class="tk-check" type="button" data-act="' + (it.doneAt ? 'tk-undone' : 'tk-done') + '" data-d="' + d + '" data-id="' + esc(it.id) + '" aria-pressed="' + !!it.doneAt + '" aria-label="' + esc((it.doneAt ? 'Undo: ' : 'Done: ') + it.title) + '"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>';
+  else h += '<span class="tk-check tk-x" aria-hidden="true">' + (state_ === 'dropped' ? '✕' : '→') + '</span>';
+  h += '<button class="tk-main" type="button" data-act="tk-open" data-d="' + d + '" data-id="' + esc(it.id) + '"><span class="tk-title">' + esc(it.title) + '</span><span class="tk-chips">' + chip(it) +
+    (state_ === 'done' && it.doneAt ? '<span class="tk-at">' + esc(timeOf(it.doneAt)) + '</span>' : '') + (state_ === 'rolled' ? '<span class="tk-at">to ' + esc(fmtShort(it.rolledTo)) + '</span>' : '') + (state_ === 'dropped' && it.dropWhy ? '<span class="tk-at">' + esc(it.dropWhy) + '</span>' : '') + '</span>' +
+    (it.note ? '<span class="tk-note">' + esc(it.note) + '</span>' : '') + '</button>';
+  if(state_ === 'open' && d === today) h += '<button class="tk-timer' + (on ? ' on' : '') + '" type="button" data-act="tk-timer" data-d="' + d + '" data-id="' + esc(it.id) + '" aria-label="' + (on ? 'Stop timer' : 'Start timer') + '"><span data-timer="' + esc(it.id) + '">' + (ms >= 60000 || on ? fmtTimer(ms) : 'Timer') + '</span><i></i></button>';
+  else if(ms >= 60000 && state_ === 'open') h += '<span class="tk-timer"><span>' + fmtTimer(ms) + '</span></span>';
+  return h + '</li>';
+}
+function fmtTimer(ms){ var s = Math.floor(ms/1000), m = Math.floor(s/60), hh = Math.floor(m/60); return hh ? hh + ':' + String(m % 60).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0') : m + ':' + String(s % 60).padStart(2, '0'); }
+function sortOpen(a, b){ var bo = ['am','pm','eve']; return (a.q - b.q) || (bo.indexOf(a.block) - bo.indexOf(b.block)) || (a.createdAt - b.createdAt); }
+function tasksCardHTML(d){
+  var today = todayKey(), doc = taskDoc(d), items = doc.items, open = items.filter(isOpen).sort(sortOpen), done = items.filter(function(x){ return x.doneAt; }).sort(function(a, b){ return b.doneAt - a.doneAt; });
+  var gone = items.filter(function(x){ return x.droppedAt || x.rolledTo; });
+  var tg = T(), h = '<div class="tk-head"><div><p class="eyebrow">Tasks' + (d !== today ? ' · ' + esc(fmtShort(d)) : '') + '</p><p class="tk-sum"><b>' + done.length + '</b> done · <b>' + open.length + '</b> open' +
+    (doc.plannedAt ? ' · planned ' + esc(timeOf(doc.plannedAt)) : '') + (doc.closedAt ? ' · closed ' + esc(timeOf(doc.closedAt)) : '') + '</p></div>';
+  if(d === today) h += '<div class="tk-head-acts">' + (!doc.plannedAt && items.length ? '<button class="pill-btn" type="button" data-act="tk-lock" data-d="' + d + '">Lock plan</button>' : '') + (!doc.closedAt && items.length ? '<button class="pill-btn" type="button" data-act="tk-close" data-d="' + d + '">Close day</button>' : '') + '</div>';
+  h += '</div>';
+  if(d === today || d === addDays(today, 1)){
+    qaDefaults();
+    h += '<form class="tk-add" id="tq-form" autocomplete="off" data-d="' + d + '"><input id="tq-title" type="text" maxlength="120" placeholder="Add a task…" aria-label="New task">' +
+      '<div class="tk-qa"><select id="tq-lane" aria-label="Lane">' + TASK_LANES.map(function(l){ return '<option' + (l === tkQA.lane ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select>' +
+      '<span class="tk-seg" role="group" aria-label="Quadrant">' + TASK_Q.map(function(q){ return '<button type="button" class="q' + q.k + (tkQA.q === q.k ? ' on' : '') + '" data-act="tk-qa-q" data-v="' + q.k + '" title="' + esc(q.t) + '">' + q.n + '</button>'; }).join('') + '</span>' +
+      '<span class="tk-seg" role="group" aria-label="Block">' + TASK_BLOCKS.map(function(b){ return '<button type="button" class="' + (tkQA.block === b.k ? 'on' : '') + '" data-act="tk-qa-block" data-v="' + b.k + '">' + esc(b.n) + '</button>'; }).join('') + '</span>' +
+      '<button class="primary small" type="submit">Add</button></div></form>';
+  }
+  if(!items.length) h += '<p class="nudge">' + (d === today ? 'Nothing planned yet. Add what today is for, then lock the plan before deep work (' + esc(tg.planBy || '07:30') + ').' : 'No tasks on this day.') + '</p>';
+  if(open.length) h += '<ul class="tk-list">' + open.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul>';
+  if(done.length) h += '<details class="tk-done-wrap"' + (open.length ? '' : ' open') + '><summary>Done · ' + done.length + (doc.items.some(function(x){ return x.doneAt && taskMins(x); }) ? ' · ' + fmtMin(done.reduce(function(a, x){ return a + taskMins(x); }, 0)) : '') + '</summary><ul class="tk-list">' + done.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
+  if(gone.length) h += '<details class="tk-done-wrap"><summary>Pushed or dropped · ' + gone.length + '</summary><ul class="tk-list">' + gone.map(function(it){ return itemHTML(d, it, today); }).join('') + '</ul></details>';
+  return h;
+}
+function renderTasksCard(){
+  var el = $('#tasks'); if(!el) return;
+  var inp = $('#tq-title'), keep = inp ? {v:inp.value, f:document.activeElement === inp} : null;
+  el.innerHTML = tasksCardHTML(state.selected);
+  if(keep && keep.v){ var ni = $('#tq-title'); if(ni){ ni.value = keep.v; if(keep.f) ni.focus(); } }
+  startTick();
+}
+function startTick(){
+  if(tkTick) return;
+  tkTick = setInterval(function(){
+    var any = false;
+    document.querySelectorAll('[data-timer]').forEach(function(sp){
+      var f = findTaskAnyDay(sp.getAttribute('data-timer')); if(!f || !f.item.timer || !f.item.timer.on) return;
+      any = true; sp.textContent = fmtTimer(timerMs(f.item));
+    });
+    if(!any){ clearInterval(tkTick); tkTick = null; }
+  }, 1000);
+}
+function quickAdd(){
+  var d = $('#tq-form').getAttribute('data-d') || todayKey(), title = $('#tq-title').value.trim();
+  if(!title){ $('#tq-title').focus(); return; }
+  tkQA.lane = $('#tq-lane').value;
+  var it = addTask(d, {title:title, lane:tkQA.lane, q:tkQA.q, block:tkQA.block}, 'page');
+  var ni = $('#tq-title'); if(ni){ ni.value = ''; ni.focus(); }
+  return it;
+}
+function onDone(d, id, btn){
+  var it = setDone(d, id); if(!it) return;
+  if(it.doneAt && !it.droppedAt){
+    var all = taskDoc(d).items.filter(function(x){ return !x.rolledTo && !x.droppedAt; }), left = all.filter(isOpen).length;
+    if(!left && all.length > 1) burst();
+    toast(left ? 'Done · ' + left + ' left' + (it.actual ? ' · ' + fmtMin(it.actual) : '') : 'All done for ' + (d === todayKey() ? 'today' : fmtShort(d)), it.actual ? null : {label:'Minutes?', fn:function(){ openTaskSheet(d, id, 'actual'); }});
+  }
+}
+
+/* ----- the task sheet (edit one item, or a recurring template) ----- */
+function linkOptions(cur){
+  var o = '<option value="">Nothing specific</option><optgroup label="Projects">';
+  state.build.bnodes.slice().sort(function(a, b){ return String(a.name).localeCompare(String(b.name)); }).forEach(function(n){ o += '<option value="node:' + esc(n.id) + '"' + (cur && cur.t === 'node' && cur.id === n.id ? ' selected' : '') + '>' + esc(n.name) + '</option>'; });
+  o += '</optgroup><optgroup label="Habits">';
+  state.settings.habits.forEach(function(h){ o += '<option value="habit:' + esc(h.id) + '"' + (cur && cur.t === 'habit' && cur.id === h.id ? ' selected' : '') + '>' + esc(h.name) + '</option>'; });
+  o += '</optgroup><option value="win:"' + (cur && cur.t === 'win' ? ' selected' : '') + '>This week’s win</option>';
+  return o;
+}
+function parseLink(v, label){ if(!v) return null; var p = v.split(':'); return {t:p[0], id:p.slice(1).join(':'), label:label || ''}; }
+function openTaskSheet(d, id, focus){
+  tkArmed = false;
+  var it = findTask(d, id); if(!it) return;
+  tkForm = {mode:'item', date:d, id:id};
+  $('#tk-h').textContent = 'Task';
+  $('#tk-form').innerHTML = formFields(it, false) +
+    '<p class="lf-msg full" id="tk-msg" role="status"></p><div class="sheet-actions full">' +
+    (it.doneAt ? '' : it.droppedAt ? '<button class="ghost" type="button" data-act="tk-undrop">Bring back</button>' : '<button class="ghost" type="button" data-act="tk-drop">Drop</button>') +
+    '<button class="ghost" type="button" data-act="tk-delete">Delete</button><button class="ghost" type="button" data-act="close-sheet">Cancel</button><button class="primary" type="submit">Save</button></div>';
+  openSheet('#task-sheet');
+  if(focus){ var f = $('#tk-' + focus); if(f) setTimeout(function(){ f.focus(); }, 60); }
+}
+function openTemplateSheet(id){
+  tkArmed = false;
+  var t = id ? (state.settings.taskTemplates || []).filter(function(x){ return x.id === id; })[0] : null;
+  tkForm = {mode:'tpl', id:t ? t.id : null};
+  $('#tk-h').textContent = t ? 'Recurring task' : 'New recurring task';
+  $('#tk-form').innerHTML = formFields(t || {title:'', lane:tkQA.lane || TASK_LANES[0], q:2, block:'am', days:[1,2,3,4,5]}, true) +
+    '<p class="lf-msg full" id="tk-msg" role="status"></p><div class="sheet-actions full">' + (t ? '<button class="ghost" type="button" data-act="tk-tpl-' + (t.paused ? 'resume' : 'pause') + '">' + (t.paused ? 'Resume' : 'Pause') + '</button><button class="ghost" type="button" data-act="tk-delete">Delete</button>' : '') +
+    '<button class="ghost" type="button" data-act="close-sheet">Cancel</button><button class="primary" type="submit">Save</button></div>';
+  openSheet('#task-sheet');
+}
+function formFields(it, tpl){
+  var f = '<label class="lf-field full" for="tk-title"><span>' + (tpl ? 'Task' : 'What') + '</span><input id="tk-title" maxlength="120" value="' + esc(it.title) + '" placeholder="Call Adnan about the lease"></label>' +
+    '<label class="lf-field" for="tk-lane"><span>Lane</span><select id="tk-lane">' + TASK_LANES.map(function(l){ return '<option' + (l === it.lane ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + (TASK_LANES.indexOf(it.lane) < 0 && it.lane ? '<option selected>' + esc(it.lane) + '</option>' : '') + '</select></label>' +
+    '<label class="lf-field" for="tk-block"><span>Block</span><select id="tk-block">' + TASK_BLOCKS.map(function(b){ return '<option value="' + b.k + '"' + (b.k === it.block ? ' selected' : '') + '>' + esc(b.n) + ' (' + b.t.toLowerCase() + ')</option>'; }).join('') + '</select></label>' +
+    '<div class="lf-field full"><span>Quadrant</span><div class="tk-qgrid" id="tk-q">' + TASK_Q.map(function(q){ return '<button type="button" class="q' + q.k + (q.k === it.q ? ' on' : '') + '" data-act="tk-q" data-v="' + q.k + '"><b>' + q.n + '</b><span>' + esc(q.t) + '</span></button>'; }).join('') + '</div></div>' +
+    '<label class="lf-field" for="tk-est"><span>Estimate (min)</span><input id="tk-est" type="number" inputmode="numeric" min="1" max="720" value="' + (it.est || '') + '"></label>' +
+    (tpl ? '<div class="lf-field"><span>Days</span><div class="tk-days" id="tk-days">' + ['S','M','T','W','T','F','S'].map(function(l, i){ return '<button type="button" class="' + ((it.days || []).indexOf(i) >= 0 ? 'on' : '') + '" data-act="tk-day" data-v="' + i + '" aria-label="' + ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][i] + '">' + l + '</button>'; }).join('') + '</div></div>' :
+      '<label class="lf-field" for="tk-actual"><span>Actual (min)</span><input id="tk-actual" type="number" inputmode="numeric" min="1" max="720" value="' + (it.actual || '') + '"></label>') +
+    '<label class="lf-field full" for="tk-link"><span>For</span><select id="tk-link">' + linkOptions(it.link) + '</select></label>' +
+    (!tpl ? '<label class="lf-field full" for="tk-note"><span>Outcome / note</span><input id="tk-note" maxlength="300" value="' + esc(it.note || '') + '" placeholder="What happened, what’s next"></label>' : '');
+  if(!tpl && (it.rolled || it.src !== 'page' || it.createdAt)) f += '<p class="muted small full">' + [it.createdAt ? 'Added ' + fmtShort(it.origin || tkForm.date) + ' ' + timeOf(it.createdAt) : '', it.rolled ? 'carried over ' + it.rolled + (it.rolled === 1 ? ' time' : ' times') : '', it.src !== 'page' ? 'from ' + ({coach:'Coach', sched:'daily one move', recur:'recurring', rollover:'a previous day'}[it.src] || it.src) : '', it.timer && it.timer.ms ? 'timer ' + fmtTimer(it.timer.ms) : ''].filter(Boolean).join(' · ') + '</p>';
+  return f;
+}
+function saveTaskForm(){
+  var m = tkForm; if(!m) return;
+  function val(id){ var el = $('#' + id); return el ? el.value.trim() : ''; }
+  var msg = $('#tk-msg'), title = val('tk-title'); if(!title){ msg.className = 'lf-msg full err'; msg.textContent = 'Give it a name.'; $('#tk-title').focus(); return; }
+  var qb = document.querySelector('#tk-q button.on'), q = qb ? Number(qb.getAttribute('data-v')) : 2;
+  var link = parseLink(val('tk-link'), ''); if(link) link.label = linkLabel(link);
+  var f = {title:title, lane:val('tk-lane'), block:val('tk-block'), q:q, est:parseInt(val('tk-est'), 10) || null, link:link};
+  if(m.mode === 'tpl'){
+    var days = Array.from(document.querySelectorAll('#tk-days button.on')).map(function(b){ return Number(b.getAttribute('data-v')); });
+    if(!days.length){ msg.className = 'lf-msg full err'; msg.textContent = 'Pick at least one day.'; return; }
+    var old = m.id ? (state.settings.taskTemplates || []).filter(function(x){ return x.id === m.id; })[0] : null;
+    saveTemplate(Object.assign({}, old || {id:'r' + uid(), since:todayKey(), createdAt:Date.now(), paused:false}, f, {days:days}));
+    closeSheets(); toast(old ? 'Recurring task updated' : 'Recurring task added');
+    return;
+  }
+  f.actual = parseInt(val('tk-actual'), 10) || null; f.note = val('tk-note');
+  updateTask(m.date, m.id, f);
+  closeSheets(); toast('Saved');
+}
+function sheetAct(act, t){
+  var m = tkForm; if(!m) return;
+  if(act === 'tk-q'){ document.querySelectorAll('#tk-q button').forEach(function(b){ b.classList.toggle('on', b === t); }); return; }
+  if(act === 'tk-day'){ t.classList.toggle('on'); return; }
+  if(act === 'tk-delete'){
+    if(!tkArmed){ tkArmed = true; t.textContent = 'Tap again to delete'; t.classList.add('armed'); return; }
+    if(m.mode === 'tpl'){ removeTemplate(m.id); } else deleteTask(m.date, m.id);
+    closeSheets(); toast('Deleted'); return;
+  }
+  if(act === 'tk-drop'){ dropTask(m.date, m.id, $('#tk-note') ? $('#tk-note').value.trim() : ''); closeSheets(); toast('Dropped. It stays in the record.'); return; }
+  if(act === 'tk-undrop'){ undropTask(m.date, m.id); closeSheets(); toast('Back on the list'); return; }
+  if(act === 'tk-tpl-pause' || act === 'tk-tpl-resume'){ var tp = (state.settings.taskTemplates || []).filter(function(x){ return x.id === m.id; })[0]; if(tp){ var c = clone(tp); c.paused = act === 'tk-tpl-pause'; saveTemplate(c); } closeSheets(); return; }
+}
+
+/* ----- Tasks tab ----- */
+function pct(n, d){ return d ? Math.round(n/d*100) + '%' : '–'; }
+function renderTasks(){
+  ensureToday();
+  var view = $('#view-tasks'), today = todayKey(), s30 = taskStats(30), s7 = taskStats(7), td = taskDoc(today);
+  var h = '<section class="card tasks-card" id="tasks">' + tasksCardHTML(today) + '</section>';
+  h += '<section class="card"><p class="eyebrow">Last 30 days · ' + s30.days + (s30.days === 1 ? ' day' : ' days') + ' with tasks</p><div class="tk-tiles">' +
+    '<div><b>' + (s30.rate === null ? '–' : s30.rate + '%') + '</b><span>Done rate</span><em>7d ' + (s7.rate === null ? '–' : s7.rate + '%') + '</em></div>' +
+    '<div><b>' + (s30.q2share === null ? '–' : s30.q2share + '%') + '</b><span>Q2 share of done</span><em>important, not urgent</em></div>' +
+    '<div><b>' + pct(s30.rolled, s30.created + s30.rolled) + '</b><span>Pushed to another day</span><em>' + s30.rolled + ' of ' + (s30.created + s30.rolled) + '</em></div>' +
+    '<div><b>' + (s30.estMedian ? Math.round(s30.estMedian*100) + '%' : '–') + '</b><span>Actual vs estimate</span><em>' + s30.estPairs.length + ' timed</em></div>' +
+    '<div><b>' + pct(s30.plannedBy, s30.days) + '</b><span>Planned by ' + esc(T().planBy || '07:30') + '</span><em>locked ' + s30.planned + ' of ' + s30.days + '</em></div>' +
+    '<div><b>' + pct(s30.closed, s30.days) + '</b><span>Days closed</span><em>' + fmtMin(s30.mins) + ' logged</em></div></div></section>';
+  var lanes = Object.keys(s30.lanes).sort(function(a, b){ return s30.lanes[b].done - s30.lanes[a].done; }), maxL = Math.max.apply(null, [1].concat(lanes.map(function(l){ return s30.lanes[l].n; })));
+  h += '<section class="card"><p class="eyebrow">By lane · 30 days</p>' + (lanes.length ? '<div class="tk-lanes">' + lanes.map(function(l){ var L = s30.lanes[l]; return '<div class="tk-lrow"><span class="tk-lname">' + esc(l) + '</span><div class="tk-lbar"><span style="width:' + (L.n/maxL*100).toFixed(1) + '%"><i style="width:' + (L.n ? L.done/L.n*100 : 0).toFixed(1) + '%"></i></span></div><span class="tk-lnum">' + L.done + '/' + L.n + (L.mins ? ' · ' + fmtMin(L.mins) : '') + '</span></div>'; }).join('') + '</div>' : '<p class="muted small">No tasks yet.</p>') + '</section>';
+  h += '<section class="card"><p class="eyebrow">Quadrants · 30 days, done / added</p><div class="tk-qgrid big">' + TASK_Q.map(function(q){ return '<div class="q' + q.k + '"><b>' + s30.qDone[q.k] + '<small>/' + s30.q[q.k] + '</small></b><span>' + q.n + ' · ' + esc(q.t) + '</span></div>'; }).join('') + '</div>' +
+    '<p class="muted small">Blocks: deep work ' + s30.blocks.am + ' · physical ' + s30.blocks.pm + ' · evening ' + s30.blocks.eve + ' done.</p></section>';
+  var rz = ['green','yellow','red'].filter(function(z){ return s30.rec[z][1] >= 5; });
+  if(rz.length) h += '<section class="card"><p class="eyebrow">Done rate by morning recovery · 30 days</p><div class="tk-tiles three">' + rz.map(function(z){ return '<div class="z-' + z + '"><b>' + pct(s30.rec[z][0], s30.rec[z][1]) + '</b><span>' + z.charAt(0).toUpperCase() + z.slice(1) + ' days</span><em>' + s30.rec[z][1] + ' tasks</em></div>'; }).join('') + '</div></section>';
+  if(s30.pushed.length) h += '<section class="card"><p class="eyebrow">Most pushed · still open today</p><ul class="tk-list">' + s30.pushed.map(function(it){ return itemHTML(today, it, today); }).join('') + '</ul><p class="muted small">Pushed 2+ times means do it today, drop it, or admit it isn’t a task.</p></section>';
+  var tpls = state.settings.taskTemplates || [];
+  h += '<section class="card"><div class="tk-head"><p class="eyebrow">Recurring tasks · ' + tpls.length + '</p><button class="pill-btn" type="button" data-act="tk-tpl-new">Add</button></div>' +
+    (tpls.length ? '<ul class="tk-list">' + tpls.map(function(t){ return '<li class="tk' + (t.paused ? ' is-dropped' : '') + '"><span class="tk-check tk-x" aria-hidden="true">↻</span><button class="tk-main" type="button" data-act="tk-tpl-edit" data-id="' + esc(t.id) + '"><span class="tk-title">' + esc(t.title) + (t.paused ? ' (paused)' : '') + '</span><span class="tk-chips"><span class="tk-lane">' + esc(t.lane) + '</span><span class="tk-q q' + t.q + '">Q' + t.q + '</span><span class="tk-blk">' + esc(taskBlock(t.block).n) + '</span><span class="tk-min">' + t.days.map(function(i){ return ['Su','Mo','Tu','We','Th','Fr','Sa'][i]; }).join(' ') + '</span></span></button></li>'; }).join('') + '</ul>' : '<p class="muted small">Things you do on set days (inventory check, invoices, weekly review). They show up on their day by themselves.</p>') + '</section>';
+  var hist = Object.keys(state.tasks).filter(function(k){ return k < today; }).sort().reverse().slice(0, 14);
+  if(hist.length) h += '<section class="card"><p class="eyebrow">History</p>' + hist.map(function(k){ var doc = state.tasks[k], dn = doc.items.filter(function(x){ return x.doneAt; }).length, n = doc.items.filter(function(x){ return !x.rolledTo; }).length; return '<details class="tk-day"' + (tkHistOpen[k] ? ' open' : '') + ' data-d="' + k + '"><summary><b>' + esc(fmtWd(k)) + '</b><span>' + dn + '/' + n + ' done' + (doc.plannedAt ? ' · planned ' + esc(timeOf(doc.plannedAt)) : '') + (doc.closedAt ? ' · closed' : '') + '</span></summary><ul class="tk-list">' + doc.items.slice().sort(sortOpen).map(function(it){ return itemHTML(k, it, today); }).join('') + '</ul></details>'; }).join('') + '</section>';
+  view.innerHTML = h;
+  startTick();
+}
+
 
 /* ---------- coach: chat with Claude, which reads and writes this tracker ---------- */
 /* Claude runs through the sample capability; every change goes through the same functions the page's own buttons use. */
@@ -3675,7 +4193,7 @@ var COACH_TOOLS = [
    };
  }},
 {name:'set_targets', busy:'Changing targets',
- description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed ("HH:MM"), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
+ description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed planBy ("HH:MM"; planBy = when the day’s task plan should be locked by), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
  schema:{type:'object', properties:{changes:{type:'object', description:'key: new value'}}, required:['changes']},
  run:function(inp){
    var ch = inp.changes && typeof inp.changes === 'object' ? inp.changes : {}, keys = Object.keys(ch);
@@ -3684,7 +4202,7 @@ var COACH_TOOLS = [
    keys.forEach(function(k){
      if(!(k in DEFAULT_TARGETS)) throw new Error('Unknown target "' + k + '". Keys: ' + Object.keys(DEFAULT_TARGETS).join(', '));
      var v = ch[k];
-     if(k === 'lastMeal' || k === 'bed' || k === 'friBed' || k === 'satBed') v = cTime(v);
+     if(k === 'lastMeal' || k === 'bed' || k === 'friBed' || k === 'satBed' || k === 'planBy') v = cTime(v);
      else { v = Number(v); if(!Number.isFinite(v) || v < 0) throw new Error(k + ' must be a number.'); }
      s2.targets[k] = v; labels.push(k + ' ' + v);
    });
@@ -4001,13 +4519,13 @@ function noteRemove(id){
 /* ----- storage numbers ----- */
 function recordCounts(){
   var B = state.build;
-  return {days:Object.keys(state.days).length, lifts:state.lifts.length, mapBoxes:B.bnodes.length, ships:B.bships.length, skills:B.bskills.length, notes:state.notes.length, coachLogDays:coach.logDays || 0};
+  return {days:Object.keys(state.days).length, lifts:state.lifts.length, mapBoxes:B.bnodes.length, ships:B.bships.length, skills:B.bskills.length, notes:state.notes.length, taskDays:Object.keys(state.tasks).length, coachLogDays:coach.logDays || 0};
 }
 async function storageStatus(){
   var c = recordCounts(), used = 3 + Object.keys(c).reduce(function(a, k){ return a + c[k]; }, 0);
   var since = addDays(todayKey(), -90);
   var lifts90 = state.lifts.filter(function(l){ return l.date >= since; }).length;
-  var perYear = Math.round(365 + 365 + lifts90*365/90 + 60);
+  var perYear = Math.round(365 + 365 + 365 + lifts90*365/90 + 60);
   var out = {records:{used:used, cap:DB_CAP, pct:Math.round(used/DB_CAP*1000)/10, breakdown:c}, growthPerYear:perYear, yearsLeft:Math.round((DB_CAP - used)/Math.max(perYear, 1)*10)/10};
   if(coach.assets){
     try { var l = await coach.assets.list(); out.photos = {files:l.usage.files, maxFiles:l.usage.maxFiles, mb:Math.round(l.usage.bytes/1048576*10)/10, maxMb:Math.round(l.usage.maxBytes/1048576), pct:l.usage.maxBytes ? Math.round(l.usage.bytes/l.usage.maxBytes*1000)/10 : 0}; }
@@ -4094,6 +4612,7 @@ var EXPORT_README = [
   'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
   'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
   'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
+  'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, how many times it was pushed, timestamps in UTC.',
   'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
   'photos/        Every photo sent to Coach, named by date.',
   '',
@@ -4101,6 +4620,7 @@ var EXPORT_README = [
   'strain, napMin minutes, bed / wake times (bed = the night before this date), cal, pro / carb / fat / fib grams, sod mg, first / meal = first and last food times,',
   'meals count, weight lb, waist inches, sess sessions, tags, patch = nicotine patch worn overnight, vape, wo = WHOOP workouts, naps.'
 ].join('\r\n');
+function iso(ts){ return ts ? new Date(ts).toISOString() : ''; }
 async function buildExport(withPhotos, onStep){
   onStep = onStep || function(){};
   var now = new Date(), stamp = todayKey(), files = [];
@@ -4111,7 +4631,7 @@ async function buildExport(withPhotos, onStep){
   if(coach.assets){ try { photos = (await coach.assets.list()).assets; } catch(e){} }
   var lifts = state.lifts.map(cleanLift).sort(function(a, b){ return liftKey(a) < liftKey(b) ? -1 : 1; });
   var dayKeys = Object.keys(state.days).sort();
-  var json = {app:'Game Of Life', exportedAt:now.toISOString(), format:1, settings:state.settings, days:dayKeys.map(function(k){ return state.days[k]; }), lifts:lifts, build:{mapBoxes:state.build.bnodes, ships:state.build.bships, skills:state.build.bskills}, notes:state.notes, coachLog:log,
+  var json = {app:'Game Of Life', exportedAt:now.toISOString(), format:1, settings:state.settings, days:dayKeys.map(function(k){ return state.days[k]; }), lifts:lifts, build:{mapBoxes:state.build.bnodes, ships:state.build.bships, skills:state.build.bskills}, notes:state.notes, tasks:Object.keys(state.tasks).sort().map(function(k){ return state.tasks[k]; }), taskTemplates:state.settings.taskTemplates || [], coachLog:log,
     photos:photos.map(function(p){ return {id:p.id, file:'photos/' + p.createdAt.slice(0, 10) + '_' + p.id.slice(0, 8) + (p.contentType === 'image/png' ? '.png' : '.jpg'), createdAt:p.createdAt, contentType:p.contentType, bytes:p.sizeBytes}; })};
   files.push({name:'README.txt', data:EXPORT_README});
   files.push({name:'data.json', data:JSON.stringify(json, null, 1)});
@@ -4130,6 +4650,8 @@ async function buildExport(withPhotos, onStep){
   files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
+  var trows = []; Object.keys(state.tasks).sort().forEach(function(k){ var td = state.tasks[k]; td.items.forEach(function(it){ trows.push([k, it.title, it.lane, 'Q' + it.q, it.block, it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed' : 'open', it.est || '', it.actual || '', it.timer && it.timer.ms ? Math.round(it.timer.ms/60000) : '', it.rolled || 0, it.origin || k, it.src, linkLabel(it.link), it.note || '', iso(it.createdAt), iso(td.plannedAt), iso(it.startedAt), iso(it.doneAt), iso(it.droppedAt), it.dropWhy || '', it.rolledTo || '', iso(td.closedAt), it.id]); }); });
+  files.push({name:'tasks.csv', data:toCSV(['date', 'task', 'lane', 'quadrant', 'block', 'status', 'est_min', 'actual_min', 'timer_min', 'times_pushed', 'first_planned_on', 'source', 'for', 'note', 'created', 'day_plan_locked', 'started', 'done', 'dropped', 'drop_reason', 'pushed_to', 'day_closed', 'id'], trows)});
   files.push({name:'notes.csv', data:toCSV(['date', 'tags', 'text', 'id'], state.notes.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ return [x.date, (x.tags || []).join('; '), x.text, x.id]; }))});
   var crow = []; log.forEach(function(d){ (d.turns || []).forEach(function(t){ crow.push([new Date(t.at).toISOString(), t.role, t.text, (t.changes || []).join('; '), (t.photos || []).length || '']); }); });
   files.push({name:'coach-log.csv', data:toCSV(['time_utc', 'who', 'message', 'changes_made', 'photos'], crow)});
@@ -4327,10 +4849,10 @@ COACH_TOOLS.push(
    return exportAll(function(s){ coach.status = s; coachRender(); }).then(function(x){ return {ok:true, filename:x.filename, files:x.files, photos:x.photos, photosMissed:x.photosMissed, sizeMB:x.mb, records:x.counts}; });
  }},
 {name:'navigate', busy:'Opening',
- description:'Show him something on the page behind the chat: a tab (today, lifts, body, progress, build) and optionally a date to open on Today. Closes the chat so he can see it.',
- schema:{type:'object', properties:{tab:{type:'string', enum:['today', 'lifts', 'body', 'progress', 'build']}, date:{type:'string'}}, required:['tab']},
+ description:'Show him something on the page behind the chat: a tab (today, tasks, lifts, body, progress, build) and optionally a date to open on Today. Closes the chat so he can see it.',
+ schema:{type:'object', properties:{tab:{type:'string', enum:['today', 'tasks', 'lifts', 'body', 'progress', 'build']}, date:{type:'string'}}, required:['tab']},
  run:function(inp){
-   var tab = ['today', 'lifts', 'body', 'progress', 'build'].indexOf(inp.tab) >= 0 ? inp.tab : 'today';
+   var tab = ['today', 'tasks', 'lifts', 'body', 'progress', 'build'].indexOf(inp.tab) >= 0 ? inp.tab : 'today';
    if(inp.date){ var d = cDate(inp.date); state.selected = d; state.weekOf = mondayOf(d); tab = 'today'; }
    state.tab = tab;
    setTimeout(function(){ closeSheets(); render(); window.scrollTo({top:0, behavior:'auto'}); }, 900);
@@ -4488,6 +5010,133 @@ COACH_RULES += '\n\n' + [
     return s;
   };
 })();
+/* ----- daily tasks ----- */
+function taskBrief(d, it){
+  var o = {id:it.id, title:it.title, lane:it.lane, q:it.q, block:it.block, status:it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'pushed to ' + it.rolledTo : 'open'};
+  if(it.est) o.estMin = it.est; if(it.actual) o.actualMin = it.actual; if(it.timer && it.timer.on) o.timerRunning = true; else if(it.timer && it.timer.ms >= 60000) o.timerMin = Math.round(it.timer.ms/60000);
+  if(it.link) o.for = linkLabel(it.link); if(it.note) o.note = it.note; if(it.rolled) o.timesPushed = it.rolled; if(it.src !== 'page') o.from = it.src; if(it.doneAt) o.doneAt = timeOf(it.doneAt); if(it.dropWhy) o.dropWhy = it.dropWhy;
+  return o;
+}
+function snapTasks(keys){ var s = {}; keys.forEach(function(k){ s[k] = state.tasks[k] ? clone(state.tasks[k]) : null; }); return s; }
+function restoreTasks(s){ Object.keys(s).forEach(function(k){ if(s[k]) state.tasks[k] = clone(s[k]); else delete state.tasks[k]; scheduleSaveTasks(k); }); render(); }
+function tDate(v){
+  var s = String(v == null ? '' : v).trim().toLowerCase();
+  if(!s || s === 'today') return todayKey();
+  if(s === 'tomorrow') return addDays(todayKey(), 1);
+  if(s === 'yesterday') return addDays(todayKey(), -1);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) throw new Error('Dates are YYYY-MM-DD, today or tomorrow, got "' + v + '".');
+  if(s > addDays(todayKey(), 1)) throw new Error('Tasks can be planned for today or tomorrow only.');
+  return s;
+}
+function tLane(v){ var s = cleanStr(v, 30); if(!s) return undefined; var hit = TASK_LANES.filter(function(l){ return norm(l) === norm(s); })[0]; return hit || s; }
+function tLink(inp){
+  if(inp.for_project){ var n = findNode(inp.for_project); if(!n) throw new Error('No map box called "' + inp.for_project + '". Use the exact name from build.nodes, or leave it off.'); return {t:'node', id:n.id, label:n.name}; }
+  if(inp.for_habit){ var h = findHabit(inp.for_habit); if(!h) throw new Error('No habit called "' + inp.for_habit + '".'); return {t:'habit', id:h.id, label:h.name}; }
+  if(inp.for_win) return {t:'win', id:'', label:cleanStr(inp.for_win, 80)};
+  return undefined;
+}
+function tFind(d, ref){
+  var doc = taskDoc(d), s = String(ref || '').trim();
+  var it = doc.items.filter(function(x){ return x.id === s; })[0]; if(it) return it;
+  var open = doc.items.filter(isOpen), hits = open.filter(function(x){ return norm(x.title) === norm(s); });
+  if(!hits.length) hits = open.filter(function(x){ return norm(x.title).indexOf(norm(s)) >= 0; });
+  if(hits.length === 1) return hits[0];
+  if(hits.length > 1) throw new Error('"' + s + '" matches ' + hits.length + ' open tasks: ' + hits.map(function(x){ return x.title + ' (' + x.id + ')'; }).join('; ') + '. Use the id.');
+  throw new Error('No task "' + s + '" on ' + d + '. Use tasks list to see ids.');
+}
+var TASK_FIELDS = {title:{type:'string'}, lane:{type:'string', description:'One of: ' + TASK_LANES.join(', ') + '.'}, q:{type:'integer', description:'Quadrant 1-4: 1 urgent+important, 2 important not urgent (default), 3 urgent not important, 4 neither.'},
+  block:{type:'string', enum:['am', 'pm', 'eve'], description:'am = deep work morning, pm = physical afternoon, eve = evening.'}, est:{type:'integer', description:'Estimated minutes.'},
+  for_project:{type:'string', description:'Map box name or id this task pushes forward.'}, for_habit:{type:'string', description:'Habit id or name it serves.'}, for_win:{type:'string', description:'This week’s win it advances, in a few words.'}, note:{type:'string', description:'Outcome or context, up to 300 chars.'}};
+COACH_TOOLS.push({name:'tasks', busy:'Tasks',
+ description:'His daily task list (pure data, no XP). list: a day’s tasks with ids. add: a new task for today or tomorrow. done: check one off (pass minutes if he says how long). undo_done, drop (with why), update (any field), timer (start/stop), lock_plan (stamps when the day was planned), close_day (stamps the day and pushes open tasks to tomorrow), stats (last N days: done rate, Q2 share, pushed, lanes, estimate accuracy).',
+ schema:{type:'object', properties:Object.assign({
+   action:{type:'string', enum:['list', 'add', 'done', 'undo_done', 'drop', 'update', 'timer', 'lock_plan', 'close_day', 'stats']},
+   date:{type:'string', description:'YYYY-MM-DD, today (default), tomorrow or yesterday.'},
+   id:{type:'string', description:'Task id from list / live data, or the exact task title for done/drop/update/timer.'},
+   minutes:{type:'integer', description:'done: actual minutes it took.'}, why:{type:'string', description:'drop: his reason.'}, timer:{type:'string', enum:['start', 'stop']},
+   days:{type:'integer', description:'stats: window in days, default 30.'}}, TASK_FIELDS), required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), d = tDate(inp.date);
+   if(a === 'list'){ var doc = taskDoc(d); return {date:d, plannedAt:doc.plannedAt ? timeOf(doc.plannedAt) : null, closedAt:doc.closedAt ? timeOf(doc.closedAt) : null, tasks:doc.items.map(function(it){ return taskBrief(d, it); })}; }
+   if(a === 'stats'){
+     var st = taskStats(intIn(inp.days || 30, 1, 365, 'days'));
+     return {days:st.days, created:st.created, done:st.done, dropped:st.dropped, pushed:st.rolled, doneRatePct:st.rate, q2SharePct:st.q2share, doneByQuadrant:st.qDone, addedByQuadrant:st.q, lanes:st.lanes, doneByBlock:st.blocks, minutesLogged:st.mins, actualVsEstimateMedian:st.estMedian ? Math.round(st.estMedian*100) + '%' : null, daysPlanLocked:st.planned, daysPlannedByTarget:st.plannedBy, daysClosed:st.closed, doneRateByRecovery:st.rec, mostPushedOpenToday:st.pushed.map(function(it){ return it.title + ' (' + it.rolled + 'x)'; })};
+   }
+   if(a === 'lock_plan'){ var snapL = snapTasks([d]); var at = lockPlan(d); addAct('Plan locked · ' + fmtShort(d), function(){ restoreTasks(snapL); }); return {ok:true, plannedAt:timeOf(at)}; }
+   if(a === 'close_day'){ var to = addDays(d, 1), snapC = snapTasks([d, to]); var r = closeDay(d); addAct('Day closed · ' + fmtShort(d) + (r.moved ? ' · ' + r.moved + ' pushed to ' + fmtShort(r.to) : ''), function(){ restoreTasks(snapC); }); return {ok:true, moved:r.moved, to:r.to}; }
+   if(a === 'add'){
+     var title = cleanStr(inp.title, 120); if(!title) throw new Error('title is required.');
+     var snapA = snapTasks([d]);
+     var it = addTask(d, {title:title, lane:tLane(inp.lane), q:inp.q ? intIn(inp.q, 1, 4, 'q') : 2, block:inp.block, est:inp.est ? intIn(inp.est, 1, 720, 'est') : null, link:tLink(inp) || null, note:cleanStr(inp.note, 300)}, 'coach');
+     addAct('Task · ' + it.title + ' (' + it.lane + ', Q' + it.q + (d !== todayKey() ? ', ' + fmtShort(d) : '') + ')', function(){ restoreTasks(snapA); });
+     return {ok:true, task:taskBrief(d, it), openToday:taskDoc(todayKey()).items.filter(isOpen).length};
+   }
+   var t = tFind(d, inp.id), snap = snapTasks([d]);
+   if(a === 'done'){
+     if(t.doneAt) return {ok:true, alreadyDone:true};
+     var mins = inp.minutes ? intIn(inp.minutes, 1, 720, 'minutes') : null;
+     var dn = setDone(d, t.id, mins); var left = taskDoc(d).items.filter(isOpen).length;
+     addAct('Done · ' + t.title + (dn.actual ? ' · ' + fmtMin(dn.actual) : ''), function(){ restoreTasks(snap); });
+     return {ok:true, task:taskBrief(d, dn), openLeft:left};
+   }
+   if(a === 'undo_done'){ undoDone(d, t.id); addAct('Reopened · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true}; }
+   if(a === 'drop'){ if(t.droppedAt) undropTask(d, t.id); else { dropTask(d, t.id, cleanStr(inp.why, 120)); } addAct((t.droppedAt ? 'Brought back' : 'Dropped') + ' · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true, status:t.droppedAt ? 'open' : 'dropped'}; }
+   if(a === 'timer'){ var want = inp.timer === 'start', on = !!(t.timer && t.timer.on); if(want === on) return {ok:true, running:on, note:'already ' + (on ? 'running' : 'stopped')}; timerToggle(d, t.id); addAct('Timer ' + (want ? 'started' : 'stopped') + ' · ' + t.title, function(){ restoreTasks(snap); }); return {ok:true, running:want}; }
+   if(a === 'update'){
+     var f = {}; if(inp.title !== undefined) f.title = cleanStr(inp.title, 120) || t.title; if(inp.lane !== undefined) f.lane = tLane(inp.lane); if(inp.q !== undefined) f.q = intIn(inp.q, 1, 4, 'q'); if(inp.block !== undefined) f.block = inp.block;
+     if(inp.est !== undefined) f.est = inp.est ? intIn(inp.est, 1, 720, 'est') : null; if(inp.minutes !== undefined) f.actual = inp.minutes ? intIn(inp.minutes, 1, 720, 'minutes') : null; if(inp.note !== undefined) f.note = cleanStr(inp.note, 300);
+     var lk = tLink(inp); if(lk !== undefined) f.link = lk;
+     var u = updateTask(d, t.id, f); addAct('Task edited · ' + u.title, function(){ restoreTasks(snap); });
+     return {ok:true, task:taskBrief(d, u)};
+   }
+   throw new Error('Unknown action ' + a + '.');
+ }});
+COACH_TOOLS.push({name:'task_templates', busy:'Recurring tasks',
+ description:'Recurring tasks that appear on set weekdays by themselves (inventory check Mon/Thu, invoices Friday). list / add / update / pause / resume / delete.',
+ schema:{type:'object', properties:Object.assign({action:{type:'string', enum:['list', 'add', 'update', 'pause', 'resume', 'delete']}, id:{type:'string'}, days:{type:'array', items:{type:'integer'}, description:'Weekdays 0 = Sunday ... 6 = Saturday.'}}, TASK_FIELDS), required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), list = state.settings.taskTemplates || [];
+   if(a === 'list') return {templates:list.map(function(t){ return {id:t.id, title:t.title, lane:t.lane, q:t.q, block:t.block, estMin:t.est || undefined, days:t.days, paused:t.paused || undefined, for:linkLabel(t.link) || undefined}; })};
+   var oldList = clone(list);
+   if(a === 'add'){
+     var title = cleanStr(inp.title, 120); if(!title) throw new Error('title is required.');
+     var days = (Array.isArray(inp.days) ? inp.days : []).map(Number).filter(function(n){ return n >= 0 && n <= 6; }); if(!days.length) throw new Error('days is required (0 = Sunday ... 6 = Saturday).');
+     var t = {id:'r' + uid(), title:title, lane:tLane(inp.lane) || 'Home', q:inp.q ? intIn(inp.q, 1, 4, 'q') : 2, block:inp.block || 'am', est:inp.est ? intIn(inp.est, 1, 720, 'est') : null, days:days, link:tLink(inp) || null, since:todayKey(), paused:false, createdAt:Date.now()};
+     saveTemplate(t); addAct('Recurring task · ' + title, function(){ state.settings.taskTemplates = oldList; saveSettings(); render(); });
+     return {ok:true, id:t.id};
+   }
+   var cur = list.filter(function(x){ return x.id === String(inp.id || '') || norm(x.title) === norm(inp.id || ''); })[0]; if(!cur) throw new Error('No recurring task "' + inp.id + '". Use list.');
+   if(a === 'delete'){ removeTemplate(cur.id); addAct('Recurring task deleted · ' + cur.title, function(){ state.settings.taskTemplates = oldList; saveSettings(); render(); }); return {ok:true}; }
+   var c = clone(cur);
+   if(a === 'pause') c.paused = true; else if(a === 'resume') c.paused = false;
+   else if(a === 'update'){
+     if(inp.title !== undefined) c.title = cleanStr(inp.title, 120) || c.title; if(inp.lane !== undefined) c.lane = tLane(inp.lane); if(inp.q !== undefined) c.q = intIn(inp.q, 1, 4, 'q'); if(inp.block !== undefined) c.block = inp.block;
+     if(inp.est !== undefined) c.est = inp.est ? intIn(inp.est, 1, 720, 'est') : null; if(Array.isArray(inp.days) && inp.days.length) c.days = inp.days.map(Number).filter(function(n){ return n >= 0 && n <= 6; });
+     var lk = tLink(inp); if(lk !== undefined) c.link = lk;
+   } else throw new Error('Unknown action ' + a + '.');
+   saveTemplate(c); addAct('Recurring task ' + a + 'd · ' + c.title, function(){ state.settings.taskTemplates = oldList; saveSettings(); render(); });
+   return {ok:true, id:c.id};
+ }});
+COACH_RULES += '\n\n' + [
+'DAILY TASKS (pure data, no XP; the tasks tool)',
+'- When he says he needs to, has to, should, or wants to get something done, or asks to be reminded: add it as a task right away (today unless he says tomorrow). Infer the lane (' + TASK_LANES.join(', ') + '), quadrant (default Q2; Q1 only if it is both urgent and important), block (am deep work for thinking and building, pm physical, eve evening) and attach the map box or habit it serves when one clearly fits. Never ask for these; he can fix them on the page.',
+'- When he says he did / finished / done with something that is an open task, mark it done (pass minutes if he said how long). If several match, ask which with numbered options.',
+'- "Skip it", "not doing that", "forget that task" = drop with his reason. Dropped tasks stay in the record; nothing is ever deleted.',
+'- Morning: if he is planning the day with you, add the tasks, then lock_plan. Evening: close_day pushes what is open to tomorrow and stamps the day. If he asks how the day went, list today and say what is open.',
+'- Tasks marked from "sched" are the daily one move from his scheduled check-in; treat them as the priority of the day.',
+'- A task pushed 2+ times (timesPushed) is a flag: say so plainly and ask whether it gets done today, dropped, or isn’t really a task.',
+'- Recurring things he does on set weekdays go in task_templates, not as repeated tasks.',
+'- Tasks never feed habits or XP. A task like "train legs" does not check off Train; logging the lift does.'
+].join('\n');
+(function(){
+  var base = coachSnapshot;
+  coachSnapshot = function(){
+    var s = base(), t = todayKey(), doc = taskDoc(t), s7 = taskStats(7);
+    s.tasks = {today:{plannedAt:doc.plannedAt ? timeOf(doc.plannedAt) : null, closedAt:doc.closedAt ? timeOf(doc.closedAt) : null, open:doc.items.filter(isOpen).map(function(it){ return taskBrief(t, it); }), done:doc.items.filter(function(it){ return it.doneAt; }).map(function(it){ return taskBrief(t, it); }), droppedOrPushed:doc.items.filter(function(it){ return it.droppedAt || it.rolledTo; }).length},
+      last7Days:{doneRatePct:s7.rate, pushed:s7.rolled, q2SharePct:s7.q2share}, recurring:(state.settings.taskTemplates || []).length, lanes:TASK_LANES};
+    return s;
+  };
+})();
 function openCoachWith(text){
   openCoach();
   var el = $('#ch-in'); el.value = text; coachGrow();
@@ -4532,6 +5181,17 @@ function bind(){
       case 'bunlink': bUnlink(t.getAttribute('data-id'), t.getAttribute('data-to')); break;
       case 'bshow-all': bShowAll = !bShowAll; render(); break;
       case 'toggle-bladder': showBLadder = !showBLadder; render(); break;
+      case 'tk-done': onDone(t.getAttribute('data-d'), t.getAttribute('data-id'), t); break;
+      case 'tk-undone': undoDone(t.getAttribute('data-d'), t.getAttribute('data-id')); break;
+      case 'tk-open': openTaskSheet(t.getAttribute('data-d'), t.getAttribute('data-id')); break;
+      case 'tk-timer': { var on = timerToggle(t.getAttribute('data-d'), t.getAttribute('data-id')); toast(on ? 'Timer running' : 'Timer stopped'); break; }
+      case 'tk-lock': { lockPlan(t.getAttribute('data-d')); toast('Plan locked'); break; }
+      case 'tk-close': { var cr = closeDay(t.getAttribute('data-d')); toast(cr.moved ? 'Day closed · ' + cr.moved + (cr.moved === 1 ? ' task' : ' tasks') + ' moved to ' + fmtWd(cr.to) : 'Day closed'); break; }
+      case 'tk-qa-q': tkQA.q = parseInt(t.getAttribute('data-v'), 10) || 2; renderTasksCard(); break;
+      case 'tk-qa-block': tkQA.block = t.getAttribute('data-v'); renderTasksCard(); break;
+      case 'tk-tpl-new': openTemplateSheet(null); break;
+      case 'tk-tpl-edit': openTemplateSheet(t.getAttribute('data-id')); break;
+      case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;
       case 'pick-day': state.selected = t.getAttribute('data-d'); render(); break;
       case 'go-today': state.selected = todayKey(); state.weekOf = mondayOf(state.selected); render(); break;
       case 'week-prev': state.weekOf = addDays(state.weekOf, -7); state.selected = addDays(state.weekOf, 6); render(); break;
@@ -4550,6 +5210,8 @@ function bind(){
   $('#lift-form').addEventListener('submit', function(e){ e.preventDefault(); saveLift(); });
   $('#ci-form').addEventListener('submit', function(e){ e.preventDefault(); saveCheckin(); });
   $('#bd-form').addEventListener('submit', function(e){ e.preventDefault(); saveBuildForm(); });
+  $('#tk-form').addEventListener('submit', function(e){ e.preventDefault(); saveTaskForm(); });
+  document.addEventListener('submit', function(e){ if(e.target && e.target.id === 'tq-form'){ e.preventDefault(); quickAdd(); } });
   $('#bd-form').addEventListener('change', function(e){ if(e.target && e.target.id === 'bd-kind') $('#bd-xp').textContent = '+' + (BXP[e.target.value] || BXP.fix) + ' XP'; });
   document.addEventListener('keydown', function(e){ var g = e.target && e.target.closest && e.target.closest('.bn'); if(g && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); g.dispatchEvent(new MouseEvent('click', {bubbles:true})); } });
   $('#lf-add-set').addEventListener('click', function(){

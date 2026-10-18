@@ -74,3 +74,12 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
 ## Power levels (Lifts tab)
 
 The strength rank is themed on Dragon Ball Z: `MOOSE_RANKS` in `core/strength.js` maps strength level to a form, paced for about a year at ~1,400 XP/week (1 Saiyan Warrior, 4 Kaioken, 9 Super Saiyan, 15 Super Saiyan 2, 22 Super Saiyan 3, 30 Super Saiyan Blue, 40 Ultra Instinct). Each entry's third element lists the levels where its 3 stages start; `mooseStage(L)` returns `{form, stage, next}` for the stage row under the title, the ladder and the level-up toast. Per-lift tiers (`TIERS`, est. 1RM gain): Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai's Planet +20%, Over 9,000 +35%. Only labels changed; tier keys (`bronze`…`diamond`) and their colors are unchanged.
+
+## Daily tasks (Tasks tab + the Tasks card on Today)
+
+Pure data, no XP. One document per day at `tracker/tasks/YYYY-MM-DD`: `{date, schema:1, plannedAt, closedAt, items:[...]}`. Each item: `id, title, lane, q (1-4 Covey quadrant), block (am deep work / pm physical / eve), est, actual (minutes), link {t: node|habit|win, id, label}, note, src (page|coach|sched|recur|rollover), tpl (template id), origin (date first planned), rolled (times pushed), createdAt, startedAt, doneAt, droppedAt, dropWhy, rolledTo, timer {on, ms}`. Nothing derived is stored; `taskStats()` recomputes everything from the docs.
+
+- Rollover: on the first render of a new day, every open non-recurring item from the last 30 days is marked `rolledTo` on its old day and copied onto today with `rolled + 1` (`ensureToday` / `rollInto`). Close day does the same into tomorrow and stamps `closedAt`. Lock plan stamps `plannedAt`; the Tasks tab reports how often that happened before `targets.planBy` (07:30).
+- Recurring templates live in the settings doc as `taskTemplates` (`id, title, lane, q, block, est, days[0-6], link, since, paused`) and are materialized onto their weekday once (`materialize`). A missed recurring task stays on its day as a miss; it never rolls.
+- Timer: one running at a time; stopping accumulates `timer.ms`; check-off with a timer fills `actual`.
+- Logic: `features/tasks.js` (data, Today card, Tasks tab, task sheet), sync in `core/store.js` (dirty keys `tasks:YYYY-MM-DD` share the days queue), normalizers in `core/state.js`, Coach tools `tasks` and `task_templates` in `features/coach.js`, export adds `tasks` to data.json and `tasks.csv`.

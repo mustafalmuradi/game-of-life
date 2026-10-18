@@ -236,6 +236,16 @@ export const steps = [
     await page.waitForFunction(() => /Synced|Saved in this browser/.test((document.querySelector('#sync') || {}).textContent || ''), null, { timeout: 10000 });
     await settle(page);
   } },
+  { name: 'tasks: quick add', run: async (page) => { await tab(page, 'today'); await fill(page, '#tq-title', 'Call Adnan about the lease'); await click(page, '#tq-form [data-act="tk-qa-q"][data-v="1"]'); await submit(page, '#tq-form'); await settle(page); } },
+  { name: 'tasks: add a second', run: async (page) => { await fill(page, '#tq-title', 'Ship the menu page'); await click(page, '#tq-form [data-act="tk-qa-block"][data-v="pm"]'); await submit(page, '#tq-form'); await settle(page); } },
+  { name: 'tasks: lock plan', run: async (page) => { await click(page, '#tasks [data-act="tk-lock"]'); await settle(page); } },
+  { name: 'tasks: edit the second', run: async (page) => { await click(page, '#tasks .tk:nth-child(2) [data-act="tk-open"]'); await settle(page); await fill(page, '#tk-est', '45'); await click(page, '#tk-q [data-v="2"]'); await select(page, '#tk-link', 'habit:read'); await submit(page, '#tk-form'); await settle(page); } },
+  { name: 'tasks: timer on', run: async (page) => { await click(page, '#tasks .tk [data-act="tk-timer"]'); await settle(page); } },
+  { name: 'tasks: done first', run: async (page) => { await click(page, '#tasks .tk [data-act="tk-done"]'); await settle(page); } },
+  { name: 'tab: tasks', run: async (page) => tab(page, 'tasks') },
+  { name: 'tasks: recurring template', run: async (page) => { await click(page, '[data-act="tk-tpl-new"]'); await settle(page); await fill(page, '#tk-title', 'Inventory check'); await click(page, '#tk-days [data-v="0"]'); await submit(page, '#tk-form'); await settle(page); } },
+  { name: 'tasks: drop one', run: async (page) => { await click(page, '#view-tasks .tk [data-act="tk-open"]'); await settle(page); await fill(page, '#tk-note', 'not today'); await click(page, '[data-act="tk-drop"]'); await settle(page); } },
+  { name: 'tasks: close day', run: async (page) => { await click(page, '#view-tasks [data-act="tk-close"]'); await settle(page); } },
   { name: 'visibility change flushes', run: async (page) => {
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
     await settle(page);

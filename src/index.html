@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="css/body.css">
 <link rel="stylesheet" href="css/build.css">
 <link rel="stylesheet" href="css/coach.css">
+<link rel="stylesheet" href="css/tasks.css">
 
 <div class="app">
   <header class="top">
@@ -27,6 +28,7 @@
 
   <nav class="tabs" role="tablist" aria-label="Views">
     <button type="button" role="tab" id="tab-today" data-tab="today" aria-selected="true" aria-controls="view-today">Today</button>
+    <button type="button" role="tab" id="tab-tasks" data-tab="tasks" aria-selected="false" aria-controls="view-tasks">Tasks</button>
     <button type="button" role="tab" id="tab-lifts" data-tab="lifts" aria-selected="false" aria-controls="view-lifts">Lifts</button>
     <button type="button" role="tab" id="tab-body" data-tab="body" aria-selected="false" aria-controls="view-body">Body</button>
     <button type="button" role="tab" id="tab-progress" data-tab="progress" aria-selected="false" aria-controls="view-progress">Progress</button>
@@ -38,8 +40,10 @@
       <div class="week" id="week"></div>
       <div class="card day-card" id="day"></div>
       <div class="card habits" id="habits"></div>
+      <div class="card tasks-card" id="tasks"></div>
       <p class="sync" id="sync"></p>
     </section>
+    <section id="view-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden></section>
     <section id="view-lifts" role="tabpanel" aria-labelledby="tab-lifts" hidden></section>
     <section id="view-body" role="tabpanel" aria-labelledby="tab-body" hidden></section>
     <section id="view-progress" role="tabpanel" aria-labelledby="tab-progress" hidden></section>
@@ -172,6 +176,14 @@
 
 <div class="promo-back" id="promo" hidden></div>
 <div id="toast-host"></div>
+<div class="sheet-back" id="task-sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tk-h">
+    <div class="grip"></div>
+    <div class="sheet-head"><h3 id="tk-h">Task</h3><span class="muted small">No XP · pure data</span></div>
+    <form id="tk-form" class="lift-form" novalidate autocomplete="off"></form>
+  </div>
+</div>
+
 <div class="sheet-back" id="build-sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="bd-h">
     <div class="grip"></div>

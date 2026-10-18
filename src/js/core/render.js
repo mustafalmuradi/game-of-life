@@ -10,7 +10,7 @@ var tabs = {};
 export function registerTab(name, fn){ tabs[name] = fn; }
 export function render(){
   renderBelt();
-  ['today','lifts','body','progress','build'].forEach(function(t){ $('#tab-' + t).setAttribute('aria-selected', state.tab === t); $('#view-' + t).hidden = state.tab !== t; });
+  ['today','tasks','lifts','body','progress','build'].forEach(function(t){ $('#tab-' + t).setAttribute('aria-selected', state.tab === t); $('#view-' + t).hidden = state.tab !== t; });
   $('#view-today').style.display = state.tab === 'today' ? 'flex' : 'none';
   (tabs[state.tab] || tabs.progress)();
   ui.popSeg = null;
