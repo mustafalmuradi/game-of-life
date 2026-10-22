@@ -6,11 +6,12 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node test/harness.mjs --old legacy --new src --shots",
+    "test": "node test/stale-cache.mjs && node test/harness.mjs --old legacy --new src --shots",
     "test:local": "node test/harness.mjs --old legacy --new src --noruntime",
     "test:self": "node test/harness.mjs --old legacy --new legacy",
     "check": "python3 tools/check-cascade.py && python3 tools/reassemble-js.py",
-    "split": "python3 tools/split-css.py && python3 tools/split-js.py"
+    "split": "python3 tools/split-css.py && python3 tools/split-js.py",
+    "test:stale": "node test/stale-cache.mjs"
   },
   "devDependencies": {
     "pixelmatch": "^6.0.0",

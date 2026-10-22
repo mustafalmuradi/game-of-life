@@ -1400,6 +1400,8 @@ var writing = new Set();
 var timers = {};
 var unsynced = new Set();
 var flushedOnce = false;
+/* tasksReady: true once the task docs are the real ones (cloud snapshot arrived, or there is no cloud). Until then nothing may write task docs on its own (rollover, recurring templates): a stale device cache replayed over the cloud once, and this is the guard. */
+var tasksReady = false;
 var settingsWriting = false;
 var popSeg = null;
 var liftOps = {};
@@ -1855,15 +1857,16 @@ function loadLocal(){
   } catch(e){}
 }
 
+function markTasksReady(){ if(tasksReady) return; tasksReady = true; render(); }
 function connectCloud(){
-  if(!(window.claude && typeof window.claude.use === 'function')) return;
+  if(!(window.claude && typeof window.claude.use === 'function')){ markTasksReady(); return; }
   Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function(r){
     var db = r[0], user = r[1];
-    if(!db || !user) return;
+    if(!db || !user){ markTasksReady(); return; }
     return user.id().then(function(id){
-      if(!id) return;
+      if(!id){ markTasksReady(); return; }
       var settingsRef, daysCol;
-      try { settingsRef = db.doc('data/users/' + id + '/tracker'); daysCol = settingsRef.collection('days'); } catch(e){ return; }
+      try { settingsRef = db.doc('data/users/' + id + '/tracker'); daysCol = settingsRef.collection('days'); } catch(e){ markTasksReady(); return; }
       cloud = {settingsRef:settingsRef, daysCol:daysCol};
       state.mode = 'cloud';
       renderSync();
@@ -1890,6 +1893,7 @@ function connectCloud(){
         snap.docs.forEach(function(doc){ var td = normalizeTaskDoc(doc.data(), doc.id); if(!isEmptyTaskDoc(td)) next[doc.id] = td; });
         Array.from(dirty.keys()).concat(Array.from(unsynced)).forEach(function(k){ if(k.indexOf('tasks:') !== 0) return; var d = k.slice(6); if(state.tasks[d]) next[d] = state.tasks[d]; else delete next[d]; });
         state.tasks = next;
+        if(!snap.metadata.fromCache) tasksReady = true;
         persistLocal(); render();
       }, onCloudError);
       var liftsFlushed = false;
@@ -1921,11 +1925,11 @@ function connectCloud(){
         persistLocal(); recompute(); render();
       }, onCloudError);
     });
-  }).catch(function(){});
+  }).catch(function(){ markTasksReady(); });
 }
 function onCloudError(e){
   if(e && (e.code === 'revoked' || e.code === 'not_granted' || e.code === 'capability_disabled' || e.code === 'capability_removed')){
-    cloud = null; state.mode = lsOK ? 'local' : 'memory'; renderSync();
+    cloud = null; state.mode = lsOK ? 'local' : 'memory'; renderSync(); markTasksReady();
   }
 }
 function cleanLift(l){ var o = {}; Object.keys(l).forEach(function(k){ if(k.charAt(0) !== '_') o[k] = l[k]; }); return o; }
@@ -3829,7 +3833,9 @@ function materialize(d){
   return add.length;
 }
 /* Called before rendering today: roll yesterday's leftovers in, then add today's recurring tasks. */
+/* Never before the cloud's task docs have arrived: a device's local cache can be days old, and rolling from it would push stale "open" items into today and overwrite the real docs. */
 function ensureToday(){
+  if(!tasksReady) return;
   var t = todayKey(), since = addDays(t, -TASK_ROLL_DAYS);
   var pending = Object.keys(state.tasks).some(function(k){ return k < t && k >= since && state.tasks[k].items.some(function(it){ return isOpen(it) && !it.tpl; }); });
   if(pending){

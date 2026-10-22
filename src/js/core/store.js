@@ -7,7 +7,8 @@ import { toast } from './effects.js';
 import { render, renderSync } from './render.js';
 
 /* ---------- persistence ---------- */
-export var sync = {lsOK:false, cloud:null, flushedOnce:false, settingsWriting:false, liftOps:{}};
+/* tasksReady: true once the task docs are the real ones (cloud snapshot arrived, or there is no cloud). Until then nothing may write task docs on its own (rollover, recurring templates): a stale device cache replayed over the cloud once, and this is the guard. */
+export var sync = {lsOK:false, cloud:null, flushedOnce:false, settingsWriting:false, liftOps:{}, tasksReady:false};
 var dirty = new Map(), writing = new Set(), timers = {}, unsynced = new Set();
 export function testLS(){ try { localStorage.setItem('__dl','1'); localStorage.removeItem('__dl'); return true; } catch(e){ return false; } }
 export function persistLocal(){
@@ -30,15 +31,16 @@ export function loadLocal(){
   } catch(e){}
 }
 
+function tasksReady(){ if(sync.tasksReady) return; sync.tasksReady = true; render(); }
 export function connectCloud(){
-  if(!(window.claude && typeof window.claude.use === 'function')) return;
+  if(!(window.claude && typeof window.claude.use === 'function')){ tasksReady(); return; }
   Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function(r){
     var db = r[0], user = r[1];
-    if(!db || !user) return;
+    if(!db || !user){ tasksReady(); return; }
     return user.id().then(function(id){
-      if(!id) return;
+      if(!id){ tasksReady(); return; }
       var settingsRef, daysCol;
-      try { settingsRef = db.doc('data/users/' + id + '/tracker'); daysCol = settingsRef.collection('days'); } catch(e){ return; }
+      try { settingsRef = db.doc('data/users/' + id + '/tracker'); daysCol = settingsRef.collection('days'); } catch(e){ tasksReady(); return; }
       sync.cloud = {settingsRef:settingsRef, daysCol:daysCol};
       state.mode = 'cloud';
       renderSync();
@@ -65,6 +67,7 @@ export function connectCloud(){
         snap.docs.forEach(function(doc){ var td = normalizeTaskDoc(doc.data(), doc.id); if(!isEmptyTaskDoc(td)) next[doc.id] = td; });
         Array.from(dirty.keys()).concat(Array.from(unsynced)).forEach(function(k){ if(k.indexOf('tasks:') !== 0) return; var d = k.slice(6); if(state.tasks[d]) next[d] = state.tasks[d]; else delete next[d]; });
         state.tasks = next;
+        if(!snap.metadata.fromCache) sync.tasksReady = true;
         persistLocal(); render();
       }, onCloudError);
       var liftsFlushed = false;
@@ -96,11 +99,11 @@ export function connectCloud(){
         persistLocal(); recompute(); render();
       }, onCloudError);
     });
-  }).catch(function(){});
+  }).catch(function(){ tasksReady(); });
 }
 function onCloudError(e){
   if(e && (e.code === 'revoked' || e.code === 'not_granted' || e.code === 'capability_disabled' || e.code === 'capability_removed')){
-    sync.cloud = null; state.mode = sync.lsOK ? 'local' : 'memory'; renderSync();
+    sync.cloud = null; state.mode = sync.lsOK ? 'local' : 'memory'; renderSync(); tasksReady();
   }
 }
 export function cleanLift(l){ var o = {}; Object.keys(l).forEach(function(k){ if(k.charAt(0) !== '_') o[k] = l[k]; }); return o; }

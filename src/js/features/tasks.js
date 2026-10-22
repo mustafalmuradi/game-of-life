@@ -3,7 +3,7 @@ import { TASK_BLOCKS, TASK_LANES, TASK_Q, TASK_ROLL_DAYS } from '../core/config.
 import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, fmtWd, mondayOf, pad, parseKey, range7, timeOf, todayKey, uid } from '../core/utils.js';
 import { ICON, miniRing } from '../core/svg.js';
 import { habitById, normalizeTask, normalizeTemplate, state, T } from '../core/state.js';
-import { persistLocal, saveSettings, scheduleSaveTasks } from '../core/store.js';
+import { persistLocal, saveSettings, scheduleSaveTasks, sync } from '../core/store.js';
 import { burst, toast } from '../core/effects.js';
 import { registerTab, render } from '../core/render.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
@@ -151,8 +151,10 @@ export function materialize(d){
   mutateTasks(d, function(dd){ add.forEach(function(t){ dd.items.push(newTask({title:t.title, lane:t.lane, q:t.q, block:t.block, est:t.est, link:t.link, tpl:t.id, date:d}, 'recur')); }); }, {silent:true});
   return add.length;
 }
-/* Called before rendering today: roll yesterday's leftovers in, then add today's recurring tasks. */
+/* Called before rendering today: roll yesterday's leftovers in, then add today's recurring tasks.
+   Never before the cloud's task docs have arrived: a device's local cache can be days old, and rolling from it would push stale "open" items into today and overwrite the real docs. */
 export function ensureToday(){
+  if(!sync.tasksReady) return;
   var t = todayKey(), since = addDays(t, -TASK_ROLL_DAYS);
   var pending = Object.keys(state.tasks).some(function(k){ return k < t && k >= since && state.tasks[k].items.some(function(it){ return isOpen(it) && !it.tpl; }); });
   if(pending){
