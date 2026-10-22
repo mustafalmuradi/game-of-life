@@ -5,7 +5,7 @@ import { autoTarget, fmtW, ironXPFor, isBW, liftBadges, liftKey, liftScore, lift
 import { recompute } from '../core/stats.js';
 import { flushLiftOps, persistLocal, sync } from '../core/store.js';
 import { mutateDay } from './today.js';
-import { burst, toast } from '../core/effects.js';
+import { burst, powerUp, toast } from '../core/effects.js';
 import { registerTab, render } from '../core/render.js';
 import { badgeSVG } from './progress.js';
 import { tmin } from './body.js';
@@ -90,7 +90,7 @@ function renderLifts(){
   var pcard = view.querySelector('details.prog-card'); if(pcard) progOpen = pcard.open;
   var a = state.liftStats, L = a.level, lo = ironXPFor(L), hi = ironXPFor(L+1), pct = (a.xp - lo)/(hi - lo)*100;
   var h = '<section class="card iron">' +
-    '<div class="iron-main"><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Power level ' + L + '. Show the Saiyan ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
+    '<div class="iron-main"><span class="aura" aria-hidden="true"></span><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Power level ' + L + '. Show the Saiyan ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
     '<div class="iron-rank"><p class="eyebrow">Power level</p><p class="iron-title">' + esc(mooseRank(L)) + '</p>' + stageRow(L) +
     '<div class="bar gold"><span style="width:' + pct.toFixed(1) + '%"></span></div>' +
     '<p class="iron-xp"><span><b>' + fmt(a.xp) + '</b> power XP</span><span>' + fmt(hi - a.xp) + ' to level ' + (L+1) + '</span></p></div></div>';
@@ -209,7 +209,8 @@ export function celebrateLift(prev, next, id){
   var prevBadges = new Set(liftBadges(prev).filter(function(b){ return b.got; }).map(function(b){ return b.name; }));
   var nb = liftBadges(next).filter(function(b){ return b.got && !prevBadges.has(b.name); })[0];
   var msg;
-  if(next.level > prev.level){ var ms = mooseStage(next.level), ps = mooseStage(prev.level); msg = (ms.form !== ps.form ? 'POWER UP! ' + ms.form + ' unlocked · power level ' : ms.stage !== ps.stage ? ms.form + ' stage ' + ms.stage + ' · power level ' : 'Power level ') + next.level; }
+  if(next.level > prev.level){ var ms = mooseStage(next.level), ps = mooseStage(prev.level); msg = (ms.form !== ps.form ? 'POWER UP! ' + ms.form + ' unlocked · power level ' : ms.stage !== ps.stage ? ms.form + ' stage ' + ms.stage + ' · power level ' : 'Power level ') + next.level; if(ms.form !== ps.form) powerUp('Power up · level ' + next.level, ms.form); else if(ms.stage !== ps.stage) powerUp(ms.form + ' · level ' + next.level, 'Stage ' + ms.stage); else powerUp('Power level', String(next.level)); }
+  else if(e._status === 'pr') powerUp('New PR', e.exercise);
   else if(e._status === 'pr') msg = 'New PR: ' + e.exercise + ', est. 1RM ' + Math.round(liftScore(e));
   else if(nb) msg = 'Badge unlocked: ' + nb.name;
   else if(e._cleared) msg = 'Quest cleared: ' + e.exercise;

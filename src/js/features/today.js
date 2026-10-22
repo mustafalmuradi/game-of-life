@@ -169,7 +169,7 @@ function renderHabits(){
     var restToday = !hb.restOn || !hb.restOn.length || hb.restOn.indexOf(parseKey(d).getDay()) >= 0;
     var restLogged = rested && !!(bd && bd.restDone && bd.restDone.indexOf(hb.id) >= 0);
     var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : 'rest day';
-    h += '<article class="habit' + (done || restLogged ? ' is-done' : '') + (rested && !restLogged ? ' is-rest' : '') + '" style="--hc:var(--h-' + hb.color + ')">' +
+    h += '<article class="habit' + (done || restLogged ? ' is-done' : '') + (rested && !restLogged ? ' is-rest' : '') + (ui.popSeg === hb.id && done ? ' just-done' : '') + '" style="--hc:var(--h-' + hb.color + ')">' +
       (restLogged ? '<button class="check" type="button" data-act="rest" data-h="' + esc(hb.id) + '" aria-pressed="true" aria-label="' + esc('Undo ' + restKind + ': ' + hb.name) + '">' :
       '<button class="check" type="button" data-act="toggle" data-h="' + esc(hb.id) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? 'Undo ' : 'Mark done: ') + hb.name) + '">') + '<svg viewBox="0 0 24 24">' + ICON.check + '</svg></button>' +
       '<div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3>' +

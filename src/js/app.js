@@ -6,7 +6,10 @@ import { recompute } from './core/stats.js';
 import { connectCloud, flushUnsynced, loadLocal, saveSettings, sync, testLS } from './core/store.js';
 import { addExtra, removeExtra, toggleHabit, toggleRest } from './features/today.js';
 import { clearPromos, nextPromo, toast } from './core/effects.js';
-import { render } from './core/render.js';
+import { registerHud, render, syncTabs } from './core/render.js';
+import { readiness } from './features/body.js';
+import { isOpen, taskDoc } from './features/tasks.js';
+import { pad } from './core/utils.js';
 import { claimReward, setReward, showTip } from './features/progress.js';
 import { addSetRow, deleteLift, onExerciseChange, openLiftSheet, saveLift, setLiftFilter, toggleLadder } from './features/lifts.js';
 import { applyCalories, bodyFilter, ciChip, openCheckin, saveBodyFilter, saveCheckin, stepBodyWeek } from './features/body.js';
@@ -155,6 +158,25 @@ function bind(){
   document.addEventListener('visibilitychange', function(){ if(!document.hidden){ rollover(); flushUnsynced(); } });
   window.addEventListener('online', flushUnsynced);
 }
+
+/* ---------- HUD readout, stars, boot, calm mode ---------- */
+registerHud(function(){
+  var t = todayKey(), now = new Date(), rd = readiness(t), td = taskDoc(t), open = td.items.filter(isOpen).length, st = state.stats;
+  var z = rd.z ? rd.z.k : '';
+  return '<span class="' + (z ? 'z-' + z : '') + '"><i></i>' + (Number.isFinite(rd.rec) ? '<b>' + rd.rec + '%</b> rec' : 'no rec') + '</span>' +
+    '<span><b>' + open + '</b> open</span>' +
+    '<span><b>' + (st.sweepRun || 0) + 'd</b> sweep</span>' +
+    '<span class="hud-clock"><b>' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '</b></span>';
+});
+(function(){
+  var sf = $('#stars'); if(sf){ var h = ''; for(var i=0;i<34;i++) h += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;top:' + (Math.random()*100).toFixed(1) + '%;--d:' + (4 + Math.random()*6).toFixed(1) + 's;--o:' + (Math.random()*6).toFixed(1) + 's"></i>'; sf.innerHTML = h; }
+  var calm = false; try { calm = localStorage.getItem('gol-calm') === '1'; } catch(e){}
+  if(calm) document.documentElement.setAttribute('data-motion', 'calm');
+  var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
+  setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
+  window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
+  setInterval(function(){ var c = document.querySelector('.hud-clock b'); if(c){ var n = new Date(); c.textContent = pad(n.getHours()) + ':' + pad(n.getMinutes()); } }, 30000);
+})();
 
 /* ---------- boot ---------- */
 state.settings = normalizeSettings(clone(DEFAULT_SETTINGS));

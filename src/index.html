@@ -2,7 +2,7 @@
 <title>Game Of Life</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/today.css">
@@ -12,7 +12,10 @@
 <link rel="stylesheet" href="css/build.css">
 <link rel="stylesheet" href="css/coach.css">
 <link rel="stylesheet" href="css/tasks.css">
+<link rel="stylesheet" href="css/fx.css">
 
+<div id="boot" aria-hidden="true"><div class="b-in"><div class="b-logo">Game Of Life</div><div class="b-line">Systems online</div><div class="b-bar"><span></span></div></div></div>
+<div class="stars" id="stars" aria-hidden="true"></div>
 <div class="app">
   <header class="top">
     <div class="brand"><b>Game Of Life</b><span>Moose</span></div>
@@ -23,6 +26,8 @@
     </button>
     </div>
   </header>
+
+  <p class="hud" id="hud" aria-label="Status readout"></p>
 
   <section class="card belt-card" id="belt" aria-live="polite"></section>
 
@@ -79,6 +84,7 @@
         <button class="ghost" type="button" id="btn-add">Add</button>
       </div>
     </div>
+    <div class="calm-row"><div><b>Calm mode</b><small>Turns off the ambient motion on this device. Taps still pop.</small></div><button class="switch" id="btn-calm" type="button" role="switch" aria-checked="false" aria-label="Calm mode"></button></div>
     <div class="data-box">
       <span class="eyebrow">Your data</span>
       <p class="small" id="data-stats">Checking storage…</p>
@@ -175,6 +181,7 @@
 </div>
 
 <div class="promo-back" id="promo" hidden></div>
+<div id="powerup" hidden aria-hidden="true"></div>
 <div id="toast-host"></div>
 <div class="sheet-back" id="task-sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tk-h">

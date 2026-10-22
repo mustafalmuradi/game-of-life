@@ -1,0 +1,143 @@
+/* Neon HUD + Saiyan effects: boot, HUD line, glass chrome, aura, ki bars, power-up cinematic, pops, calm mode. Loads last. */
+
+/* ---------- backdrop: grid + aurora + stars ---------- */
+body::before{
+  background:
+    radial-gradient(42% 38% at 12% 8%,var(--blob-a),transparent 70%),
+    radial-gradient(40% 40% at 88% 22%,var(--blob-b),transparent 70%),
+    radial-gradient(46% 42% at 50% 96%,var(--blob-c),transparent 70%);
+  filter:blur(34px);animation:drift 26s ease-in-out infinite alternate}
+body::after{
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:44px 44px;opacity:1;mask-image:radial-gradient(80% 70% at 50% 30%,#000 30%,transparent 100%);-webkit-mask-image:radial-gradient(80% 70% at 50% 30%,#000 30%,transparent 100%)}
+.stars{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--neon);opacity:0;animation:twinkle var(--d,6s) ease-in-out var(--o,0s) infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.6)}50%{opacity:.9;transform:scale(1.3)}}
+
+/* ---------- glass chrome: neon edge + HUD corner brackets ---------- */
+.card,.sheet,.promo,.iron,.toast{backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
+.card{position:relative;border:1px solid var(--line);box-shadow:var(--shadow),inset 0 1px 0 var(--glass-edge)}
+.card::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;padding:1px;
+  background:linear-gradient(135deg,var(--neon) 0%,transparent 28%,transparent 72%,var(--neon-2) 100%);opacity:.55;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.card>*{position:relative;z-index:1}
+.hud-corner{position:absolute;width:14px;height:14px;pointer-events:none;z-index:2;opacity:.8}
+.hud-corner::before,.hud-corner::after{content:"";position:absolute;background:var(--neon)}
+.hud-corner::before{width:14px;height:2px} .hud-corner::after{width:2px;height:14px}
+.hud-corner.tl{left:9px;top:9px} .hud-corner.tr{right:9px;top:9px;transform:scaleX(-1)} .hud-corner.bl{left:9px;bottom:9px;transform:scaleY(-1)} .hud-corner.br{right:9px;bottom:9px;transform:scale(-1)}
+
+/* ---------- header + HUD readout ---------- */
+.brand b{letter-spacing:.04em;font-size:22px;text-shadow:0 0 18px color-mix(in srgb,var(--neon) 55%,transparent)}
+.brand span{background:transparent;border:1px solid var(--line);color:var(--accent-ink);font-family:var(--font-mono);letter-spacing:.18em}
+.hud{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:-6px}
+.hud span{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);white-space:nowrap}
+.hud b{color:var(--ink);font-weight:700}
+.hud i{width:6px;height:6px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:blink 2.2s ease-in-out infinite}
+.hud .z-green i{background:var(--z-green);box-shadow:0 0 8px var(--z-green)} .hud .z-yellow i{background:var(--z-yellow);box-shadow:0 0 8px var(--z-yellow)} .hud .z-red i{background:var(--z-red);box-shadow:0 0 8px var(--z-red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---------- belt card: holographic shimmer + scanlines ---------- */
+.belt-card{background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 92%,var(--neon)),var(--surface) 60%)}
+.belt-card::before{background:conic-gradient(from var(--holo,0deg),var(--neon),var(--neon-3),var(--neon-2),var(--gold),var(--neon));animation:holo 7s linear infinite}
+@property --holo{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes holo{to{--holo:360deg}}
+.scan::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:0;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,color-mix(in srgb,var(--neon) 7%,transparent) 3px 4px);opacity:.5}
+.scan-beam{position:absolute;left:0;right:0;height:38px;top:-40px;pointer-events:none;z-index:0;border-radius:inherit;
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--neon) 22%,transparent),transparent);animation:beam 6s ease-in-out infinite}
+@keyframes beam{0%{top:-40px;opacity:0}8%{opacity:1}60%{top:110%;opacity:1}61%{opacity:0}100%{top:110%;opacity:0}}
+.rank{letter-spacing:.02em;text-shadow:0 0 22px color-mix(in srgb,var(--neon) 40%,transparent)}
+.total .n{font-family:var(--font-mono);font-weight:800;letter-spacing:-.02em;-webkit-text-fill-color:initial;background:none;color:var(--gold);text-shadow:0 0 16px color-mix(in srgb,var(--gold) 60%,transparent)}
+.num,.xp-big,.iron-xp b,.tk-tiles b,.iron-tiles b,.mtiles b,.rk-stats b{font-family:var(--font-mono)}
+
+/* ---------- tabs: liquid indicator ---------- */
+:root{--tab-x:5px;--tab-w:0px}
+.tabs{position:relative;isolation:isolate}
+.tabs::before{content:"";position:absolute;top:5px;bottom:5px;left:var(--tab-x);width:var(--tab-w);border-radius:13px;background:var(--grad);background-size:200% 200%;
+  box-shadow:0 6px 18px -6px color-mix(in srgb,var(--neon) 70%,transparent),0 0 0 1px color-mix(in srgb,var(--neon) 40%,transparent);
+  transition:left .45s var(--spring),width .45s var(--spring);animation:hue 4s ease-in-out infinite alternate;z-index:0}
+.tabs button{position:relative;z-index:1;font-family:var(--font-display);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.tabs button[aria-selected="true"]{background:transparent;box-shadow:none;animation:none;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+
+/* ---------- progress bars: ki charge ---------- */
+.bar>span,.tb-track span,.bfill,.pat-bar span{background-image:var(--grad-ki),linear-gradient(110deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.55) 50%,rgba(255,255,255,0) 70%);background-size:300% 100%,220% 100%;background-blend-mode:screen;animation:ki 3s linear infinite,shimmer 2.2s linear infinite;box-shadow:0 0 12px color-mix(in srgb,var(--neon) 50%,transparent)}
+@keyframes ki{from{background-position:0% 0,120% 0}to{background-position:300% 0,-120% 0}}
+.bar{box-shadow:inset 0 0 0 1px var(--line)}
+
+/* ---------- lifts: Saiyan aura on the emblem ---------- */
+.iron{overflow:visible}
+.iron::after{display:none}
+.emblem{position:relative;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--gold) 70%,transparent))}
+.aura{position:absolute;left:40px;top:50%;width:150px;height:160px;transform:translate(-50%,-50%);pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 60%,color-mix(in srgb,var(--gold) 55%,transparent),color-mix(in srgb,var(--neon-2) 25%,transparent) 45%,transparent 70%);
+  filter:blur(10px);animation:aura 1.1s ease-in-out infinite alternate;mix-blend-mode:screen}
+.aura::before,.aura::after{content:"";position:absolute;inset:18% 24%;border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 50% 70%,color-mix(in srgb,var(--gold) 70%,transparent),transparent 65%);filter:blur(6px);animation:flare 1.6s ease-in-out infinite alternate}
+.aura::after{inset:8% 34%;animation-delay:-.7s;animation-duration:1.3s}
+@keyframes aura{from{transform:translate(-50%,-50%) scale(.92);opacity:.75}to{transform:translate(-50%,-52%) scale(1.08);opacity:1}}
+@keyframes flare{from{transform:translateY(0) scaleY(1)}to{transform:translateY(-10px) scaleY(1.18)}}
+.emblem-in{background:#07101F;color:#fff}
+.iron-main{position:relative}
+.iron-title{text-shadow:0 0 18px color-mix(in srgb,var(--gold) 55%,transparent);letter-spacing:.02em}
+.iron-stage i.on{background:var(--grad-ki);box-shadow:0 0 10px var(--gold)}
+
+/* ---------- habits / tasks: one-time pop on the thing you just tapped ---------- */
+.habit.just-done .check{animation:kipop .55s var(--spring)}
+.habit.just-done .check::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--hc);animation:ripple .6s var(--ease) forwards}
+.tk.just-done .tk-check{animation:kipop .55s var(--spring)}
+.tk.just-done .tk-check::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent);animation:ripple .6s var(--ease) forwards}
+@keyframes kipop{0%{transform:scale(.7)}50%{transform:scale(1.22)}100%{transform:scale(1)}}
+@keyframes ripple{from{transform:scale(.6);opacity:1}to{transform:scale(1.9);opacity:0}}
+.habit.is-done .check{animation:none}
+.tk-check{position:relative}
+
+/* ---------- task timer: charging ring ---------- */
+.tk-timer.on{--p:0;position:relative;overflow:visible}
+.tk-timer.on i{background:conic-gradient(var(--neon) calc(var(--p)*1%),var(--track) 0);width:14px;height:14px;border-radius:50%;animation:none;box-shadow:0 0 10px var(--neon)}
+
+/* ---------- toast: HUD readout ---------- */
+.toast{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.02em;background:color-mix(in srgb,var(--bg) 70%,#000);color:var(--ink);border:1px solid color-mix(in srgb,var(--neon) 55%,transparent);box-shadow:0 0 24px -6px var(--neon),var(--shadow-pop)}
+.toast button{background:var(--grad)}
+
+/* ---------- boot sequence ---------- */
+#boot{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:var(--font-mono);animation:bootout .5s ease-in 1.15s forwards;pointer-events:none}
+#boot .b-in{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+#boot .b-logo{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:.14em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;animation:bootin .5s var(--ease) both}
+#boot .b-line{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);animation:bootin .4s var(--ease) .25s both}
+#boot .b-bar{width:180px;height:3px;background:var(--track);border-radius:3px;overflow:hidden}
+#boot .b-bar span{display:block;height:100%;width:0;background:var(--grad-ki);background-size:300% 100%;animation:bootbar .9s var(--ease) .2s forwards,ki 2s linear infinite}
+@keyframes bootin{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes bootbar{to{width:100%}}
+@keyframes bootout{to{opacity:0;visibility:hidden}}
+
+/* ---------- POWER UP cinematic ---------- */
+#powerup{position:fixed;inset:0;z-index:150;display:grid;place-items:center;pointer-events:none;overflow:hidden}
+#powerup .pu-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#fff,color-mix(in srgb,var(--gold) 70%,transparent) 20%,transparent 60%);animation:puflash .9s ease-out forwards}
+#powerup .pu-wave{position:absolute;left:50%;top:55%;width:40px;height:40px;border-radius:50%;border:3px solid var(--gold);transform:translate(-50%,-50%);animation:puwave 1.1s var(--ease) forwards;box-shadow:0 0 30px var(--gold)}
+#powerup .pu-wave.two{border-color:var(--neon);animation-delay:.15s}
+#powerup .pu-text{position:relative;text-align:center;animation:putext 1.9s var(--spring) forwards}
+#powerup .pu-text small{display:block;font-family:var(--font-mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-shadow:0 0 12px var(--gold)}
+#powerup .pu-text b{display:block;font-family:var(--font-display);font-weight:800;font-size:clamp(34px,10vw,52px);line-height:1;letter-spacing:.04em;text-transform:uppercase;background:var(--grad-ki);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ki 1.2s linear infinite;filter:drop-shadow(0 0 18px color-mix(in srgb,var(--gold) 80%,transparent))}
+@keyframes puflash{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
+@keyframes puwave{to{width:240vmax;height:240vmax;opacity:0;border-width:1px}}
+@keyframes putext{0%{opacity:0;transform:scale(.5)}15%{opacity:1;transform:scale(1.1)}25%{transform:scale(1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.15) translateY(-10px)}}
+#powerup .pu-text{--l:0;color:var(--ink)}
+
+/* ---------- promo: cinematic ---------- */
+.promo{border:1px solid color-mix(in srgb,var(--neon) 45%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--neon) 25%,transparent),0 30px 80px -20px color-mix(in srgb,var(--neon) 60%,transparent)}
+.promo h2{background:var(--grad-ki);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:ki 2s linear infinite}
+
+/* ---------- calm mode + reduced motion: ambient off, events stay subtle ---------- */
+@media (prefers-reduced-motion: reduce){
+  body::before,.stars i,.belt-card::before,.scan-beam,.hud i,.bar>span,.tb-track span,.bfill,.pat-bar span,.emblem,.aura,.aura::before,.aura::after,.tabs::before,.promo h2,#powerup .pu-text b,.brand b{animation:none!important}
+  #boot{display:none}
+}
+:root[data-motion="calm"] body::before,:root[data-motion="calm"] .stars i,:root[data-motion="calm"] .belt-card::before,:root[data-motion="calm"] .scan-beam,:root[data-motion="calm"] .hud i,
+:root[data-motion="calm"] .bar>span,:root[data-motion="calm"] .tb-track span,:root[data-motion="calm"] .bfill,:root[data-motion="calm"] .pat-bar span,:root[data-motion="calm"] .emblem,
+:root[data-motion="calm"] .aura,:root[data-motion="calm"] .aura::before,:root[data-motion="calm"] .aura::after,:root[data-motion="calm"] .tabs::before,:root[data-motion="calm"] .promo h2,:root[data-motion="calm"] .brand b,:root[data-motion="calm"] .app>*,:root[data-motion="calm"] main>section>*{animation:none!important}
+:root[data-motion="calm"] .scan::after,:root[data-motion="calm"] .scan-beam,:root[data-motion="calm"] .stars,:root[data-motion="calm"] .aura{display:none}
+:root[data-motion="calm"] .card,:root[data-motion="calm"] .sheet,:root[data-motion="calm"] .promo,:root[data-motion="calm"] .iron{backdrop-filter:none;-webkit-backdrop-filter:none}
+.calm-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2)}
+.calm-row b{font-size:14px} .calm-row small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.switch{width:46px;height:26px;border-radius:99px;border:0;background:var(--track);position:relative;flex:none;transition:background .25s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .25s var(--spring)}
+.switch[aria-checked="true"]{background:var(--accent)} .switch[aria-checked="true"]::after{transform:translateX(20px)}

@@ -88,3 +88,12 @@ export function nextPromo(){
 
 
 export function clearPromos(){ promoQueue = []; $('#promo').hidden = true; }
+
+/* POWER UP cinematic: flash, shockwave, the new form across the screen. Pure overlay, never blocks taps. */
+export function powerUp(small, big){
+  var el = $('#powerup'); if(!el) return;
+  el.innerHTML = '<div class="pu-flash"></div><div class="pu-wave"></div><div class="pu-wave two"></div><div class="pu-text"><small>' + esc(small) + '</small><b>' + esc(big) + '</b></div>';
+  el.hidden = false; burst();
+  if(navigator.vibrate) try { navigator.vibrate([30, 40, 60]); } catch(e){}
+  clearTimeout(powerUp.t); powerUp.t = setTimeout(function(){ el.hidden = true; el.innerHTML = ''; }, reduceMotion ? 1200 : 2000);
+}

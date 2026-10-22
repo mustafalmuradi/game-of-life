@@ -1,5 +1,5 @@
 // render(): the belt, the tab bar, the sync line, the habit rank row, and the registry each tab adds its renderer to.
-import { $, esc, fmt, todayKey } from './utils.js';
+import { $, esc, fmt, reduceMotion, todayKey } from './utils.js';
 import { isActive, state, ui } from './state.js';
 import { beltOf, habitCurve, nextLabel, rankInfo, rankSub, rankTitle, testState } from './xp.js';
 import { habit30 } from './stats.js';
@@ -14,14 +14,37 @@ export function render(){
   $('#view-today').style.display = state.tab === 'today' ? 'flex' : 'none';
   (tabs[state.tab] || tabs.progress)();
   ui.popSeg = null;
+  renderHud(); syncTabs(); decorate();
+}
+/* HUD chrome: corner brackets on every card (re-added after each innerHTML render), the liquid tab indicator, the readout line */
+var hudFn = null;
+export function registerHud(fn){ hudFn = fn; }
+function renderHud(){ var el = $('#hud'); if(!el) return; var h = hudFn ? hudFn() : ''; if(el.innerHTML !== h) el.innerHTML = h; }
+export function syncTabs(){
+  var bar = $('.tabs'), b = bar && bar.querySelector('[aria-selected="true"]'); if(!b) return;
+  var rs = document.documentElement.style; rs.setProperty('--tab-x', b.offsetLeft + 'px'); rs.setProperty('--tab-w', b.offsetWidth + 'px');
+}
+function decorate(){
+  document.querySelectorAll('.card').forEach(function(c){
+    if(c.querySelector(':scope > .hud-corner')) return;
+    ['tl','tr','bl','br'].forEach(function(k){ var s = document.createElement('span'); s.className = 'hud-corner ' + k; s.setAttribute('aria-hidden', 'true'); c.appendChild(s); });
+  });
+}
+var lastTotal = null;
+function countUp(el, from, to){
+  if(reduceMotion || from === null || from === to || Math.abs(to - from) > 5000){ el.textContent = fmt(to); return; }
+  var t0 = performance.now(), dur = 700;
+  (function step(t){ var k = Math.min(1, (t - t0)/dur), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(from + (to - from)*e); if(k < 1 && document.contains(el)) requestAnimationFrame(step); })(t0);
 }
 function renderBelt(){
   var st = state.stats, rk = st.rank;
   $('#belt').innerHTML =
     '<div class="belt-row"><div><p class="eyebrow">Overall rank · Level ' + (rk.level+1) + '</p><h1 class="rank">' + esc(rankTitle(rk.level)) + '</h1><p class="rank-sub">' + esc(rankSub(rk.level)) + '</p></div>' +
-    '<div class="total"><span class="n">' + fmt(st.total) + '</span><span class="l">Total XP</span></div></div>' +
+    '<div class="total"><span class="n">' + fmt(lastTotal === null ? st.total : lastTotal) + '</span><span class="l">Total XP</span></div></div>' +
     beltSVG(rk.level) + rankProgressHTML(rk) +
-    '<button class="link-btn" type="button" data-act="open-rank" data-h="overall">Belt tests and habit ranks</button>';
+    '<button class="link-btn" type="button" data-act="open-rank" data-h="overall">Belt tests and habit ranks</button><span class="scan-beam" aria-hidden="true"></span>';
+  $('#belt').classList.add('scan');
+  countUp($('#belt .total .n'), lastTotal, st.total); lastTotal = st.total;
 }
 export function renderSync(){
   var el = $('#sync');

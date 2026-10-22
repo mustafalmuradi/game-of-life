@@ -58,10 +58,10 @@ const COACH_SCRIPT = [
   { text: 'Five of seven sweeps. Sleep is the leak: two nights past target. Fix bedtime before anything else.' }
 ];
 const FAKE_SRC = fs.readFileSync(new URL('./fake-runtime.js', import.meta.url), 'utf8');
-const KILL_MOTION = '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}';
+const KILL_MOTION = '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}#boot,.stars{display:none!important}';
 
 async function openPage(browser, url, label) {
-  const context = await browser.newContext({ viewport: VIEW, timezoneId: 'America/New_York', locale: 'en-US', colorScheme: 'light', deviceScaleFactor: 1 });
+  const context = await browser.newContext({ viewport: VIEW, timezoneId: 'America/New_York', locale: 'en-US', colorScheme: 'light', reducedMotion: 'reduce', deviceScaleFactor: 1 });
   await context.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
   const page = await context.newPage();
   const console_ = [];
@@ -86,7 +86,7 @@ const SNAP = () => {
   }
   const vals = Array.from(document.querySelectorAll('input,select,textarea')).map(i => (i.id || i.name || i.className) + '=' + JSON.stringify(i.type === 'checkbox' ? i.checked : i.value));
   parts.push('<!-- values -->\n' + vals.join('\n'));
-  parts.push('<!-- body attrs -->\n' + Array.from(document.body.attributes).map(a => a.name + '=' + a.value).join(' ') + ' | html: ' + Array.from(document.documentElement.attributes).map(a => a.name + '=' + a.value).join(' '));
+  parts.push('<!-- body attrs -->\n' + Array.from(document.body.attributes).map(a => a.name + '=' + a.value).join(' ') + ' | html: ' + Array.from(document.documentElement.attributes).map(a => a.name + '=' + a.value.replace(/--tab-[xw]: [^;]+;?\s*/g, '')).join(' '));
   const ls = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); ls[k] = localStorage.getItem(k); }
   parts.push('<!-- localStorage -->\n' + JSON.stringify(ls, Object.keys(ls).sort(), 1));
   parts.push('<!-- cloud log -->\n' + JSON.stringify(window.__fake.log, null, 1));

@@ -14,7 +14,7 @@ import { bNode } from './build.js';
 export var tkQA = {lane:null}, tkForm = null, tkArmed = false, tkHistOpen = {}, tkTplOpen = false;
 export var tkSel = null, tkWeek = null; // the day the Tasks tab is showing, and its week (Monday)
 var tkDay = null; // which "today" tkSel was last synced to, so a new day moves the tab forward
-var tkTick = null;
+var tkTick = null, tkPop = null; // tkPop = the task just checked off, so its check can pop once
 
 export function taskQ(k){ return TASK_Q.filter(function(x){ return x.k === Number(k); })[0] || TASK_Q[1]; }
 export function taskBlock(k){ return TASK_BLOCKS.filter(function(x){ return x.k === k; })[0] || TASK_BLOCKS[0]; }
@@ -217,7 +217,7 @@ function chip(it){
 }
 function itemHTML(d, it, today){
   var on = it.timer && it.timer.on, ms = timerMs(it), state_ = it.doneAt ? 'done' : it.droppedAt ? 'dropped' : it.rolledTo ? 'rolled' : 'open';
-  var h = '<li class="tk' + (state_ !== 'open' ? ' is-' + state_ : '') + (on ? ' is-timing' : '') + '" data-id="' + esc(it.id) + '">';
+  var h = '<li class="tk' + (state_ !== 'open' ? ' is-' + state_ : '') + (on ? ' is-timing' : '') + (tkPop === it.id && it.doneAt ? ' just-done' : '') + '" data-id="' + esc(it.id) + '">';
   if(state_ === 'open' || state_ === 'done') h += '<button class="tk-check" type="button" data-act="' + (it.doneAt ? 'tk-undone' : 'tk-done') + '" data-d="' + d + '" data-id="' + esc(it.id) + '" aria-pressed="' + !!it.doneAt + '" aria-label="' + esc((it.doneAt ? 'Undo: ' : 'Done: ') + it.title) + '"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>';
   else h += '<span class="tk-check tk-x" aria-hidden="true">' + (state_ === 'dropped' ? '✕' : '→') + '</span>';
   h += '<button class="tk-main" type="button" data-act="tk-open" data-d="' + d + '" data-id="' + esc(it.id) + '"><span class="tk-title">' + esc(it.title) + '</span><span class="tk-chips">' + chip(it) +
@@ -264,7 +264,7 @@ function startTick(){
     var any = false;
     document.querySelectorAll('[data-timer]').forEach(function(sp){
       var f = findTaskAnyDay(sp.getAttribute('data-timer')); if(!f || !f.item.timer || !f.item.timer.on) return;
-      any = true; sp.textContent = fmtTimer(timerMs(f.item));
+      any = true; sp.textContent = fmtTimer(timerMs(f.item)); var btn = sp.parentNode; if(btn && btn.style) btn.style.setProperty('--p', String(Math.round((timerMs(f.item)/60000 % 60)/60*100)));
     });
     if(!any){ clearInterval(tkTick); tkTick = null; }
   }, 1000);
@@ -325,7 +325,8 @@ export function autoSort(d, id){
   });
 }
 export function onDone(d, id, btn){
-  var it = setDone(d, id); if(!it) return;
+  tkPop = id;
+  var it = setDone(d, id); tkPop = null; if(!it) return;
   if(it.doneAt && !it.droppedAt){
     var all = taskDoc(d).items.filter(function(x){ return !x.rolledTo && !x.droppedAt; }), left = all.filter(isOpen).length;
     if(!left && all.length > 1) burst();
