@@ -71,7 +71,7 @@ function bind(){
       case 'week-prev': state.weekOf = addDays(state.weekOf, -7); state.selected = addDays(state.weekOf, 6); render(); break;
       case 'week-next': {
         var nw = addDays(state.weekOf, 7), td = todayKey();
-        if(nw <= td){ state.weekOf = nw; state.selected = mondayOf(td) === nw ? td : addDays(nw, 6); render(); }
+        if(nw <= addDays(mondayOf(td), 28)){ state.weekOf = nw; state.selected = mondayOf(td) === nw ? td : nw > td ? nw : addDays(nw, 6); render(); }
         break;
       }
       case 'open-day': { var dd = t.getAttribute('data-d'); state.selected = dd; state.weekOf = mondayOf(dd); state.tab = 'today'; render(); window.scrollTo({top:0, behavior: reduceMotion ? 'auto' : 'smooth'}); break; }

@@ -179,6 +179,10 @@ main>section>*:nth-child(5){animation-delay:.24s}
 .wday:hover:not(:disabled){transform:translateY(-3px);background:var(--surface)}
 .wday .wl{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.08em}
 .wday.is-today .wl{color:var(--accent-ink)}
+.wday.is-fut .wl{color:var(--accent-ink);opacity:.7} .wday.is-fut svg{opacity:.75}
+.wday{position:relative}
+.wday .wplan{position:absolute;top:3px;right:4px;font-size:10px;font-weight:800;line-height:1;color:var(--accent-ink);background:var(--accent-soft);border-radius:8px;padding:2px 5px}
+.habit.is-fut{opacity:.6} .habit.is-fut .check{border-style:dashed;pointer-events:none}
 .wday.is-sel{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow-pop);transform:translateY(-3px) scale(1.06)}
 .wday:disabled{opacity:.38;cursor:default}
 .wday svg{width:38px;height:38px;display:block;transition:transform .25s var(--spring)}
@@ -1875,7 +1879,7 @@ function mutateDay(date, fn, opts){
   if(promos.length) setTimeout(function(){ queuePromos(promos); }, reduceMotion ? 0 : 700);
 }
 function toggleHabit(hid, anchor){
-  var date = state.selected;
+  var date = state.selected; if(date > todayKey()) return;
   var h = habitById(hid); if(!h) return;
   var cur = state.days[date];
   var wasDone = !!(cur && cur.done[hid]);
@@ -1886,7 +1890,7 @@ function toggleHabit(hid, anchor){
   }, {anchor: wasDone ? null : anchor, undo: wasDone ? h.name + ' unchecked' : null});
 }
 function toggleRest(hid, kind){
-  var date = state.selected, h = habitById(hid); if(!h) return;
+  var date = state.selected, h = habitById(hid); if(!h || date > todayKey()) return;
   var cur = state.days[date], marked = !!(cur && cur.rest && cur.rest[hid]);
   if(!marked) popSeg = hid;
   mutateDay(date, function(day){
@@ -1895,7 +1899,7 @@ function toggleRest(hid, kind){
   }, {undo: marked ? null : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
 }
 function addExtra(hid, note, anchor){
-  var date = state.selected;
+  var date = state.selected; if(date > todayKey()) return;
   var cur = state.days[date];
   if(!cur || !cur.done[hid]) return;
   if(((cur.extras[hid]) || []).length >= capOf(habitById(hid))) return;
@@ -2131,13 +2135,14 @@ function renderWeek(){
   var h = '<div class="week-head">' +
     '<button class="arrow" type="button" data-act="week-prev" aria-label="Previous week"><svg viewBox="0 0 24 24">' + ICON.left + '</svg></button>' +
     '<p class="t">' + (isThis ? 'This week' : fmtShort(days[0]) + ' – ' + fmtShort(days[6])) + '<span>' + fmt(wxp) + ' XP</span></p>' +
-    '<button class="arrow" type="button" data-act="week-next" aria-label="Next week"' + (isThis ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.right + '</svg></button></div>';
+    '<button class="arrow" type="button" data-act="week-next" aria-label="Next week"' + (mon >= addDays(mondayOf(today), 28) ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.right + '</svg></button></div>';
   h += '<div class="week-grid">';
   days.forEach(function(d, i){
     var fut = d > today, stat = st.byDate[d];
-    var lbl = fmtLong(d) + (stat ? ', ' + stat.done + ' of ' + stat.total + ' done' : '');
-    h += '<button type="button" class="wday' + (d === state.selected ? ' is-sel' : '') + (d === today ? ' is-today' : '') + '" data-act="pick-day" data-d="' + d + '"' + (fut ? ' disabled' : '') + (d === today ? ' aria-current="date"' : '') + ' aria-label="' + esc(lbl) + '">' +
-      '<span class="wl">' + L[i] + '</span>' + miniRing(fut ? null : stat, parseKey(d).getDate()) + '</button>';
+    var tk = fut && state.tasks[d] ? state.tasks[d].items.filter(function(x){ return !x.rolledTo && !x.droppedAt; }).length : 0;
+    var lbl = fmtLong(d) + (stat ? ', ' + stat.done + ' of ' + stat.total + ' done' : fut && tk ? ', ' + tk + ' planned' : '');
+    h += '<button type="button" class="wday' + (d === state.selected ? ' is-sel' : '') + (d === today ? ' is-today' : '') + (fut ? ' is-fut' : '') + '" data-act="pick-day" data-d="' + d + '"' + (d === today ? ' aria-current="date"' : '') + ' aria-label="' + esc(lbl) + '">' +
+      '<span class="wl">' + L[i] + '</span>' + miniRing(fut ? null : stat, parseKey(d).getDate()) + (fut && tk ? '<span class="wplan">' + tk + '</span>' : '') + '</button>';
   });
   $('#week').innerHTML = h + '</div>';
 }
@@ -2151,7 +2156,7 @@ function renderDay(){
   else if(d === today){
     var nb = Math.min(SWEEP_XP + SWEEP_STEP*st.sweepRunBeforeToday, SWEEP_MAX);
     sweepHtml = '<span class="sweep">' + left + ' to go for a clean sweep (+' + nb + ')</span>';
-  } else sweepHtml = '<span class="sweep">No clean sweep</span>';
+  } else sweepHtml = '<span class="sweep">' + (d > today ? 'Planned day' : 'No clean sweep') + '</span>';
   var streakLine = st.sweepRun > 0 ? '<p class="score-line">Sweep streak <b>' + st.sweepRun + (st.sweepRun === 1 ? ' day' : ' days') + '</b></p>' : '';
   var nt = d === today ? nextTrophy() : null;
   if(nt) streakLine += '<p class="score-line trophy-line">' + trophySVG(nt.i, true) + 'Next: <b>' + esc(nt.name) + '</b> · ' + nt.cur + '/' + nt.v + ' ' + esc(nt.unit) + ' · +' + nt.xp + '</p>';
@@ -2163,6 +2168,7 @@ function renderDay(){
     '<p class="score-line"><b>' + fmt(stat.base || 0) + '</b> base · <b>' + fmt(stat.bonus || 0) + '</b> bonus</p>' + streakLine + sweepHtml + '</div></div>' + checkinRow(d);
 }
 function checkinRow(d){
+  if(d > todayKey()) return '';
   var m = metricsOf(d), rd = readiness(d), bits = [];
   if(m.bed) bits.push('Slept ' + fmtClock(tmin(m.bed)) + (m.wake ? '–' + fmtClock(tmin(m.wake)) : ''));
   if(Number.isFinite(m.sleep)) bits.push((Math.round(m.sleep*10)/10) + 'h');
@@ -2182,6 +2188,10 @@ function renderHabits(){
   var d = state.selected, today = todayKey(), st = state.stats;
   var act = activeHabits(d), doc = state.days[d];
   var h = '';
+  if(d > today){
+    h = '<p class="nudge">Planning ahead: habits unlock on the day. Tasks below are open.</p>' + act.map(function(hb){ return '<article class="habit is-fut" style="--hc:var(--h-' + hb.color + ')"><span class="check" aria-hidden="true"></span><div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3></div><p class="target">' + esc(habitTarget(hb)) + '</p></div><div class="habit-side"></div></article>'; }).join('');
+    $('#habits').innerHTML = h; return;
+  }
   act.forEach(function(hb){
     var done = !!(doc && doc.done[hb.id]);
     var ex = (doc && doc.extras[hb.id]) || [];
@@ -5313,7 +5323,7 @@ function bind(){
       case 'week-prev': state.weekOf = addDays(state.weekOf, -7); state.selected = addDays(state.weekOf, 6); render(); break;
       case 'week-next': {
         var nw = addDays(state.weekOf, 7), td = todayKey();
-        if(nw <= td){ state.weekOf = nw; state.selected = mondayOf(td) === nw ? td : addDays(nw, 6); render(); }
+        if(nw <= addDays(mondayOf(td), 28)){ state.weekOf = nw; state.selected = mondayOf(td) === nw ? td : nw > td ? nw : addDays(nw, 6); render(); }
         break;
       }
       case 'open-day': { var dd = t.getAttribute('data-d'); state.selected = dd; state.weekOf = mondayOf(dd); state.tab = 'today'; render(); window.scrollTo({top:0, behavior: reduceMotion ? 'auto' : 'smooth'}); break; }
