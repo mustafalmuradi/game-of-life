@@ -117,6 +117,25 @@ export const steps = [
     await click(page, '[data-act="del-lift"]'); await settle(page);
   } },
   { name: 'lifts: save with a validation error', run: async (page) => { await click(page, '[data-act="open-lift"]'); await click(page, '#lf-save'); await settle(page); await escape(page); } },
+  // band work (RipRight): a set can be a band instead of lb; band-only lifts mark Train a light day
+  { name: 'lifts: band set, light band, yesterday', run: async (page) => {
+    await click(page, '[data-act="open-lift"]'); await settle(page);
+    await fill(page, '#lf-ex', 'RipRight back clips'); await page.locator('#lf-ex').dispatchEvent('change');
+    await fill(page, '#lf-loc', 'Home');
+    await page.evaluate(() => { const d = document.querySelector('#lf-date'); const t = new Date(d.value + 'T12:00:00'); t.setDate(t.getDate() - 1); d.value = t.toISOString().slice(0, 10); });
+    const id = await page.evaluate(() => document.querySelector('#lf-sets select.lf-u').id.slice(5));
+    await select(page, '#lf-u-' + id, 'light'); await fill(page, '#lf-r-' + id, 200);
+    await click(page, '#lf-save'); await settle(page); await page.clock.runFor(200); await settle(page);
+  } },
+  { name: 'lifts: band set, thick band, today (prefill keeps the band)', run: async (page) => {
+    await click(page, '[data-act="open-lift"]'); await settle(page);
+    await fill(page, '#lf-ex', 'RipRight back clips'); await page.locator('#lf-ex').dispatchEvent('change'); await settle(page);
+    const id = await page.evaluate(() => document.querySelector('#lf-sets select.lf-u').id.slice(5));
+    await select(page, '#lf-u-' + id, 'thick'); await fill(page, '#lf-r-' + id, 220);
+    await click(page, '#lf-save'); await settle(page); await page.clock.runFor(200); await settle(page);
+  } },
+  { name: 'lifts: band progression panel open', run: async (page) => { await page.evaluate(() => { const d = document.querySelector('details.prog-card'); if (d) d.open = true; const x = document.querySelector('details.sx-more'); if (x) x.open = true; }); await settle(page); } },
+  { name: 'today: band day shows Train as light', run: async (page) => { await tab(page, 'today'); } },
 
   // ---- Body ----
   { name: 'body: open check-in', run: async (page) => { await tab(page, 'body'); await click(page, '[data-act="open-checkin"]'); await settle(page); } },

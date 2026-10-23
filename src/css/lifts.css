@@ -91,6 +91,13 @@ details.hist summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--a
 .lf-field input:focus,.lf-field select:focus,.setrow input:focus{border-color:var(--accent);box-shadow:var(--glow);outline:0;transform:translateY(-1px)}
 .setrows{display:flex;flex-direction:column;gap:8px}
 .setrow{display:grid;grid-template-columns:26px 1fr 1fr 32px;gap:8px;align-items:center;animation:rise .3s var(--ease) both}
+.setrow{grid-template-columns:26px 74px 1fr 1fr 32px}
+.setrow select.lf-u{font:inherit;font-size:13px;font-weight:800;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:12px;padding:10px 6px;width:100%;min-width:0}
+.setrow select.lf-u:focus{border-color:var(--accent);box-shadow:var(--glow);outline:0}
+.setrow.is-band select.lf-u{border-color:var(--neon-2,var(--accent-2));color:var(--accent-2)}
+.setrow input:disabled{opacity:.35}
+.set.band{border-color:color-mix(in srgb,var(--accent-2) 55%,transparent);font-size:16px}
+.set.band.b-thick{background:color-mix(in srgb,var(--accent-2) 14%,var(--surface-2))}
 .setrow .idx{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--accent-ink);text-align:center}
 .setrow .rm{background:none;border:0;color:var(--muted);font-size:22px;line-height:1;transition:color .2s,transform .2s var(--spring)}
 .setrow .rm:hover{color:var(--pr);transform:rotate(90deg)}

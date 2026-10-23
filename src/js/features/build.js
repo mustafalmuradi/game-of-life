@@ -7,7 +7,7 @@ import { burst, toast } from '../core/effects.js';
 import { registerTab, render } from '../core/render.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
 
-/* ---------- build: what Moose builds with Claude ---------- */
+/* ---------- build: what Mustafa builds with Claude ---------- */
 /* Data: tracker/bnodes (map boxes + their links), tracker/bships (ship log), tracker/bskills. Builder XP is its own track. */
 export var BXP = {ship:50, live:75, connect:40, upgrade:25, fix:10, skill:30};
 export var BKINDS = [{k:'ship', n:'Shipped a build'}, {k:'live', n:'Went live'}, {k:'connect', n:'New connection'}, {k:'upgrade', n:'Upgrade'}, {k:'fix', n:'Fix'}];

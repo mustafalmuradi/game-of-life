@@ -75,6 +75,16 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
 
 The strength rank is themed on Dragon Ball Z: `MOOSE_RANKS` in `core/strength.js` maps strength level to a form, paced for about a year at ~1,400 XP/week (1 Saiyan Warrior, 4 Kaioken, 9 Super Saiyan, 15 Super Saiyan 2, 22 Super Saiyan 3, 30 Super Saiyan Blue, 40 Ultra Instinct). Each entry's third element lists the levels where its 3 stages start; `mooseStage(L)` returns `{form, stage, next}` for the stage row under the title, the ladder and the level-up toast. Per-lift tiers (`TIERS`, est. 1RM gain): Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai's Planet +20%, Over 9,000 +35%. Only labels changed; tier keys (`bronze`…`diamond`) and their colors are unchanged.
 
+## Band sets (RipRight and other band work)
+
+A lift set can be a resistance band instead of pounds: `{w: 0, r: 220, b: 'thick'}`. The ladder is `BANDS` in `src/js/core/strength.js` (Light band, Thick band; add a heavier band at the end of the list). In the lift sheet each set row has an lb/band picker; Coach's `log_lift` and `update_lift` take `b`.
+
+- Progress: a heavier band outranks any reps on a lighter one; within a band, more reps is progress. Score = reps × band level (light 1x, thick 2x), so moving up a band reads as a PR.
+- Quest: same band, about 5% more reps (220 → 230). No "add weight" chip for bands.
+- Train: a band-only lift marks Train as a light day (not strength) unless Train is already done or rested. Any weighted lift that day still checks it as done.
+- Export: `lifts.csv` has a `band` column.
+- `test/stale-cache.mjs` and the harness both run in `npm test`; the harness has band steps (light yesterday, thick today).
+
 ## Daily tasks (Tasks tab + the Tasks card on Today)
 
 Pure data, no XP. One document per day at `tracker/tasks/YYYY-MM-DD`: `{date, schema:1, plannedAt, closedAt, items:[...]}`. Each item: `id, title, lane, q (1-4 Covey quadrant), block (am deep work / pm physical / eve), est, actual (minutes), link {t: node|habit|win, id, label}, note, src (page|coach|sched|recur|rollover), tpl (template id), origin (date first planned), rolled (times pushed), createdAt, startedAt, doneAt, droppedAt, dropWhy, rolledTo, timer {on, ms}`. Nothing derived is stored; `taskStats()` recomputes everything from the docs.

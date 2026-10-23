@@ -1,7 +1,7 @@
 // Lifts tab: session cards, the lift sheet, save/delete.
 import { $, esc, fmt, fmtLong, fmtShort, pad, todayKey, uid } from '../core/utils.js';
 import { habitById, isActive, state } from '../core/state.js';
-import { autoTarget, fmtW, ironXPFor, isBW, liftBadges, liftKey, liftScore, liftVolume, LSTATUS, LXP, MOOSE_RANKS, mooseRank, mooseStage, norm, REP_TOP, STALL_N, TIERS, topSet, workingText } from '../core/strength.js';
+import { autoTarget, BANDS, cleanBand, fmtW, ironXPFor, isBandEntry, isBW, isLoadTarget, liftBadges, liftKey, liftScore, liftVolume, LSTATUS, LXP, MOOSE_RANKS, mooseRank, mooseStage, norm, REP_TOP, setText, STALL_N, TIERS, topSet, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
 import { flushLiftOps, persistLocal, sync } from '../core/store.js';
 import { mutateDay } from './today.js';
@@ -24,7 +24,9 @@ function sparkSVG(entries){
   var area = line + ' L' + last[0].toFixed(1) + ' ' + H + ' L' + xy[0][0].toFixed(1) + ' ' + H + ' Z';
   return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-label="Est. 1RM trend, last ' + pts.length + ' sessions"><line x1="0" y1="' + (H-1) + '" x2="' + W + '" y2="' + (H-1) + '" stroke="var(--line)" stroke-width="1"/><path d="' + area + '" fill="var(--spark-fill)"/><path d="' + line + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="3.5" fill="var(--accent)"/></svg>';
 }
-function setsHTML(sets){ return (sets || []).map(function(s){ return '<span class="set">' + (s.w > 0 ? fmtW(s.w) : 'BW') + '<small> × </small>' + s.r + '</span>'; }).join(''); }
+function setsHTML(sets){ return (sets || []).map(function(s){ return '<span class="set' + (s.b ? ' band b-' + esc(s.b) : '') + '">' + (s.b ? esc(setText(s, '')).replace(/\d+$/, '') : s.w > 0 ? fmtW(s.w) : 'BW') + '<small> × </small>' + s.r + '</span>'; }).join(''); }
+/* the single best set across every session of a lift (bands: heaviest band, most reps) */
+function bestSetOf(g){ var top = null; g.entries.forEach(function(e){ var t = topSet(e); if(t && (!top || t.v > top.v)) top = t; }); return top; }
 function stageRow(L){
   var s = mooseStage(L), pips = '';
   for(var i=1;i<=3;i++) pips += '<i class="' + (i <= s.stage ? 'on' : '') + '"></i>';
@@ -38,7 +40,7 @@ function tierInfo(g){
   return {key:tk, name:tn, pct:pct, label:label};
 }
 function sessionEntry(e, g){
-  var st = LSTATUS[e._status] || LSTATUS.base, t = tierInfo(g), bw = isBW(e), ts = topSet(e);
+  var st = LSTATUS[e._status] || LSTATUS.base, t = tierInfo(g), bw = isBW(e), ts = topSet(e), band = isBandEntry(e), bs = band ? bestSetOf(g) : null;
   var isLatest = g.last.id === e.id, armed = liftArmed === e.id;
   var rir = e.rir !== undefined && e.rir !== null && e.rir !== '' ? 'RIR ' + esc(e.rir) : '';
   var meta = [rir, e.notes ? esc(e.notes) : ''].filter(Boolean).join(' · ');
@@ -47,18 +49,18 @@ function sessionEntry(e, g){
     '<div class="sets">' + setsHTML(e.sets) + '</div>' +
     (meta ? '<p class="meta">' + meta + '</p>' : '');
   if(isLatest){
-    var parsed = /^\s*([\d.]+|BW)\s*[×xX*]/i.test(g.quest);
-    h += '<div class="quest"><span class="q-tag">Next</span><span class="q-text">' + esc(g.quest) + '<small>' + (parsed ? 'Hit every set at this weight next session' : 'Beat this session’s best set') + '</small></span><span class="q-xp">+' + LXP.quest + ' XP</span></div>';
+    var parsed = isLoadTarget(g.quest);
+    h += '<div class="quest"><span class="q-tag">Next</span><span class="q-text">' + esc(g.quest) + '<small>' + (parsed ? (/band\s*[×xX*]/i.test(g.quest) ? 'Hit every set on this band next session' : 'Hit every set at this weight next session') : 'Beat this session’s best set') + '</small></span><span class="q-xp">+' + LXP.quest + ' XP</span></div>';
     if(g.prog && g.prog.addWeight) h += '<p class="meta"><span class="pchip add">Add weight next session</span> Every working set hit ' + REP_TOP + '.</p>';
     else if(g.prog && g.prog.stall) h += '<p class="meta"><span class="pchip stall">Stall</span> ' + g.prog.since + ' sessions without more weight or reps. Change something: rest, reps in reserve, or a deload.</p>';
   }
   h += '<details class="sx-more" data-id="' + esc(e.id) + '"' + (openLiftKeys.has(e.id) ? ' open' : '') + '><summary>Lift progress <span class="tierchip">' + t.name + '</span></summary>' +
     '<div class="lift-figs"><div class="figs">' +
-      '<div class="fig"><span class="fn">' + (bw ? g.best : Math.round(g.best)) + '</span><span class="fl">' + (bw ? 'Best reps' : 'Best est. 1RM') + '</span></div>' +
-      '<div class="fig"><span class="fn">' + (ts ? (bw ? ts.r : fmtW(ts.w) + '×' + ts.r) : '–') + '</span><span class="fl">Top set here</span></div>' +
+      '<div class="fig"><span class="fn">' + (band ? esc(bs ? setText(bs, '×') : '–') : bw ? g.best : Math.round(g.best)) + '</span><span class="fl">' + (band ? 'Best set' : bw ? 'Best reps' : 'Best est. 1RM') + '</span></div>' +
+      '<div class="fig"><span class="fn">' + (ts ? (ts.b ? esc(setText(ts, '×')) : bw ? ts.r : fmtW(ts.w) + '×' + ts.r) : '–') + '</span><span class="fl">Top set here</span></div>' +
       (bw ? '' : '<div class="fig"><span class="fn">' + fmt(liftVolume(e)) + '</span><span class="fl">Volume lb</span></div>') +
       '<div class="fig"><span class="fn">' + g.entries.length + '</span><span class="fl">Sessions</span></div></div>' + sparkSVG(g.entries) + '</div>' +
-    '<div class="tierbar"><div class="tb-track"><span style="width:' + t.pct.toFixed(1) + '%"></span></div><span class="tb-lbl">' + t.label + '</span></div>' +
+    '<div class="tierbar"><div class="tb-track"><span style="width:' + t.pct.toFixed(1) + '%"></span></div><span class="tb-lbl">' + (band ? t.label.replace('est. 1RM', 'band score') : t.label) + '</span></div>' +
     '<button class="delbtn' + (armed ? ' armed' : '') + '" type="button" data-act="del-lift" data-id="' + esc(e.id) + '">' + (armed ? 'Tap again to delete this entry' : 'Delete this entry') + '</button>' +
     '</details></div>';
   return h;
@@ -104,7 +106,7 @@ function renderLifts(){
   h += '<div class="iron-tiles">' +
     '<div><b>' + a.streak + '</b><span>Week streak</span></div><div><b>' + a.prs + '</b><span>PRs set</span></div>' +
     '<div><b>' + a.quests + '</b><span>Quests cleared</span></div><div><b>' + (a.vol/2000).toFixed(a.vol < 20000 ? 1 : 0) + '</b><span>Tons moved</span></div></div>';
-  h += '<p class="iron-note">Belts reward showing up. Power level rewards getting stronger. Logging a lift checks off Work out for that day.</p>' +
+  h += '<p class="iron-note">Belts reward showing up. Power level rewards getting stronger. Logging a lift checks off Work out for that day; band-only work (RipRight) marks it a light day.</p>' +
     '<button class="primary wide" type="button" data-act="open-lift">Log a lift</button></section>';
 
   if(a.groups.length){
@@ -119,7 +121,7 @@ function renderLifts(){
         else if(pr.up) chip = '<span class="pchip up">Progress</span>';
         else chip = '<span class="pchip">Holding ' + pr.since + '</span>';
         return '<div class="lp-row"><b>' + esc(g.name) + '</b><span class="lp-w">' + esc(workingText(pr.working)) + ' \u00b7 ' + g.entries.length + (g.entries.length === 1 ? ' session' : ' sessions') + '</span>' + sparkSVG(g.entries) + chip + '</div>';
-      }).join('') + '</div><p class="muted small">Add weight: every set at your working weight hit ' + REP_TOP + '. Stall: ' + STALL_N + ' sessions in a row without more weight or reps. The line is estimated 1RM (reps for bodyweight).</p></details>';
+      }).join('') + '</div><p class="muted small">Add weight: every set at your working weight hit ' + REP_TOP + '. Stall: ' + STALL_N + ' sessions in a row without more weight or reps. The line is estimated 1RM (reps for bodyweight; reps × band level for bands).</p></details>';
   }
 
   var locs = ['All'].concat(Array.from(new Set(a.groups.map(function(g){ return g.location; }))));
@@ -161,12 +163,17 @@ function renderLifts(){
   view.style.display = 'flex'; view.style.flexDirection = 'column'; view.style.gap = '14px';
 }
 var liftSetCount = 0;
-export function addSetRow(w, r){
+export function addSetRow(w, r, b){
   var i = liftSetCount++, row = document.createElement('div');
   row.className = 'setrow';
-  row.innerHTML = '<span class="idx" aria-hidden="true"></span><input id="lf-w-' + i + '" type="number" inputmode="decimal" step="0.5" min="0" placeholder="lb" aria-label="Weight in pounds"><input id="lf-r-' + i + '" type="number" inputmode="numeric" step="1" min="1" placeholder="reps" aria-label="Reps"><button type="button" class="rm" aria-label="Remove set">×</button>';
-  row.querySelector('#lf-w-' + i).value = (w === undefined || w === null) ? '' : w;
+  /* each set is pounds or a band: picking a band disables the weight box */
+  row.innerHTML = '<span class="idx" aria-hidden="true"></span><select id="lf-u-' + i + '" class="lf-u" aria-label="Pounds or band"><option value="">lb</option>' + BANDS.map(function(x){ return '<option value="' + x[0] + '">' + esc(x[1].replace(/ band$/, '')) + '</option>'; }).join('') + '</select><input id="lf-w-' + i + '" type="number" inputmode="decimal" step="0.5" min="0" placeholder="lb" aria-label="Weight in pounds"><input id="lf-r-' + i + '" type="number" inputmode="numeric" step="1" min="1" placeholder="reps" aria-label="Reps"><button type="button" class="rm" aria-label="Remove set">×</button>';
+  var u = row.querySelector('#lf-u-' + i), wi = row.querySelector('#lf-w-' + i);
+  function syncUnit(){ var on = !!u.value; wi.disabled = on; wi.placeholder = on ? 'band' : 'lb'; if(on) wi.value = ''; row.classList.toggle('is-band', on); }
+  u.value = cleanBand(b) || ''; u.addEventListener("change", syncUnit);
+  wi.value = (w === undefined || w === null || b) ? '' : w;
   row.querySelector('#lf-r-' + i).value = (r === undefined || r === null) ? '' : r;
+  syncUnit();
   row.querySelector('.rm').addEventListener('click', function(){ row.remove(); numberSetRows(); });
   $('#lf-sets').appendChild(row); numberSetRows();
 }
@@ -182,8 +189,8 @@ export function openLiftSheet(){
 export function saveLift(){
   var msg = $('#lf-msg');
   var exercise = $('#lf-ex').value.trim();
-  var sets = Array.from($('#lf-sets').children).map(function(r){ return {w: parseFloat(r.querySelector('input[id^="lf-w-"]').value), r: parseInt(r.querySelector('input[id^="lf-r-"]').value, 10)}; })
-    .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w: Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r: s.r}; });
+  var sets = Array.from($('#lf-sets').children).map(function(r){ var u = r.querySelector('select.lf-u'); return {w: parseFloat(r.querySelector('input[id^="lf-w-"]').value), r: parseInt(r.querySelector('input[id^="lf-r-"]').value, 10), b: cleanBand(u && u.value)}; })
+    .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return s.b ? {w:0, r:s.r, b:s.b} : {w: Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r: s.r}; });
   if(!exercise){ msg.className = 'lf-msg full err'; msg.textContent = 'Add the exercise name.'; $('#lf-ex').focus(); return; }
   if(!sets.length){ msg.className = 'lf-msg full err'; msg.textContent = 'Add at least one set with reps.'; return; }
   var date = $('#lf-date').value || todayKey();
@@ -197,11 +204,21 @@ export function saveLift(){
   recompute(); persistLocal(); flushLiftOps();
   closeSheets();
   sessOpen.set(date, true);
-  var wk = habitById('workout'), day = state.days[date];
-  if(wk && isActive(wk, date) && !(day && day.done.workout)){
-    mutateDay(date, function(dd){ dd.done.workout = Date.now(); if(dd.rest) delete dd.rest.workout; }, {});
-  } else render();
+  if(!trainFromLift(date, isBandEntry(doc))) render();
   celebrateLift(prevA, state.liftStats, id);
+}
+/* A logged lift scores Train for its day: strength work checks it; band-only work (RipRight) marks a light day,
+   unless Train is already done or rested. Returns 'done', 'light' or '' (nothing changed). */
+export function trainFromLift(date, bandOnly){
+  var wk = habitById('workout'), day = state.days[date];
+  if(!wk || !isActive(wk, date) || (day && day.done.workout)) return '';
+  if(bandOnly){
+    if(day && day.rest && day.rest.workout) return '';
+    mutateDay(date, function(dd){ dd.rest = dd.rest || {}; dd.rest.workout = 'light'; delete dd.done.workout; }, {});
+    return 'light';
+  }
+  mutateDay(date, function(dd){ dd.done.workout = Date.now(); if(dd.rest) delete dd.rest.workout; }, {});
+  return 'done';
 }
 export function celebrateLift(prev, next, id){
   var e = next.entries.filter(function(x){ return x.id === id; })[0]; if(!e) return;
@@ -241,7 +258,7 @@ export function onExerciseChange(){
   var empty = Array.from($('#lf-sets').querySelectorAll('input')).every(function(i){ return !i.value; });
   if(past){
     $('#lf-loc').value = past.location || 'Home';
-    if(empty){ $('#lf-sets').innerHTML = ''; liftSetCount = 0; past.sets.forEach(function(s){ addSetRow(s.w, ''); }); }
+    if(empty){ $('#lf-sets').innerHTML = ''; liftSetCount = 0; past.sets.forEach(function(s){ addSetRow(s.w, '', s.b); }); }
     var tgt = past.target || autoTarget(past, past.location);
     $('#lf-msg').className = 'lf-msg full'; $('#lf-msg').textContent = 'Quest from last time: ' + tgt;
   }

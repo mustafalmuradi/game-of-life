@@ -292,7 +292,7 @@ function sortPrompt(it){
   var habits = state.settings.habits.map(function(h){ return h.id + ' = ' + h.name; });
   var now = new Date();
   return [
-    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli, with BOSS as its software arm building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
+    'Sort one task for Mustafa: founder of Ock Spot (Brooklyn deli, with BOSS as its software arm building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
     'Task: "' + it.title.replace(/"/g, '\\"') + '"',
     'Now: ' + now.toLocaleDateString('en-US', {weekday:'long'}) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '.',
     'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli and its software arm BOSS/DMS: staff, inventory, suppliers, SNAP, the Adnan/Canarsie partnership, the Deli Management System, franchise work), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',

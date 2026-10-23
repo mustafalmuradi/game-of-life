@@ -10,10 +10,24 @@ export var LSTATUS = {pr:['pr','PR'], up:['up','Up'], same:['same','Matched'], d
 export function norm(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 export function fmtW(w){ return (Math.round(w*10)/10).toString(); }
 function e1rm(w, r){ return w <= 0 ? 0 : r <= 1 ? w : w*(1 + r/30); }
+/* Resistance bands (RipRight etc.): a set can be a band instead of pounds, stored as {w:0, r, b:'thick'}.
+   BANDS runs lightest to heaviest. A heavier band outranks any reps on a lighter one; within a band, more reps is progress.
+   Scores multiply reps by the band's place on the ladder (light 1x, thick 2x), so moving up a band reads as a jump. */
+export var BANDS = [['light','Light band'],['thick','Thick band']];
+export function bandIx(b){ for(var i=0;i<BANDS.length;i++) if(BANDS[i][0] === b) return i; return -1; }
+export function bandName(b){ var i = bandIx(b); return i >= 0 ? BANDS[i][1] : 'Band'; }
+export function cleanBand(b){ var k = String(b || '').toLowerCase().replace(/\bband\b/, '').trim(); return bandIx(k) >= 0 ? k : null; }
+export function isBandEntry(e){ var s = e.sets || []; return s.length > 0 && s.some(function(x){ return x.b; }) && s.every(function(x){ return !(x.w > 0); }); }
+function bandMult(s){ return s.b ? bandIx(s.b) + 1 : 1; }
+/* the comparable "load" of a set: pounds, or a tiny ordinal for a band so a heavier band sorts above a lighter one */
+function wv(s){ return s.w > 0 ? s.w : s.b ? (bandIx(s.b) + 1)/1000 : 0; }
+export function setText(s, sep){ return (s.b ? bandName(s.b) : s.w > 0 ? fmtW(s.w) : 'BW') + (sep === undefined ? ' \u00d7 ' : sep) + s.r; }
 export function isBW(e){ return (e.sets || []).every(function(s){ return !(s.w > 0); }); }
-export function liftScore(e){ var s = e.sets || []; return isBW(e) ? Math.max.apply(null, [0].concat(s.map(function(x){ return x.r || 0; }))) : Math.max.apply(null, [0].concat(s.map(function(x){ return e1rm(x.w || 0, x.r || 0); }))); }
+export function liftScore(e){ var s = e.sets || []; return isBW(e) ? Math.max.apply(null, [0].concat(s.map(function(x){ return (x.r || 0)*bandMult(x); }))) : Math.max.apply(null, [0].concat(s.map(function(x){ return e1rm(x.w || 0, x.r || 0); }))); }
 export function liftVolume(e){ return (e.sets || []).reduce(function(t, s){ return t + (s.w || 0)*(s.r || 0); }, 0); }
-export function topSet(e){ var b = null; (e.sets || []).forEach(function(s){ var v = isBW(e) ? s.r : e1rm(s.w, s.r); if(!b || v > b.v) b = {w:s.w, r:s.r, v:v}; }); return b; }
+export function topSet(e){ var b = null; (e.sets || []).forEach(function(s){ var v = isBW(e) ? s.r*bandMult(s) : e1rm(s.w, s.r); if(!b || v > b.v) b = {w:s.w, r:s.r, b:s.b || null, v:v}; }); return b; }
+/* a target the quest card can read as "load × reps" (pounds, BW or a band name) */
+export function isLoadTarget(t){ return new RegExp('^\\s*([\\d.]+|BW|' + BANDS.map(function(x){ return x[0]; }).join('|') + ')(\\s+band)?\\s*[\u00d7xX*]', 'i').test(String(t || '')); }
 export function liftKey(e){ return (e.date || '') + '|' + String(e.createdAt || 0).padStart(15, '0'); }
 export function ironXPFor(L){ return 50*L*(L-1); }
 export function ironLevel(xp){ var L = 1; while(ironXPFor(L+1) <= xp) L++; return L; }
@@ -28,15 +42,23 @@ export function mooseStage(L){
 function tierFor(gain){ var t = TIERS[0]; TIERS.forEach(function(x){ if(gain >= x[2] - 1e-9) t = x; }); return t; }
 export function autoTarget(e, location){
   var sets = e.sets || []; if(!sets.length) return '';
-  var W = Math.max.apply(null, sets.map(function(s){ return s.w || 0; }));
-  var atW = sets.filter(function(s){ return (s.w || 0) === W; }).map(function(s){ return s.r; });
-  function bump(){ var a = atW.slice(), i = a.indexOf(Math.min.apply(null, a)); a[i] += 1; return a; }
+  var W = Math.max.apply(null, sets.map(wv)), top = sets.filter(function(s){ return wv(s) === W; })[0];
+  var atW = sets.filter(function(s){ return wv(s) === W; }).map(function(s){ return s.r; });
+  /* high-rep band work moves in steps of about 5% (220 -> 230), not one rep at a time */
+  function bump(){ var a = atW.slice(), i = a.indexOf(Math.min.apply(null, a)); a[i] += top.b && a[i] >= 40 ? 5*Math.max(1, Math.round(a[i]*0.05/5)) : 1; return a; }
+  if(top.b) return bandName(top.b) + ' × ' + bump().join(', ');
   if(W <= 0) return 'BW × ' + bump().join(', ');
   if(norm(location) === 'home' && W >= BOWFLEX_MAX) return fmtW(W) + ' × ' + bump().join(', ');
   if(atW.length >= 2 && atW.every(function(r){ return r >= 12; })) return 'Add weight × 8+';
   return fmtW(W) + ' × ' + bump().join(', ');
 }
 function meetsTarget(target, prev, e){
+  var bm = new RegExp('^\\s*(' + BANDS.map(function(x){ return x[0]; }).join('|') + ')(?:\\s+band)?\\s*[\u00d7xX*]\\s*([\\d,\\s]+)', 'i').exec(String(target || ''));
+  if(bm){
+    var bi = bandIx(bm[1].toLowerCase()), want = bm[2].split(',').map(function(x){ return parseInt(x, 10); }).filter(Number.isFinite);
+    var ok = (e.sets || []).filter(function(s){ return s.b && bandIx(s.b) >= bi; });
+    return want.length > 0 && ok.length >= want.length && want.every(function(r, i){ return (ok[i].r || 0) >= r; });
+  }
   var bwm = /^\s*BW\s*[×xX*]\s*([\d,\s]+)/i.exec(String(target || ''));
   if(bwm){
     var need = bwm[1].split(',').map(function(x){ return parseInt(x, 10); }).filter(Number.isFinite), got = e.sets || [];
@@ -54,8 +76,9 @@ function meetsTarget(target, prev, e){
 export var REP_TOP = 12, STALL_N = 3;
 function workingSet(e){
   var by = {}, best = null;
-  (e.sets || []).forEach(function(s){ var w = s.w || 0; (by[w] = by[w] || []).push(s.r || 0); });
-  Object.keys(by).forEach(function(k){ var w = parseFloat(k), n = by[k].length; if(!best || n > best.n || (n === best.n && w > best.W)) best = {W:w, n:n, reps:by[k].slice().sort(function(a, b){ return b - a; })}; });
+  var band = {};
+  (e.sets || []).forEach(function(s){ var w = wv(s); (by[w] = by[w] || []).push(s.r || 0); if(s.b) band[w] = s.b; });
+  Object.keys(by).forEach(function(k){ var w = parseFloat(k), n = by[k].length; if(!best || n > best.n || (n === best.n && w > best.W)) best = {W:w, b:band[k] || null, n:n, reps:by[k].slice().sort(function(a, b){ return b - a; })}; });
   return best;
 }
 function beats(p, rec){
@@ -71,9 +94,9 @@ function liftProgress(g){
   var rec = null, since = 0, lastUp = false;
   g.entries.forEach(function(e, i){ var p = workingSet(e); if(!p) return; if(beats(p, rec)){ rec = p; since = 0; lastUp = i > 0; } else { since++; lastUp = false; } });
   var w = workingSet(g.last);
-  return {working:w, addWeight:!!(w && w.reps.length && w.reps.every(function(r){ return r >= REP_TOP; })), stall:g.entries.length > STALL_N && since >= STALL_N, since:since, up:lastUp};
+  return {working:w, addWeight:!!(w && !w.b && w.reps.length && w.reps.every(function(r){ return r >= REP_TOP; })), stall:g.entries.length > STALL_N && since >= STALL_N, since:since, up:lastUp};
 }
-export function workingText(w){ return w ? (w.W > 0 ? fmtW(w.W) : 'BW') + ' \u00d7 ' + w.reps.join(', ') : ''; }
+export function workingText(w){ return w ? (w.b ? bandName(w.b) : w.W > 0 ? fmtW(w.W) : 'BW') + ' \u00d7 ' + w.reps.join(', ') : ''; }
 export function analyzeLifts(entries){
   var sorted = entries.slice().sort(function(a, b){ return liftKey(a) < liftKey(b) ? -1 : 1; });
   var groups = new Map();

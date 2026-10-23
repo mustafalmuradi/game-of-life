@@ -3,13 +3,13 @@ import { COLOR_SLOTS, DEFAULT_TARGETS, TASK_LANES } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
 import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, laneOf, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
 import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
-import { fmtW, liftKey, LSTATUS, mooseRank, mooseStage, norm, workingText } from '../core/strength.js';
+import { BANDS, cleanBand, fmtW, isBandEntry, liftKey, LSTATUS, mooseRank, mooseStage, norm, setText, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
 import { cleanLift, flush, flushLiftOps, persistLocal, saveSettings, scheduleSave, scheduleSaveTasks, sync } from '../core/store.js';
 import { lateOpen, mutateDay } from './today.js';
 import { burst, toast } from '../core/effects.js';
 import { render } from '../core/render.js';
-import { celebrateLift, sessOpen } from './lifts.js';
+import { celebrateLift, sessOpen, trainFromLift } from './lifts.js';
 import { CI_NUMS, CI_TIMES, commitMetrics, daysBetween, metricsOf, patternData, readiness, SESS, TAGS, watchList, weekReview, weekTally, weightTrend } from './body.js';
 import { BCOLS, bKind, BKINDS, bNode, bRank, bRemove, bSel, BSTATUS, bStatus, buildStats, bWrite, BXP, setSelected, shortName } from './build.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
@@ -23,7 +23,7 @@ var COACH_SEND_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12
 var COACH_STOP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
 
 var COACH_RULES = [
-'You are Coach, the AI built into Moose’s "Game Of Life" tracker (Moose = Mustafa). Everything here is his own data. You see it in <live_tracker_data> (attached to his latest message, current as of that moment) and through the read tools, and you change it with the write tools. Changes show on his page instantly.',
+'You are Coach, the AI built into Mustafa’s "Game Of Life" tracker. Everything here is his own data. You see it in <live_tracker_data> (attached to his latest message, current as of that moment) and through the read tools, and you change it with the write tools. Changes show on his page instantly.',
 '',
 'HOW TO TALK',
 '- Phone screen. Lead with the answer. 1-5 short lines unless he asks for depth. Plain text, **bold** for the key number or call, "- " bullets only for real lists. No tables, no headings, no emoji.',
@@ -47,7 +47,7 @@ var COACH_RULES = [
 '- Auto-scoring happens on write, so don’t also call set_habit for these: a bedtime scores Bed on time for the previous night; vape false checks Nicotine-free (true unchecks it); calories at or over target check Eat enough; a strength sess or a logged lift checks Train; sess rest marks Train as a rest day; ripright or cardio alone marks a light day.',
 '- sess values: chest_biceps, back_triceps, legs (strength), ripright, cardio (light), rest (alone). Rotation chest_biceps > back_triceps > legs. tags: sick, travel, early_wake, band_issue, alcohol_late. patch = nicotine patch worn overnight (night that ended this morning).',
 '- set_habit covers the rest: Read, Meditate, Money-producing work, Sunnah prayers (all 12 rawatib; Witr doesn’t count), Bed on time, extras.',
-'- Lifts in lb. Plate-loaded machines = total plates on both sides, bar or sled not counted. Dumbbells = per dumbbell. Bodyweight = 0. Reuse the exact exercise name from his history when it is the same lift. Default location Heights Fitness unless he says home.',
+'- Lifts in lb. Plate-loaded machines = total plates on both sides, bar or sled not counted. Dumbbells = per dumbbell. Bodyweight = 0. Band work (RipRight back clips etc.): w 0 and b = light or thick; band-only lifts mark Train a light day, not strength. Reuse the exact exercise name from his history when it is the same lift. Default location Heights Fitness unless he says home.',
 '',
 'BUILD TAB (his AI-builder track, never feeds the belts)',
 '- Log FINISHED things only. Never hours, never "worked on".',
@@ -227,20 +227,20 @@ var COACH_TOOLS = [
    return {ok:true, date:date, habit:h.id, status:status, dayXP:bd ? bd.xp : 0, cleanSweep:bd ? bd.sweep : false};
  }},
 {name:'log_lift', busy:'Logging lift',
- description:'Log one exercise from a session. Also checks Train for that date. Returns PR or progress status, XP, and the next-session target.',
+ description:'Log one exercise from a session. Also scores Train for that date (strength checks it; band-only work marks a light day). Returns PR or progress status, XP, and the next-session target.',
  schema:{type:'object', properties:{
    date:{type:'string', description:'YYYY-MM-DD'},
    exercise:{type:'string'},
    location:{type:'string', description:'Heights Fitness (default) or Home.'},
-   sets:{type:'array', items:{type:'object', properties:{w:{type:'number', description:'lb; total plates for plate-loaded, per dumbbell for dumbbells, 0 = bodyweight'}, r:{type:'integer', description:'reps'}}, required:['w', 'r']}},
+   sets:{type:'array', items:{type:'object', properties:{w:{type:'number', description:'lb; total plates for plate-loaded, per dumbbell for dumbbells, 0 = bodyweight or band'}, r:{type:'integer', description:'reps'}, b:{type:'string', enum:BANDS.map(function(x){ return x[0]; }), description:'Resistance band used instead of weight (RipRight etc.); set w 0.'}}, required:['w', 'r']}},
    rir:{type:'number', description:'Reps in reserve on the last set, if he said.'},
    notes:{type:'string'},
    target:{type:'string', description:'Only if he set his own next-session goal, e.g. "90 x 10, 10, 9".'}}, required:['date', 'exercise', 'sets']},
  run:function(inp){
    var date = cDate(inp.date), ex = String(inp.exercise || '').trim();
    if(!ex) throw new Error('Exercise name is required.');
-   var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10)}; })
-     .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
+   var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10), b:cleanBand(s && s.b)}; })
+     .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return s.b ? {w:0, r:s.r, b:s.b} : {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
    if(!sets.length) throw new Error('Need at least one set with reps.');
    var known = state.lifts.filter(function(e){ return norm(e.exercise) === norm(ex); })[0]; if(known) ex = known.exercise;
    var loc = String(inp.location || '').trim() || 'Heights Fitness';
@@ -253,18 +253,17 @@ var COACH_TOOLS = [
    sync.liftOps[id] = 'set';
    recompute(); persistLocal(); flushLiftOps();
    sessOpen.set(date, true);
-   var wk = habitById('workout'), day = state.days[date], trainChecked = false;
-   if(wk && isActive(wk, date) && !(day && day.done.workout)){ mutateDay(date, function(dd){ dd.done.workout = Date.now(); if(dd.rest) delete dd.rest.workout; }, {}); trainChecked = true; }
-   else render();
+   var trainSet = trainFromLift(date, isBandEntry(doc)), trainChecked = trainSet === 'done';
+   if(!trainSet) render();
    celebrateLift(prevA, state.liftStats, id);
    var e = state.liftStats.entries.filter(function(x){ return x.id === id; })[0];
    var g = state.liftStats.groups.filter(function(gr){ return gr.entries.some(function(x){ return x.id === id; }); })[0];
-   addAct(fmtShort(date) + ' · ' + ex + ' ' + sets.map(function(s){ return (s.w > 0 ? fmtW(s.w) : 'BW') + '×' + s.r; }).join(', ') + (e && e._status === 'pr' ? ' · PR' : ''), function(){
+   addAct(fmtShort(date) + ' · ' + ex + ' ' + sets.map(function(s){ return setText(s, '×'); }).join(', ') + (e && e._status === 'pr' ? ' · PR' : ''), function(){
      state.lifts = state.lifts.filter(function(l){ return l.id !== id; });
      sync.liftOps[id] = 'delete'; persistLocal(); flushLiftOps(); restoreDays(snap);
    });
    return {ok:true, id:id, exercise:ex, location:loc, date:date, status:e ? LSTATUS[e._status][1] : '', lastTargetCleared:e ? e._cleared : false, strengthXP:e ? e._xp : 0,
-     working:g ? workingText(g.prog.working) : '', nextTarget:g ? g.quest : '', addWeightNext:g ? g.prog.addWeight : false, stalled:g ? g.prog.stall : false, trainChecked:trainChecked};
+     working:g ? workingText(g.prog.working) : '', nextTarget:g ? g.quest : '', addWeightNext:g ? g.prog.addWeight : false, stalled:g ? g.prog.stall : false, trainChecked:trainChecked, trainLight:trainSet === 'light'};
  }},
 {name:'build_log', busy:'Updating Build tab',
  description:'Build tab writes. action ship: log a finished ship (title, kind, date, node, note). action skill: log a skill learned (name, date, node, note). action node: add or update a map box (id to update, else name; kind, status, venture, url, note). action connect: add an arrow from one box to another (from, to, label). Boxes can be referenced by id or exact name.',
@@ -350,7 +349,7 @@ var COACH_TOOLS = [
    if(!gs.length) return {found:0, exercises:ls.groups.map(function(g){ return g.name + ' @ ' + g.location; })};
    return {strengthLevel:ls.level, exercises:gs.slice(0, q ? 6 : 40).map(function(g){
      var o = {exercise:g.name, location:g.location, sessions:g.entries.length, last:g.last.date, best1RM:Math.round(g.best), gainPct:r1(g.gain), tier:g.tier[1], working:workingText(g.prog.working), nextTarget:g.quest, addWeight:g.prog.addWeight, stalled:g.prog.stall};
-     if(q) o.recent = g.entries.slice(-n).map(function(e){ return {id:e.id, date:e.date, sets:e.sets.map(function(s){ return (s.w > 0 ? fmtW(s.w) : 'BW') + 'x' + s.r; }).join(', '), rir:e.rir, status:LSTATUS[e._status][1], cleared:e._cleared || undefined, notes:e.notes || undefined}; });
+     if(q) o.recent = g.entries.slice(-n).map(function(e){ return {id:e.id, date:e.date, sets:e.sets.map(function(s){ return setText(s, 'x'); }).join(', '), rir:e.rir, status:LSTATUS[e._status][1], cleared:e._cleared || undefined, notes:e.notes || undefined}; });
      return o;
    })};
  }},
@@ -427,7 +426,7 @@ var COACH_TOOLS = [
 function coachTools(){
   return COACH_TOOLS.slice(0, coach.maxTools).map(function(t){
     return {name:t.name, description:t.description, inputSchema:t.schema, execute:function(inp, ctx){
-      if(ctx && ctx.signal && ctx.signal.aborted) throw new Error('Stopped by Moose.');
+      if(ctx && ctx.signal && ctx.signal.aborted) throw new Error('Stopped by Mustafa.');
       coach.status = t.busy; coachRender();
       return Promise.resolve().then(function(){ return t.run(inp && typeof inp === 'object' ? inp : {}); })
         .finally(function(){ coach.status = ''; coachRender(); });
@@ -439,7 +438,7 @@ function coachTools(){
 function coachInput(){
   var hist = coach.turns.filter(function(t){ return !t.pending; }).slice(-CHAT_SEND).map(function(t){
     if(t.role === 'user') return {role:'user', content:(t.content || '') + (t.img ? '\n[' + (t.img > 1 ? t.img + ' photos' : 'Photo') + ' attached]' : '')};
-    var acts = (t.acts || []).map(function(a){ return a.label + (a.undone ? ' (Moose undid this)' : ''); });
+    var acts = (t.acts || []).map(function(a){ return a.label + (a.undone ? ' (Mustafa undid this)' : ''); });
     return {role:'assistant', content:(t.content || '') + (acts.length ? '\n[Changes made: ' + acts.join('; ') + ']' : '')};
   }).filter(function(t){ return t.content.trim(); });
   while(hist.length && hist[0].role !== 'user') hist.shift();
@@ -796,7 +795,7 @@ var EXPORT_README = [
   '',
   'data.json      Everything in one file: settings (habits, targets, rewards), every day, every lift, the Build tab, notes, every Coach conversation, and the photo index. Use this to move to any other app or database.',
   'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
-  'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
+  'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight or band). band = light/thick when the set used a resistance band instead of weight.',
   'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
   'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, timer total, every timer run as start>end (UTC), how many times it was pushed, timestamps in UTC.',
   'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
@@ -831,8 +830,8 @@ async function buildExport(withPhotos, onStep){
       [Object.keys(d.extras || {}).map(function(h){ var hb = habitById(h); return (hb ? hb.name : h) + ': ' + d.extras[h].map(function(x){ return x.note; }).join(' | '); }).join('; ')],
       mkeys.map(function(f){ var v = (d.m || {})[f]; return Array.isArray(v) && typeof v[0] !== 'object' ? v.join('+') : v; }));
   }))});
-  var lrows = []; lifts.forEach(function(l){ (l.sets || []).forEach(function(s, i){ lrows.push([l.date, l.exercise, l.location, i + 1, s.w, s.r, i === l.sets.length - 1 ? l.rir : '', i === 0 ? l.notes : '', l.id]); }); });
-  files.push({name:'lifts.csv', data:toCSV(['date', 'exercise', 'location', 'set', 'weight_lb', 'reps', 'rir', 'notes', 'entry_id'], lrows)});
+  var lrows = []; lifts.forEach(function(l){ (l.sets || []).forEach(function(s, i){ lrows.push([l.date, l.exercise, l.location, i + 1, s.w, s.b || '', s.r, i === l.sets.length - 1 ? l.rir : '', i === 0 ? l.notes : '', l.id]); }); });
+  files.push({name:'lifts.csv', data:toCSV(['date', 'exercise', 'location', 'set', 'weight_lb', 'band', 'reps', 'rir', 'notes', 'entry_id'], lrows)});
   files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
@@ -945,7 +944,7 @@ COACH_TOOLS.push(
  description:'Correct a logged lift entry by id (ids come from lift_history): sets, exercise name, date, location, RIR, notes or next target. Only the fields given change.',
  schema:{type:'object', properties:{
    id:{type:'string'}, exercise:{type:'string'}, date:{type:'string'}, location:{type:'string'},
-   sets:{type:'array', items:{type:'object', properties:{w:{type:'number'}, r:{type:'integer'}}, required:['w', 'r']}},
+   sets:{type:'array', items:{type:'object', properties:{w:{type:'number'}, r:{type:'integer'}, b:{type:'string', enum:BANDS.map(function(x){ return x[0]; })}}, required:['w', 'r']}},
    rir:{type:'number'}, notes:{type:'string'}, target:{type:'string'}}, required:['id']},
  run:function(inp){
    var id = String(inp.id || ''), i = state.lifts.map(function(l){ return l.id; }).indexOf(id);
@@ -955,7 +954,7 @@ COACH_TOOLS.push(
    if(inp.date !== undefined){ l.date = cDate(inp.date); ch.push('date'); }
    if(inp.location !== undefined){ l.location = cleanStr(inp.location, 40) || l.location; ch.push('location'); }
    if(inp.sets !== undefined){
-     var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10)}; }).filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
+     var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10), b:cleanBand(s && s.b)}; }).filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return s.b ? {w:0, r:s.r, b:s.b} : {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
      if(!sets.length) throw new Error('Need at least one set with reps.'); l.sets = sets; ch.push('sets');
    }
    if(inp.rir !== undefined){ if(inp.rir === null || inp.rir === '') delete l.rir; else l.rir = Number(inp.rir); ch.push('RIR'); }

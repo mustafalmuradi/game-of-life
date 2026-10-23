@@ -448,6 +448,13 @@ details.hist summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--a
 .lf-field input:focus,.lf-field select:focus,.setrow input:focus{border-color:var(--accent);box-shadow:var(--glow);outline:0;transform:translateY(-1px)}
 .setrows{display:flex;flex-direction:column;gap:8px}
 .setrow{display:grid;grid-template-columns:26px 1fr 1fr 32px;gap:8px;align-items:center;animation:rise .3s var(--ease) both}
+.setrow{grid-template-columns:26px 74px 1fr 1fr 32px}
+.setrow select.lf-u{font:inherit;font-size:13px;font-weight:800;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:12px;padding:10px 6px;width:100%;min-width:0}
+.setrow select.lf-u:focus{border-color:var(--accent);box-shadow:var(--glow);outline:0}
+.setrow.is-band select.lf-u{border-color:var(--neon-2,var(--accent-2));color:var(--accent-2)}
+.setrow input:disabled{opacity:.35}
+.set.band{border-color:color-mix(in srgb,var(--accent-2) 55%,transparent);font-size:16px}
+.set.band.b-thick{background:color-mix(in srgb,var(--accent-2) 14%,var(--surface-2))}
 .setrow .idx{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--accent-ink);text-align:center}
 .setrow .rm{background:none;border:0;color:var(--muted);font-size:22px;line-height:1;transition:color .2s,transform .2s var(--spring)}
 .setrow .rm:hover{color:var(--pr);transform:rotate(90deg)}
@@ -1112,7 +1119,7 @@ body::after{
 <div class="stars" id="stars" aria-hidden="true"></div>
 <div class="app">
   <header class="top">
-    <div class="brand"><b>Game Of Life</b><span>Moose</span></div>
+    <div class="brand"><b>Game Of Life</b><span>Mustafa</span></div>
     <div class="top-actions">
     <button class="coach-btn" id="btn-coach" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span>Coach</span></button>
     <button class="icon-btn" id="btn-settings" type="button" aria-label="Edit habits">
@@ -1211,7 +1218,7 @@ body::after{
       <label class="lf-field" for="lf-date"><span>Date</span><input id="lf-date" type="date"></label>
       <label class="lf-field" for="lf-loc"><span>Where</span><input id="lf-loc" list="lf-loc-list" value="Heights Fitness"></label>
       <datalist id="lf-loc-list"></datalist>
-      <div class="lf-field full"><span>Sets, weight × reps. Total weight loaded (both sides), bar or sled not counted. Weight 0 = bodyweight.</span>
+      <div class="lf-field full"><span>Sets, weight × reps. Total weight loaded (both sides), bar or sled not counted. Weight 0 = bodyweight. Band work (RipRight): switch lb to the band.</span>
         <div class="setrows" id="lf-sets"></div>
         <button type="button" class="ghost small" id="lf-add-set">Add set</button>
       </div>
@@ -1632,10 +1639,24 @@ var LSTATUS = {pr:['pr','PR'], up:['up','Up'], same:['same','Matched'], dip:['di
 function norm(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function fmtW(w){ return (Math.round(w*10)/10).toString(); }
 function e1rm(w, r){ return w <= 0 ? 0 : r <= 1 ? w : w*(1 + r/30); }
+/* Resistance bands (RipRight etc.): a set can be a band instead of pounds, stored as {w:0, r, b:'thick'}.
+   BANDS runs lightest to heaviest. A heavier band outranks any reps on a lighter one; within a band, more reps is progress.
+   Scores multiply reps by the band's place on the ladder (light 1x, thick 2x), so moving up a band reads as a jump. */
+var BANDS = [['light','Light band'],['thick','Thick band']];
+function bandIx(b){ for(var i=0;i<BANDS.length;i++) if(BANDS[i][0] === b) return i; return -1; }
+function bandName(b){ var i = bandIx(b); return i >= 0 ? BANDS[i][1] : 'Band'; }
+function cleanBand(b){ var k = String(b || '').toLowerCase().replace(/\bband\b/, '').trim(); return bandIx(k) >= 0 ? k : null; }
+function isBandEntry(e){ var s = e.sets || []; return s.length > 0 && s.some(function(x){ return x.b; }) && s.every(function(x){ return !(x.w > 0); }); }
+function bandMult(s){ return s.b ? bandIx(s.b) + 1 : 1; }
+/* the comparable "load" of a set: pounds, or a tiny ordinal for a band so a heavier band sorts above a lighter one */
+function wv(s){ return s.w > 0 ? s.w : s.b ? (bandIx(s.b) + 1)/1000 : 0; }
+function setText(s, sep){ return (s.b ? bandName(s.b) : s.w > 0 ? fmtW(s.w) : 'BW') + (sep === undefined ? ' \u00d7 ' : sep) + s.r; }
 function isBW(e){ return (e.sets || []).every(function(s){ return !(s.w > 0); }); }
-function liftScore(e){ var s = e.sets || []; return isBW(e) ? Math.max.apply(null, [0].concat(s.map(function(x){ return x.r || 0; }))) : Math.max.apply(null, [0].concat(s.map(function(x){ return e1rm(x.w || 0, x.r || 0); }))); }
+function liftScore(e){ var s = e.sets || []; return isBW(e) ? Math.max.apply(null, [0].concat(s.map(function(x){ return (x.r || 0)*bandMult(x); }))) : Math.max.apply(null, [0].concat(s.map(function(x){ return e1rm(x.w || 0, x.r || 0); }))); }
 function liftVolume(e){ return (e.sets || []).reduce(function(t, s){ return t + (s.w || 0)*(s.r || 0); }, 0); }
-function topSet(e){ var b = null; (e.sets || []).forEach(function(s){ var v = isBW(e) ? s.r : e1rm(s.w, s.r); if(!b || v > b.v) b = {w:s.w, r:s.r, v:v}; }); return b; }
+function topSet(e){ var b = null; (e.sets || []).forEach(function(s){ var v = isBW(e) ? s.r*bandMult(s) : e1rm(s.w, s.r); if(!b || v > b.v) b = {w:s.w, r:s.r, b:s.b || null, v:v}; }); return b; }
+/* a target the quest card can read as "load × reps" (pounds, BW or a band name) */
+function isLoadTarget(t){ return new RegExp('^\\s*([\\d.]+|BW|' + BANDS.map(function(x){ return x[0]; }).join('|') + ')(\\s+band)?\\s*[\u00d7xX*]', 'i').test(String(t || '')); }
 function liftKey(e){ return (e.date || '') + '|' + String(e.createdAt || 0).padStart(15, '0'); }
 function ironXPFor(L){ return 50*L*(L-1); }
 function ironLevel(xp){ var L = 1; while(ironXPFor(L+1) <= xp) L++; return L; }
@@ -1650,15 +1671,23 @@ function mooseStage(L){
 function tierFor(gain){ var t = TIERS[0]; TIERS.forEach(function(x){ if(gain >= x[2] - 1e-9) t = x; }); return t; }
 function autoTarget(e, location){
   var sets = e.sets || []; if(!sets.length) return '';
-  var W = Math.max.apply(null, sets.map(function(s){ return s.w || 0; }));
-  var atW = sets.filter(function(s){ return (s.w || 0) === W; }).map(function(s){ return s.r; });
-  function bump(){ var a = atW.slice(), i = a.indexOf(Math.min.apply(null, a)); a[i] += 1; return a; }
+  var W = Math.max.apply(null, sets.map(wv)), top = sets.filter(function(s){ return wv(s) === W; })[0];
+  var atW = sets.filter(function(s){ return wv(s) === W; }).map(function(s){ return s.r; });
+  /* high-rep band work moves in steps of about 5% (220 -> 230), not one rep at a time */
+  function bump(){ var a = atW.slice(), i = a.indexOf(Math.min.apply(null, a)); a[i] += top.b && a[i] >= 40 ? 5*Math.max(1, Math.round(a[i]*0.05/5)) : 1; return a; }
+  if(top.b) return bandName(top.b) + ' × ' + bump().join(', ');
   if(W <= 0) return 'BW × ' + bump().join(', ');
   if(norm(location) === 'home' && W >= BOWFLEX_MAX) return fmtW(W) + ' × ' + bump().join(', ');
   if(atW.length >= 2 && atW.every(function(r){ return r >= 12; })) return 'Add weight × 8+';
   return fmtW(W) + ' × ' + bump().join(', ');
 }
 function meetsTarget(target, prev, e){
+  var bm = new RegExp('^\\s*(' + BANDS.map(function(x){ return x[0]; }).join('|') + ')(?:\\s+band)?\\s*[\u00d7xX*]\\s*([\\d,\\s]+)', 'i').exec(String(target || ''));
+  if(bm){
+    var bi = bandIx(bm[1].toLowerCase()), want = bm[2].split(',').map(function(x){ return parseInt(x, 10); }).filter(Number.isFinite);
+    var ok = (e.sets || []).filter(function(s){ return s.b && bandIx(s.b) >= bi; });
+    return want.length > 0 && ok.length >= want.length && want.every(function(r, i){ return (ok[i].r || 0) >= r; });
+  }
   var bwm = /^\s*BW\s*[×xX*]\s*([\d,\s]+)/i.exec(String(target || ''));
   if(bwm){
     var need = bwm[1].split(',').map(function(x){ return parseInt(x, 10); }).filter(Number.isFinite), got = e.sets || [];
@@ -1676,8 +1705,9 @@ function meetsTarget(target, prev, e){
 var REP_TOP = 12, STALL_N = 3;
 function workingSet(e){
   var by = {}, best = null;
-  (e.sets || []).forEach(function(s){ var w = s.w || 0; (by[w] = by[w] || []).push(s.r || 0); });
-  Object.keys(by).forEach(function(k){ var w = parseFloat(k), n = by[k].length; if(!best || n > best.n || (n === best.n && w > best.W)) best = {W:w, n:n, reps:by[k].slice().sort(function(a, b){ return b - a; })}; });
+  var band = {};
+  (e.sets || []).forEach(function(s){ var w = wv(s); (by[w] = by[w] || []).push(s.r || 0); if(s.b) band[w] = s.b; });
+  Object.keys(by).forEach(function(k){ var w = parseFloat(k), n = by[k].length; if(!best || n > best.n || (n === best.n && w > best.W)) best = {W:w, b:band[k] || null, n:n, reps:by[k].slice().sort(function(a, b){ return b - a; })}; });
   return best;
 }
 function beats(p, rec){
@@ -1693,9 +1723,9 @@ function liftProgress(g){
   var rec = null, since = 0, lastUp = false;
   g.entries.forEach(function(e, i){ var p = workingSet(e); if(!p) return; if(beats(p, rec)){ rec = p; since = 0; lastUp = i > 0; } else { since++; lastUp = false; } });
   var w = workingSet(g.last);
-  return {working:w, addWeight:!!(w && w.reps.length && w.reps.every(function(r){ return r >= REP_TOP; })), stall:g.entries.length > STALL_N && since >= STALL_N, since:since, up:lastUp};
+  return {working:w, addWeight:!!(w && !w.b && w.reps.length && w.reps.every(function(r){ return r >= REP_TOP; })), stall:g.entries.length > STALL_N && since >= STALL_N, since:since, up:lastUp};
 }
-function workingText(w){ return w ? (w.W > 0 ? fmtW(w.W) : 'BW') + ' \u00d7 ' + w.reps.join(', ') : ''; }
+function workingText(w){ return w ? (w.b ? bandName(w.b) : w.W > 0 ? fmtW(w.W) : 'BW') + ' \u00d7 ' + w.reps.join(', ') : ''; }
 function analyzeLifts(entries){
   var sorted = entries.slice().sort(function(a, b){ return liftKey(a) < liftKey(b) ? -1 : 1; });
   var groups = new Map();
@@ -2715,7 +2745,9 @@ function sparkSVG(entries){
   var area = line + ' L' + last[0].toFixed(1) + ' ' + H + ' L' + xy[0][0].toFixed(1) + ' ' + H + ' Z';
   return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-label="Est. 1RM trend, last ' + pts.length + ' sessions"><line x1="0" y1="' + (H-1) + '" x2="' + W + '" y2="' + (H-1) + '" stroke="var(--line)" stroke-width="1"/><path d="' + area + '" fill="var(--spark-fill)"/><path d="' + line + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="3.5" fill="var(--accent)"/></svg>';
 }
-function setsHTML(sets){ return (sets || []).map(function(s){ return '<span class="set">' + (s.w > 0 ? fmtW(s.w) : 'BW') + '<small> × </small>' + s.r + '</span>'; }).join(''); }
+function setsHTML(sets){ return (sets || []).map(function(s){ return '<span class="set' + (s.b ? ' band b-' + esc(s.b) : '') + '">' + (s.b ? esc(setText(s, '')).replace(/\d+$/, '') : s.w > 0 ? fmtW(s.w) : 'BW') + '<small> × </small>' + s.r + '</span>'; }).join(''); }
+/* the single best set across every session of a lift (bands: heaviest band, most reps) */
+function bestSetOf(g){ var top = null; g.entries.forEach(function(e){ var t = topSet(e); if(t && (!top || t.v > top.v)) top = t; }); return top; }
 function stageRow(L){
   var s = mooseStage(L), pips = '';
   for(var i=1;i<=3;i++) pips += '<i class="' + (i <= s.stage ? 'on' : '') + '"></i>';
@@ -2729,7 +2761,7 @@ function tierInfo(g){
   return {key:tk, name:tn, pct:pct, label:label};
 }
 function sessionEntry(e, g){
-  var st = LSTATUS[e._status] || LSTATUS.base, t = tierInfo(g), bw = isBW(e), ts = topSet(e);
+  var st = LSTATUS[e._status] || LSTATUS.base, t = tierInfo(g), bw = isBW(e), ts = topSet(e), band = isBandEntry(e), bs = band ? bestSetOf(g) : null;
   var isLatest = g.last.id === e.id, armed = liftArmed === e.id;
   var rir = e.rir !== undefined && e.rir !== null && e.rir !== '' ? 'RIR ' + esc(e.rir) : '';
   var meta = [rir, e.notes ? esc(e.notes) : ''].filter(Boolean).join(' · ');
@@ -2738,18 +2770,18 @@ function sessionEntry(e, g){
     '<div class="sets">' + setsHTML(e.sets) + '</div>' +
     (meta ? '<p class="meta">' + meta + '</p>' : '');
   if(isLatest){
-    var parsed = /^\s*([\d.]+|BW)\s*[×xX*]/i.test(g.quest);
-    h += '<div class="quest"><span class="q-tag">Next</span><span class="q-text">' + esc(g.quest) + '<small>' + (parsed ? 'Hit every set at this weight next session' : 'Beat this session’s best set') + '</small></span><span class="q-xp">+' + LXP.quest + ' XP</span></div>';
+    var parsed = isLoadTarget(g.quest);
+    h += '<div class="quest"><span class="q-tag">Next</span><span class="q-text">' + esc(g.quest) + '<small>' + (parsed ? (/band\s*[×xX*]/i.test(g.quest) ? 'Hit every set on this band next session' : 'Hit every set at this weight next session') : 'Beat this session’s best set') + '</small></span><span class="q-xp">+' + LXP.quest + ' XP</span></div>';
     if(g.prog && g.prog.addWeight) h += '<p class="meta"><span class="pchip add">Add weight next session</span> Every working set hit ' + REP_TOP + '.</p>';
     else if(g.prog && g.prog.stall) h += '<p class="meta"><span class="pchip stall">Stall</span> ' + g.prog.since + ' sessions without more weight or reps. Change something: rest, reps in reserve, or a deload.</p>';
   }
   h += '<details class="sx-more" data-id="' + esc(e.id) + '"' + (openLiftKeys.has(e.id) ? ' open' : '') + '><summary>Lift progress <span class="tierchip">' + t.name + '</span></summary>' +
     '<div class="lift-figs"><div class="figs">' +
-      '<div class="fig"><span class="fn">' + (bw ? g.best : Math.round(g.best)) + '</span><span class="fl">' + (bw ? 'Best reps' : 'Best est. 1RM') + '</span></div>' +
-      '<div class="fig"><span class="fn">' + (ts ? (bw ? ts.r : fmtW(ts.w) + '×' + ts.r) : '–') + '</span><span class="fl">Top set here</span></div>' +
+      '<div class="fig"><span class="fn">' + (band ? esc(bs ? setText(bs, '×') : '–') : bw ? g.best : Math.round(g.best)) + '</span><span class="fl">' + (band ? 'Best set' : bw ? 'Best reps' : 'Best est. 1RM') + '</span></div>' +
+      '<div class="fig"><span class="fn">' + (ts ? (ts.b ? esc(setText(ts, '×')) : bw ? ts.r : fmtW(ts.w) + '×' + ts.r) : '–') + '</span><span class="fl">Top set here</span></div>' +
       (bw ? '' : '<div class="fig"><span class="fn">' + fmt(liftVolume(e)) + '</span><span class="fl">Volume lb</span></div>') +
       '<div class="fig"><span class="fn">' + g.entries.length + '</span><span class="fl">Sessions</span></div></div>' + sparkSVG(g.entries) + '</div>' +
-    '<div class="tierbar"><div class="tb-track"><span style="width:' + t.pct.toFixed(1) + '%"></span></div><span class="tb-lbl">' + t.label + '</span></div>' +
+    '<div class="tierbar"><div class="tb-track"><span style="width:' + t.pct.toFixed(1) + '%"></span></div><span class="tb-lbl">' + (band ? t.label.replace('est. 1RM', 'band score') : t.label) + '</span></div>' +
     '<button class="delbtn' + (armed ? ' armed' : '') + '" type="button" data-act="del-lift" data-id="' + esc(e.id) + '">' + (armed ? 'Tap again to delete this entry' : 'Delete this entry') + '</button>' +
     '</details></div>';
   return h;
@@ -2795,7 +2827,7 @@ function renderLifts(){
   h += '<div class="iron-tiles">' +
     '<div><b>' + a.streak + '</b><span>Week streak</span></div><div><b>' + a.prs + '</b><span>PRs set</span></div>' +
     '<div><b>' + a.quests + '</b><span>Quests cleared</span></div><div><b>' + (a.vol/2000).toFixed(a.vol < 20000 ? 1 : 0) + '</b><span>Tons moved</span></div></div>';
-  h += '<p class="iron-note">Belts reward showing up. Power level rewards getting stronger. Logging a lift checks off Work out for that day.</p>' +
+  h += '<p class="iron-note">Belts reward showing up. Power level rewards getting stronger. Logging a lift checks off Work out for that day; band-only work (RipRight) marks it a light day.</p>' +
     '<button class="primary wide" type="button" data-act="open-lift">Log a lift</button></section>';
 
   if(a.groups.length){
@@ -2810,7 +2842,7 @@ function renderLifts(){
         else if(pr.up) chip = '<span class="pchip up">Progress</span>';
         else chip = '<span class="pchip">Holding ' + pr.since + '</span>';
         return '<div class="lp-row"><b>' + esc(g.name) + '</b><span class="lp-w">' + esc(workingText(pr.working)) + ' \u00b7 ' + g.entries.length + (g.entries.length === 1 ? ' session' : ' sessions') + '</span>' + sparkSVG(g.entries) + chip + '</div>';
-      }).join('') + '</div><p class="muted small">Add weight: every set at your working weight hit ' + REP_TOP + '. Stall: ' + STALL_N + ' sessions in a row without more weight or reps. The line is estimated 1RM (reps for bodyweight).</p></details>';
+      }).join('') + '</div><p class="muted small">Add weight: every set at your working weight hit ' + REP_TOP + '. Stall: ' + STALL_N + ' sessions in a row without more weight or reps. The line is estimated 1RM (reps for bodyweight; reps × band level for bands).</p></details>';
   }
 
   var locs = ['All'].concat(Array.from(new Set(a.groups.map(function(g){ return g.location; }))));
@@ -2852,12 +2884,17 @@ function renderLifts(){
   view.style.display = 'flex'; view.style.flexDirection = 'column'; view.style.gap = '14px';
 }
 var liftSetCount = 0;
-function addSetRow(w, r){
+function addSetRow(w, r, b){
   var i = liftSetCount++, row = document.createElement('div');
   row.className = 'setrow';
-  row.innerHTML = '<span class="idx" aria-hidden="true"></span><input id="lf-w-' + i + '" type="number" inputmode="decimal" step="0.5" min="0" placeholder="lb" aria-label="Weight in pounds"><input id="lf-r-' + i + '" type="number" inputmode="numeric" step="1" min="1" placeholder="reps" aria-label="Reps"><button type="button" class="rm" aria-label="Remove set">×</button>';
-  row.querySelector('#lf-w-' + i).value = (w === undefined || w === null) ? '' : w;
+  /* each set is pounds or a band: picking a band disables the weight box */
+  row.innerHTML = '<span class="idx" aria-hidden="true"></span><select id="lf-u-' + i + '" class="lf-u" aria-label="Pounds or band"><option value="">lb</option>' + BANDS.map(function(x){ return '<option value="' + x[0] + '">' + esc(x[1].replace(/ band$/, '')) + '</option>'; }).join('') + '</select><input id="lf-w-' + i + '" type="number" inputmode="decimal" step="0.5" min="0" placeholder="lb" aria-label="Weight in pounds"><input id="lf-r-' + i + '" type="number" inputmode="numeric" step="1" min="1" placeholder="reps" aria-label="Reps"><button type="button" class="rm" aria-label="Remove set">×</button>';
+  var u = row.querySelector('#lf-u-' + i), wi = row.querySelector('#lf-w-' + i);
+  function syncUnit(){ var on = !!u.value; wi.disabled = on; wi.placeholder = on ? 'band' : 'lb'; if(on) wi.value = ''; row.classList.toggle('is-band', on); }
+  u.value = cleanBand(b) || ''; u.addEventListener("change", syncUnit);
+  wi.value = (w === undefined || w === null || b) ? '' : w;
   row.querySelector('#lf-r-' + i).value = (r === undefined || r === null) ? '' : r;
+  syncUnit();
   row.querySelector('.rm').addEventListener('click', function(){ row.remove(); numberSetRows(); });
   $('#lf-sets').appendChild(row); numberSetRows();
 }
@@ -2873,8 +2910,8 @@ function openLiftSheet(){
 function saveLift(){
   var msg = $('#lf-msg');
   var exercise = $('#lf-ex').value.trim();
-  var sets = Array.from($('#lf-sets').children).map(function(r){ return {w: parseFloat(r.querySelector('input[id^="lf-w-"]').value), r: parseInt(r.querySelector('input[id^="lf-r-"]').value, 10)}; })
-    .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w: Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r: s.r}; });
+  var sets = Array.from($('#lf-sets').children).map(function(r){ var u = r.querySelector('select.lf-u'); return {w: parseFloat(r.querySelector('input[id^="lf-w-"]').value), r: parseInt(r.querySelector('input[id^="lf-r-"]').value, 10), b: cleanBand(u && u.value)}; })
+    .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return s.b ? {w:0, r:s.r, b:s.b} : {w: Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r: s.r}; });
   if(!exercise){ msg.className = 'lf-msg full err'; msg.textContent = 'Add the exercise name.'; $('#lf-ex').focus(); return; }
   if(!sets.length){ msg.className = 'lf-msg full err'; msg.textContent = 'Add at least one set with reps.'; return; }
   var date = $('#lf-date').value || todayKey();
@@ -2888,11 +2925,21 @@ function saveLift(){
   recompute(); persistLocal(); flushLiftOps();
   closeSheets();
   sessOpen.set(date, true);
-  var wk = habitById('workout'), day = state.days[date];
-  if(wk && isActive(wk, date) && !(day && day.done.workout)){
-    mutateDay(date, function(dd){ dd.done.workout = Date.now(); if(dd.rest) delete dd.rest.workout; }, {});
-  } else render();
+  if(!trainFromLift(date, isBandEntry(doc))) render();
   celebrateLift(prevA, state.liftStats, id);
+}
+/* A logged lift scores Train for its day: strength work checks it; band-only work (RipRight) marks a light day,
+   unless Train is already done or rested. Returns 'done', 'light' or '' (nothing changed). */
+function trainFromLift(date, bandOnly){
+  var wk = habitById('workout'), day = state.days[date];
+  if(!wk || !isActive(wk, date) || (day && day.done.workout)) return '';
+  if(bandOnly){
+    if(day && day.rest && day.rest.workout) return '';
+    mutateDay(date, function(dd){ dd.rest = dd.rest || {}; dd.rest.workout = 'light'; delete dd.done.workout; }, {});
+    return 'light';
+  }
+  mutateDay(date, function(dd){ dd.done.workout = Date.now(); if(dd.rest) delete dd.rest.workout; }, {});
+  return 'done';
 }
 function celebrateLift(prev, next, id){
   var e = next.entries.filter(function(x){ return x.id === id; })[0]; if(!e) return;
@@ -3400,7 +3447,7 @@ function applyCalories(delta){
   saveSettings().then(function(ok){ if(ok) toast('Calories set to ' + fmt(state.settings.targets.cal)); });
 }
 
-/* ---------- build: what Moose builds with Claude ---------- */
+/* ---------- build: what Mustafa builds with Claude ---------- */
 /* Data: tracker/bnodes (map boxes + their links), tracker/bships (ship log), tracker/bskills. Builder XP is its own track. */
 var BXP = {ship:50, live:75, connect:40, upgrade:25, fix:10, skill:30};
 var BKINDS = [{k:'ship', n:'Shipped a build'}, {k:'live', n:'Went live'}, {k:'connect', n:'New connection'}, {k:'upgrade', n:'Upgrade'}, {k:'fix', n:'Fix'}];
@@ -3973,7 +4020,7 @@ function sortPrompt(it){
   var habits = state.settings.habits.map(function(h){ return h.id + ' = ' + h.name; });
   var now = new Date();
   return [
-    'Sort one task for Moose (Mustafa): founder of Ock Spot (Brooklyn deli, with BOSS as its software arm building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
+    'Sort one task for Mustafa: founder of Ock Spot (Brooklyn deli, with BOSS as its software arm building DMS) and Upsurge (web design for small businesses, sold door to door, built with Claude and Higgsfield). He also tracks his body, deen, family, home and money. Answer with JSON only.',
     'Task: "' + it.title.replace(/"/g, '\\"') + '"',
     'Now: ' + now.toLocaleDateString('en-US', {weekday:'long'}) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '.',
     'lane, one of: Body (training, food, sleep, supplements, health), Islam (salah, Quran, dhikr, deen), Family (relatives, friends, messages, gifts), Home (household, errands, car, logistics), Money (bills, taxes, bank, admin, subscriptions), Ock Spot (the deli and its software arm BOSS/DMS: staff, inventory, suppliers, SNAP, the Adnan/Canarsie partnership, the Deli Management System, franchise work), Upsurge (clients, leads, sites, sales, Stripe, reps, Elderberry, Khokha, L.I. Finest, Bethpage), Build (building things with Claude: Game Of Life, skills, automations, scheduled tasks).',
@@ -4159,7 +4206,7 @@ var COACH_SEND_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12
 var COACH_STOP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
 
 var COACH_RULES = [
-'You are Coach, the AI built into Moose’s "Game Of Life" tracker (Moose = Mustafa). Everything here is his own data. You see it in <live_tracker_data> (attached to his latest message, current as of that moment) and through the read tools, and you change it with the write tools. Changes show on his page instantly.',
+'You are Coach, the AI built into Mustafa’s "Game Of Life" tracker. Everything here is his own data. You see it in <live_tracker_data> (attached to his latest message, current as of that moment) and through the read tools, and you change it with the write tools. Changes show on his page instantly.',
 '',
 'HOW TO TALK',
 '- Phone screen. Lead with the answer. 1-5 short lines unless he asks for depth. Plain text, **bold** for the key number or call, "- " bullets only for real lists. No tables, no headings, no emoji.',
@@ -4183,7 +4230,7 @@ var COACH_RULES = [
 '- Auto-scoring happens on write, so don’t also call set_habit for these: a bedtime scores Bed on time for the previous night; vape false checks Nicotine-free (true unchecks it); calories at or over target check Eat enough; a strength sess or a logged lift checks Train; sess rest marks Train as a rest day; ripright or cardio alone marks a light day.',
 '- sess values: chest_biceps, back_triceps, legs (strength), ripright, cardio (light), rest (alone). Rotation chest_biceps > back_triceps > legs. tags: sick, travel, early_wake, band_issue, alcohol_late. patch = nicotine patch worn overnight (night that ended this morning).',
 '- set_habit covers the rest: Read, Meditate, Money-producing work, Sunnah prayers (all 12 rawatib; Witr doesn’t count), Bed on time, extras.',
-'- Lifts in lb. Plate-loaded machines = total plates on both sides, bar or sled not counted. Dumbbells = per dumbbell. Bodyweight = 0. Reuse the exact exercise name from his history when it is the same lift. Default location Heights Fitness unless he says home.',
+'- Lifts in lb. Plate-loaded machines = total plates on both sides, bar or sled not counted. Dumbbells = per dumbbell. Bodyweight = 0. Band work (RipRight back clips etc.): w 0 and b = light or thick; band-only lifts mark Train a light day, not strength. Reuse the exact exercise name from his history when it is the same lift. Default location Heights Fitness unless he says home.',
 '',
 'BUILD TAB (his AI-builder track, never feeds the belts)',
 '- Log FINISHED things only. Never hours, never "worked on".',
@@ -4363,20 +4410,20 @@ var COACH_TOOLS = [
    return {ok:true, date:date, habit:h.id, status:status, dayXP:bd ? bd.xp : 0, cleanSweep:bd ? bd.sweep : false};
  }},
 {name:'log_lift', busy:'Logging lift',
- description:'Log one exercise from a session. Also checks Train for that date. Returns PR or progress status, XP, and the next-session target.',
+ description:'Log one exercise from a session. Also scores Train for that date (strength checks it; band-only work marks a light day). Returns PR or progress status, XP, and the next-session target.',
  schema:{type:'object', properties:{
    date:{type:'string', description:'YYYY-MM-DD'},
    exercise:{type:'string'},
    location:{type:'string', description:'Heights Fitness (default) or Home.'},
-   sets:{type:'array', items:{type:'object', properties:{w:{type:'number', description:'lb; total plates for plate-loaded, per dumbbell for dumbbells, 0 = bodyweight'}, r:{type:'integer', description:'reps'}}, required:['w', 'r']}},
+   sets:{type:'array', items:{type:'object', properties:{w:{type:'number', description:'lb; total plates for plate-loaded, per dumbbell for dumbbells, 0 = bodyweight or band'}, r:{type:'integer', description:'reps'}, b:{type:'string', enum:BANDS.map(function(x){ return x[0]; }), description:'Resistance band used instead of weight (RipRight etc.); set w 0.'}}, required:['w', 'r']}},
    rir:{type:'number', description:'Reps in reserve on the last set, if he said.'},
    notes:{type:'string'},
    target:{type:'string', description:'Only if he set his own next-session goal, e.g. "90 x 10, 10, 9".'}}, required:['date', 'exercise', 'sets']},
  run:function(inp){
    var date = cDate(inp.date), ex = String(inp.exercise || '').trim();
    if(!ex) throw new Error('Exercise name is required.');
-   var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10)}; })
-     .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
+   var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10), b:cleanBand(s && s.b)}; })
+     .filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return s.b ? {w:0, r:s.r, b:s.b} : {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
    if(!sets.length) throw new Error('Need at least one set with reps.');
    var known = state.lifts.filter(function(e){ return norm(e.exercise) === norm(ex); })[0]; if(known) ex = known.exercise;
    var loc = String(inp.location || '').trim() || 'Heights Fitness';
@@ -4389,18 +4436,17 @@ var COACH_TOOLS = [
    liftOps[id] = 'set';
    recompute(); persistLocal(); flushLiftOps();
    sessOpen.set(date, true);
-   var wk = habitById('workout'), day = state.days[date], trainChecked = false;
-   if(wk && isActive(wk, date) && !(day && day.done.workout)){ mutateDay(date, function(dd){ dd.done.workout = Date.now(); if(dd.rest) delete dd.rest.workout; }, {}); trainChecked = true; }
-   else render();
+   var trainSet = trainFromLift(date, isBandEntry(doc)), trainChecked = trainSet === 'done';
+   if(!trainSet) render();
    celebrateLift(prevA, state.liftStats, id);
    var e = state.liftStats.entries.filter(function(x){ return x.id === id; })[0];
    var g = state.liftStats.groups.filter(function(gr){ return gr.entries.some(function(x){ return x.id === id; }); })[0];
-   addAct(fmtShort(date) + ' · ' + ex + ' ' + sets.map(function(s){ return (s.w > 0 ? fmtW(s.w) : 'BW') + '×' + s.r; }).join(', ') + (e && e._status === 'pr' ? ' · PR' : ''), function(){
+   addAct(fmtShort(date) + ' · ' + ex + ' ' + sets.map(function(s){ return setText(s, '×'); }).join(', ') + (e && e._status === 'pr' ? ' · PR' : ''), function(){
      state.lifts = state.lifts.filter(function(l){ return l.id !== id; });
      liftOps[id] = 'delete'; persistLocal(); flushLiftOps(); restoreDays(snap);
    });
    return {ok:true, id:id, exercise:ex, location:loc, date:date, status:e ? LSTATUS[e._status][1] : '', lastTargetCleared:e ? e._cleared : false, strengthXP:e ? e._xp : 0,
-     working:g ? workingText(g.prog.working) : '', nextTarget:g ? g.quest : '', addWeightNext:g ? g.prog.addWeight : false, stalled:g ? g.prog.stall : false, trainChecked:trainChecked};
+     working:g ? workingText(g.prog.working) : '', nextTarget:g ? g.quest : '', addWeightNext:g ? g.prog.addWeight : false, stalled:g ? g.prog.stall : false, trainChecked:trainChecked, trainLight:trainSet === 'light'};
  }},
 {name:'build_log', busy:'Updating Build tab',
  description:'Build tab writes. action ship: log a finished ship (title, kind, date, node, note). action skill: log a skill learned (name, date, node, note). action node: add or update a map box (id to update, else name; kind, status, venture, url, note). action connect: add an arrow from one box to another (from, to, label). Boxes can be referenced by id or exact name.',
@@ -4486,7 +4532,7 @@ var COACH_TOOLS = [
    if(!gs.length) return {found:0, exercises:ls.groups.map(function(g){ return g.name + ' @ ' + g.location; })};
    return {strengthLevel:ls.level, exercises:gs.slice(0, q ? 6 : 40).map(function(g){
      var o = {exercise:g.name, location:g.location, sessions:g.entries.length, last:g.last.date, best1RM:Math.round(g.best), gainPct:r1(g.gain), tier:g.tier[1], working:workingText(g.prog.working), nextTarget:g.quest, addWeight:g.prog.addWeight, stalled:g.prog.stall};
-     if(q) o.recent = g.entries.slice(-n).map(function(e){ return {id:e.id, date:e.date, sets:e.sets.map(function(s){ return (s.w > 0 ? fmtW(s.w) : 'BW') + 'x' + s.r; }).join(', '), rir:e.rir, status:LSTATUS[e._status][1], cleared:e._cleared || undefined, notes:e.notes || undefined}; });
+     if(q) o.recent = g.entries.slice(-n).map(function(e){ return {id:e.id, date:e.date, sets:e.sets.map(function(s){ return setText(s, 'x'); }).join(', '), rir:e.rir, status:LSTATUS[e._status][1], cleared:e._cleared || undefined, notes:e.notes || undefined}; });
      return o;
    })};
  }},
@@ -4563,7 +4609,7 @@ var COACH_TOOLS = [
 function coachTools(){
   return COACH_TOOLS.slice(0, coach.maxTools).map(function(t){
     return {name:t.name, description:t.description, inputSchema:t.schema, execute:function(inp, ctx){
-      if(ctx && ctx.signal && ctx.signal.aborted) throw new Error('Stopped by Moose.');
+      if(ctx && ctx.signal && ctx.signal.aborted) throw new Error('Stopped by Mustafa.');
       coach.status = t.busy; coachRender();
       return Promise.resolve().then(function(){ return t.run(inp && typeof inp === 'object' ? inp : {}); })
         .finally(function(){ coach.status = ''; coachRender(); });
@@ -4575,7 +4621,7 @@ function coachTools(){
 function coachInput(){
   var hist = coach.turns.filter(function(t){ return !t.pending; }).slice(-CHAT_SEND).map(function(t){
     if(t.role === 'user') return {role:'user', content:(t.content || '') + (t.img ? '\n[' + (t.img > 1 ? t.img + ' photos' : 'Photo') + ' attached]' : '')};
-    var acts = (t.acts || []).map(function(a){ return a.label + (a.undone ? ' (Moose undid this)' : ''); });
+    var acts = (t.acts || []).map(function(a){ return a.label + (a.undone ? ' (Mustafa undid this)' : ''); });
     return {role:'assistant', content:(t.content || '') + (acts.length ? '\n[Changes made: ' + acts.join('; ') + ']' : '')};
   }).filter(function(t){ return t.content.trim(); });
   while(hist.length && hist[0].role !== 'user') hist.shift();
@@ -4932,7 +4978,7 @@ var EXPORT_README = [
   '',
   'data.json      Everything in one file: settings (habits, targets, rewards), every day, every lift, the Build tab, notes, every Coach conversation, and the photo index. Use this to move to any other app or database.',
   'days.csv       One row per day. Habit columns: 1 = done, rest/light = planned rest. Metric columns use the field names below.',
-  'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight).',
+  'lifts.csv      One row per set. Weight in lb (plate-loaded = total plates, dumbbells = per dumbbell, 0 = bodyweight or band). band = light/thick when the set used a resistance band instead of weight.',
   'ships.csv, skills.csv, map.csv, notes.csv   The Build tab and notes.',
   'tasks.csv      One row per daily task: lane, quadrant (Q1 urgent+important, Q2 important, Q3 urgent, Q4 neither), block, status, estimate vs actual minutes, timer total, every timer run as start>end (UTC), how many times it was pushed, timestamps in UTC.',
   'coach-log.csv  Every message between you and Coach, with the changes Coach made.',
@@ -4967,8 +5013,8 @@ async function buildExport(withPhotos, onStep){
       [Object.keys(d.extras || {}).map(function(h){ var hb = habitById(h); return (hb ? hb.name : h) + ': ' + d.extras[h].map(function(x){ return x.note; }).join(' | '); }).join('; ')],
       mkeys.map(function(f){ var v = (d.m || {})[f]; return Array.isArray(v) && typeof v[0] !== 'object' ? v.join('+') : v; }));
   }))});
-  var lrows = []; lifts.forEach(function(l){ (l.sets || []).forEach(function(s, i){ lrows.push([l.date, l.exercise, l.location, i + 1, s.w, s.r, i === l.sets.length - 1 ? l.rir : '', i === 0 ? l.notes : '', l.id]); }); });
-  files.push({name:'lifts.csv', data:toCSV(['date', 'exercise', 'location', 'set', 'weight_lb', 'reps', 'rir', 'notes', 'entry_id'], lrows)});
+  var lrows = []; lifts.forEach(function(l){ (l.sets || []).forEach(function(s, i){ lrows.push([l.date, l.exercise, l.location, i + 1, s.w, s.b || '', s.r, i === l.sets.length - 1 ? l.rir : '', i === 0 ? l.notes : '', l.id]); }); });
+  files.push({name:'lifts.csv', data:toCSV(['date', 'exercise', 'location', 'set', 'weight_lb', 'band', 'reps', 'rir', 'notes', 'entry_id'], lrows)});
   files.push({name:'ships.csv', data:toCSV(['date', 'kind', 'title', 'map_box', 'note', 'id'], state.build.bships.slice().sort(function(a, b){ return a.date < b.date ? -1 : 1; }).map(function(x){ var n = bNode(x.node); return [x.date, x.kind, x.title, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'skills.csv', data:toCSV(['date', 'skill', 'map_box', 'note', 'id'], state.build.bskills.map(function(x){ var n = bNode(x.node); return [x.date, x.name, n ? n.name : '', x.note, x.id]; }))});
   files.push({name:'map.csv', data:toCSV(['name', 'column', 'status', 'venture', 'url', 'sends_to', 'note', 'id'], state.build.bnodes.map(function(n){ return [n.name, n.kind, n.status, n.venture, n.url, (n.links || []).map(function(l){ var t = bNode(l.to); return (t ? t.name : l.to) + (l.label ? ' (' + l.label + ')' : ''); }).join('; '), n.note, n.id]; }))});
@@ -5081,7 +5127,7 @@ COACH_TOOLS.push(
  description:'Correct a logged lift entry by id (ids come from lift_history): sets, exercise name, date, location, RIR, notes or next target. Only the fields given change.',
  schema:{type:'object', properties:{
    id:{type:'string'}, exercise:{type:'string'}, date:{type:'string'}, location:{type:'string'},
-   sets:{type:'array', items:{type:'object', properties:{w:{type:'number'}, r:{type:'integer'}}, required:['w', 'r']}},
+   sets:{type:'array', items:{type:'object', properties:{w:{type:'number'}, r:{type:'integer'}, b:{type:'string', enum:BANDS.map(function(x){ return x[0]; })}}, required:['w', 'r']}},
    rir:{type:'number'}, notes:{type:'string'}, target:{type:'string'}}, required:['id']},
  run:function(inp){
    var id = String(inp.id || ''), i = state.lifts.map(function(l){ return l.id; }).indexOf(id);
@@ -5091,7 +5137,7 @@ COACH_TOOLS.push(
    if(inp.date !== undefined){ l.date = cDate(inp.date); ch.push('date'); }
    if(inp.location !== undefined){ l.location = cleanStr(inp.location, 40) || l.location; ch.push('location'); }
    if(inp.sets !== undefined){
-     var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10)}; }).filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
+     var sets = (Array.isArray(inp.sets) ? inp.sets : []).map(function(s){ return {w:Number(s && s.w), r:parseInt(s && s.r, 10), b:cleanBand(s && s.b)}; }).filter(function(s){ return Number.isFinite(s.r) && s.r > 0; }).map(function(s){ return s.b ? {w:0, r:s.r, b:s.b} : {w:Number.isFinite(s.w) && s.w > 0 ? s.w : 0, r:s.r}; });
      if(!sets.length) throw new Error('Need at least one set with reps.'); l.sets = sets; ch.push('sets');
    }
    if(inp.rir !== undefined){ if(inp.rir === null || inp.rir === '') delete l.rir; else l.rir = Number(inp.rir); ch.push('RIR'); }
@@ -5554,7 +5600,7 @@ function bind(){
     var empty = Array.from($('#lf-sets').querySelectorAll('input')).every(function(i){ return !i.value; });
     if(past){
       $('#lf-loc').value = past.location || 'Home';
-      if(empty){ $('#lf-sets').innerHTML = ''; liftSetCount = 0; past.sets.forEach(function(s){ addSetRow(s.w, ''); }); }
+      if(empty){ $('#lf-sets').innerHTML = ''; liftSetCount = 0; past.sets.forEach(function(s){ addSetRow(s.w, '', s.b); }); }
       var tgt = past.target || autoTarget(past, past.location);
       $('#lf-msg').className = 'lf-msg full'; $('#lf-msg').textContent = 'Quest from last time: ' + tgt;
     }
