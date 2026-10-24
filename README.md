@@ -188,6 +188,17 @@ turns the total loaded (both sides, no bar, his convention) into plates per
 side, with a bar option. A screen wake lock holds while the sheet is open or a
 rest is running.
 
+## Theme follows the sun
+
+`features/theme.js`. By default the page is light from sunrise (Shuruq) to
+Maghrib and dark from Maghrib to sunrise, using the same prayer-time engine and
+location, re-checked every 30 s. Settings has a Theme row: Auto (sun), Light,
+Dark, System; the choice is kept on the device (`localStorage` `gol-theme`) and
+written to `<html data-theme>`, which the stylesheets already honour
+(`data-theme="light"` beats a dark system setting and vice versa; System removes
+the attribute). The harness switches the pref to System before its light/dark
+screenshots so the emulated colour scheme is what gets shot.
+
 ## Ambient layer
 
 `css/fx.css`, "ambient v2": 16 ki motes in the habit colours rising on their own

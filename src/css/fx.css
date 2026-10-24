@@ -161,3 +161,7 @@ body::after{
 :root[data-sweep="1"] .brand b{text-shadow:0 0 18px color-mix(in srgb,var(--gold) 70%,transparent)}
 @media (prefers-reduced-motion: reduce){.ambient{display:none}}
 :root[data-motion="calm"] .ambient{display:none}
+/* theme row in settings: four chips */
+.theme-row{flex-wrap:wrap}
+.theme-picks{display:flex;gap:6px;flex-wrap:wrap}
+.theme-picks .gchip{padding:6px 10px;font-size:12px}

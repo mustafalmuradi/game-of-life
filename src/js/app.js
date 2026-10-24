@@ -21,6 +21,7 @@ import { salahHud, salahTick } from './features/salah.js';
 import { lifeHappens, logInBed, windTick } from './features/winddown.js';
 import { gymInit, restPick, restReset, restToggle } from './features/gym.js';
 import { calConnect, calInit, calTick } from './features/calendar.js';
+import { applyTheme, renderThemeRow, setThemePref, themeTick } from './features/theme.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -40,6 +41,7 @@ function bind(){
       case 'rest-reset': restReset(); break;
       case 'rest-open': openLiftSheet(); break;
       case 'cal-connect': calConnect(); break;
+      case 'theme': setThemePref(t.getAttribute('data-v')); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }
@@ -189,13 +191,14 @@ registerHud(function(){
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
   setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
   window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
-  setInterval(function(){ salahTick(); windTick(); calTick(); }, 30000);
+  setInterval(function(){ salahTick(); windTick(); calTick(); themeTick(); }, 30000);
 })();
 
 /* ---------- boot ---------- */
 state.settings = normalizeSettings(clone(DEFAULT_SETTINGS));
 sync.lsOK = testLS();
 loadLocal();
+applyTheme(); renderThemeRow();
 state.mode = sync.lsOK ? 'local' : 'memory';
 recompute();
 bind();

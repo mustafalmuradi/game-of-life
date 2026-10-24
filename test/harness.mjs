@@ -127,6 +127,8 @@ async function shots(run, dir) {
   fs.mkdirSync(dir, { recursive: true });
   const out = {};
   await run.page.addStyleTag({ content: KILL_MOTION });
+  // the theme follows the sun by default; the screenshots want the emulated scheme, so switch the device pref to system
+  await run.page.evaluate(() => { try { localStorage.setItem('gol-theme', 'system'); } catch (e) { } document.documentElement.removeAttribute('data-theme'); });
   for (const scheme of ['light', 'dark']) {
     await run.page.emulateMedia({ colorScheme: scheme });
     for (const t of ['today', 'tasks', 'lifts', 'body', 'progress', 'build']) {

@@ -77,6 +77,7 @@ export const steps = [
 
   // ---- Settings sheet ----
   { name: 'open settings', run: async (page) => { await click(page, '#btn-settings'); await settle(page); } },
+  { name: 'theme: pick Dark, then back to Auto (follows the sun)', run: async (page) => { await click(page, '[data-act="theme"][data-v="dark"]'); await settle(page); if ((await page.evaluate(() => document.documentElement.getAttribute('data-theme'))) !== 'dark') throw new Error('not dark'); await click(page, '[data-act="theme"][data-v="auto"]'); await settle(page); if ((await page.evaluate(() => document.documentElement.getAttribute('data-theme'))) !== 'light') throw new Error('auto at 15:30 should be light'); } },
   { name: 'rename a habit, add one, pause one', run: async (page) => {
     await fill(page, '#st-list input[data-f="name"]', 'Read (books)');
     await fill(page, '#new-name', 'Walk');
