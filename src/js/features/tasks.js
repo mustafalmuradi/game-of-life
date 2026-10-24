@@ -1,5 +1,6 @@
 // Daily tasks: one doc per day (tracker/tasks/YYYY-MM-DD), recurring templates in settings, the Today card, the Tasks tab, the task sheet.
 import { TASK_BLOCKS, TASK_LANES, TASK_Q, TASK_ROLL_DAYS } from '../core/config.js';
+import { calAddTask, calAvailable } from './calendar.js';
 import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, fmtWd, mondayOf, pad, parseKey, range7, timeOf, todayKey, uid } from '../core/utils.js';
 import { ICON, miniRing } from '../core/svg.js';
 import { habitById, normalizeTask, normalizeTemplate, state, T } from '../core/state.js';
@@ -66,7 +67,7 @@ export function addTask(d, f, src){
 export function updateTask(d, id, f){
   return mutateTasks(d, function(doc){
     var it = doc.items.filter(function(x){ return x.id === id; })[0]; if(!it) return null;
-    ['title','lane','q','block','est','actual','link','note','sortedBy'].forEach(function(k){ if(f[k] !== undefined) it[k] = f[k]; });
+    ['title','lane','q','block','est','actual','link','note','sortedBy','cal'].forEach(function(k){ if(f[k] !== undefined) it[k] = f[k]; });
     var n = normalizeTask(it); Object.assign(it, n); it.updatedAt = Date.now();
     return it;
   });
@@ -354,6 +355,7 @@ export function openTaskSheet(d, id, focus){
   $('#tk-form').innerHTML = formFields(it, false) +
     '<p class="lf-msg full" id="tk-msg" role="status"></p><div class="sheet-actions full">' +
     (it.doneAt ? '' : it.droppedAt ? '<button class="ghost" type="button" data-act="tk-undrop">Bring back</button>' : '<button class="ghost" type="button" data-act="tk-drop">Drop</button>') +
+    (calAvailable() && !it.doneAt && !it.droppedAt && !it.rolledTo ? '<button class="ghost" type="button" data-act="tk-cal"' + (it.cal ? ' disabled' : '') + '>' + (it.cal ? 'On calendar' : 'Add to Calendar') + '</button>' : '') +
     '<button class="ghost" type="button" data-act="tk-delete">Delete</button><button class="ghost" type="button" data-act="close-sheet">Cancel</button><button class="primary" type="submit">Save</button></div>';
   openSheet('#task-sheet');
   if(focus){ var f = $('#tk-' + focus); if(f) setTimeout(function(){ f.focus(); }, 60); }
@@ -410,6 +412,7 @@ export function sheetAct(act, t){
     if(m.mode === 'tpl'){ removeTemplate(m.id); } else deleteTask(m.date, m.id);
     closeSheets(); toast('Deleted'); return;
   }
+  if(act === 'tk-cal'){ if(m.mode === 'item') calAddTask(m.date, m.id, t); return; }
   if(act === 'tk-drop'){ dropTask(m.date, m.id, $('#tk-note') ? $('#tk-note').value.trim() : ''); closeSheets(); toast('Dropped. It stays in the record.'); return; }
   if(act === 'tk-move'){
     var to = t.getAttribute('data-to') || ($('#tk-move-date') ? $('#tk-move-date').value : ''); if(!/^\d{4}-\d{2}-\d{2}$/.test(to)) return;

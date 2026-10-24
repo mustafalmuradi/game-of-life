@@ -1,0 +1,23 @@
+/* Google Calendar card (Today): today's events, now/next marked, earlier ones folded. */
+.cal-card{padding:14px 18px 14px;display:flex;flex-direction:column;gap:10px}
+.cl-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cl-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cl-note{font-size:13px;color:var(--ink-2)}
+.cl-btn{align-self:flex-start}
+.cl-allday{display:flex;flex-wrap:wrap;gap:6px}
+.cl-chip{font-size:12px;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);border-radius:99px;padding:4px 10px}
+.cl-list{display:flex;flex-direction:column}
+.cl-ev{display:grid;grid-template-columns:72px 1fr auto;gap:10px;align-items:center;padding:8px 8px;border-radius:12px;border:1px solid transparent}
+.cl-t{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;display:flex;flex-direction:column;line-height:1.15}
+.cl-t small{font-size:10px;color:var(--muted);font-weight:600}
+.cl-n{font-size:14px;font-weight:700;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-n small{display:block;font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-tag{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);border-radius:99px;padding:3px 8px;white-space:nowrap}
+.cl-ev.is-live{border-color:var(--line);background:var(--accent-soft);box-shadow:var(--glow)}
+.cl-ev.is-live .cl-tag{background:var(--accent);color:var(--on-accent)}
+.cl-ev.is-past{opacity:.55}
+.cl-past summary{cursor:pointer;font-size:12px;font-weight:800;color:var(--muted);padding:4px 8px;list-style:none;display:flex;align-items:center;gap:6px}
+.cl-past summary::-webkit-details-marker{display:none}
+.cl-past summary::before{content:"";width:6px;height:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s}
+.cl-past[open] summary::before{transform:rotate(45deg)}
+.cl-more{font-size:12px;color:var(--muted);padding:4px 8px}

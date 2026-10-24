@@ -115,7 +115,23 @@
   sample.limits = function () { return later(function () { return { tools: { maxCount: 20 }, images: { maxCount: 4, maxInputBytes: 5000000, mediaTypes: ['image/jpeg', 'image/png'] } }; }); };
   sample.json = function (input, opts) { return sample(input, opts).then(function (r) { return JSON.parse(r.text); }); };
 
-  var caps = { db: db, user: user, sample: sample };
+  // ---- fake mcp (connectors): only when the config carries events; a watch delivers them once, calls are logged ----
+  var mcp = null;
+  if (cfg.mcpEvents) {
+    function listResult() { return { content: [], payload: { events: clone(cfg.mcpEvents), timeZone: 'America/New_York' } }; }
+    mcp = Object.freeze({
+      listTools: function () { return later(function () { return { servers: [{ server: 'Google Calendar', authStatus: 'connected', tools: [{ name: 'list_events', description: '' }, { name: 'create_event', description: '' }] }] }; }); },
+      watchTool: function (server, tool, input, handler) { log.push({ op: 'mcp_watch', server: server, tool: tool, input: clone(input) }); later(function () { handler({ type: 'data', result: listResult() }); }); return function () { }; },
+      callTool: function (server, tool, input) {
+        log.push({ op: 'mcp_call', server: server, tool: tool, input: clone(input) });
+        if (tool === 'list_events') return later(listResult);
+        if (tool === 'create_event') return later(function () { return { content: [], payload: { id: 'evt_' + (input && input.summary ? input.summary.length : 0), htmlLink: 'https://calendar.google.com/event?eid=test', summary: input.summary, start: { dateTime: input.startTime }, end: { dateTime: input.endTime } } }; });
+        return Promise.reject({ code: 'not_in_manifest', message: 'fake: no tool ' + tool });
+      },
+      invalidate: function () { log.push({ op: 'mcp_invalidate' }); return later(function () { }); }
+    });
+  }
+  var caps = { db: db, user: user, sample: sample, mcp: mcp };
   // --noruntime: no window.claude at all, the page must fall back to local mode
   if (!cfg.noClaude) window.claude = { use: function (name) { return later(function () { return caps[name] || null; }); } };
 })(window.__fakeCfg);

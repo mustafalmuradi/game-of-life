@@ -20,6 +20,7 @@ import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, pickTaskD
 import { salahHud, salahTick } from './features/salah.js';
 import { logInBed, windTick } from './features/winddown.js';
 import { gymInit, restPick, restReset, restToggle } from './features/gym.js';
+import { calConnect, calInit, calTick } from './features/calendar.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -37,6 +38,7 @@ function bind(){
       case 'rest-pick': restPick(Number(t.getAttribute('data-s')) || 120); break;
       case 'rest-reset': restReset(); break;
       case 'rest-open': openLiftSheet(); break;
+      case 'cal-connect': calConnect(); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }
@@ -76,7 +78,7 @@ function bind(){
       case 'tk-week-next': stepTaskWeek(1); break;
       case 'tk-tpl-new': openTemplateSheet(null); break;
       case 'tk-tpl-edit': openTemplateSheet(t.getAttribute('data-id')); break;
-      case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-move': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;
+      case 'tk-q': case 'tk-day': case 'tk-delete': case 'tk-drop': case 'tk-undrop': case 'tk-move': case 'tk-cal': case 'tk-tpl-pause': case 'tk-tpl-resume': sheetAct(act, t); break;
       case 'pick-day': state.selected = t.getAttribute('data-d'); render(); break;
       case 'go-today': state.selected = todayKey(); state.weekOf = mondayOf(state.selected); render(); break;
       case 'week-prev': state.weekOf = addDays(state.weekOf, -7); state.selected = addDays(state.weekOf, 6); render(); break;
@@ -186,7 +188,7 @@ registerHud(function(){
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
   setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
   window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
-  setInterval(function(){ salahTick(); windTick(); }, 30000);
+  setInterval(function(){ salahTick(); windTick(); calTick(); }, 30000);
 })();
 
 /* ---------- boot ---------- */
@@ -200,5 +202,6 @@ bindCoach();
 gymInit();
 render();
 connectCloud();
+calInit();
 initCoach();
 initCoach2();

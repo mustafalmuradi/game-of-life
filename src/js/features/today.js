@@ -12,6 +12,7 @@ import { FLAG_ICON, fmtClock, metricsOf, readiness, sessName, sessOf, TAGS, tags
 import { ensureToday, renderTasksCard } from './tasks.js';
 import { rawatibLine, rawatibOf, renderSalah, SUNNAH_ID } from './salah.js';
 import { renderWind } from './winddown.js';
+import { renderCal } from './calendar.js';
 
 /* ---------- mutations ---------- */
 export function mutateDay(date, fn, opts){
@@ -224,7 +225,7 @@ function renderHabits(){
 }
 
 /* the Today tab renders five parts; render() calls this through the registry */
-function renderToday(){ ensureToday(); renderWind(); renderWeek(); renderDay(); renderSalah(); renderHabits(); renderTasksCard(); renderSync(); }
+function renderToday(){ ensureToday(); renderWind(); renderWeek(); renderDay(); renderSalah(); renderCal(); renderHabits(); renderTasksCard(); renderSync(); }
 registerTab('today', renderToday);
 
 /* planned late nights: the Bed on time line, and whether one can still be planned for d */

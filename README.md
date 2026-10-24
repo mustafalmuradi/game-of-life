@@ -20,7 +20,7 @@ The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
 | Layer | Files | Rule |
 | --- | --- | --- |
 | `app.js` | events + boot | The composition root. The only file that imports everything. |
-| `features/` | `today`, `salah`, `tasks`, `progress`, `lifts`, `body`, `build`, `coach` | One file per tab or card. Each tab calls `registerTab()` when it loads and keeps its own UI flags behind small exported actions. |
+| `features/` | `today`, `salah`, `winddown`, `calendar`, `tasks`, `progress`, `lifts`, `gym`, `body`, `build`, `coach` | One file per tab or card. Each tab calls `registerTab()` when it loads and keeps its own UI flags behind small exported actions. |
 | `core/` | `config`, `utils`, `state`, `xp`, `strength`, `salah`, `stats`, `store`, `effects`, `svg`, `render`, `sheets` | Shared by every tab, imports nothing above it. `store.js` is the only file that talks to the database. |
 
 `npm run check` prints the cascade proof and the line-by-line difference between
@@ -76,7 +76,10 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
 3. State that more than one file changes lives in `core/state.js`.
 4. Run the harness before publishing. `npm run dist` builds `dist/`; publish by
    republishing the artifact with `dist/index.html` as the page and `dist/css`,
-   `dist/js`, `dist/tools` as its files.
+   `dist/js`, `dist/tools` as its files. The artifact declares these runtime
+   capabilities (restate all of them whenever `capabilities` is passed):
+   `assets`, `db`, `downloads`, `sample` (`images: true`), `user`, and `mcp` with
+   `servers: [{server: "Google Calendar", tools: ["list_events", "create_event"]}]`.
 
 ## Power levels (Lifts tab)
 
@@ -133,3 +136,50 @@ dates against the adhan library's values (within a minute).
 - Coach: the live data carries today's times, the current and next prayer and
   the rawatib state; the `salah` tool reads times for any date and logs or
   removes rawatib (`done` / `undone` keys); `set_targets` takes the location.
+
+## Wind-down (Today, Isha → bed)
+
+`features/winddown.js`. From Isha, or an hour before the bed target if that is
+earlier, until the night's bedtime is logged, the first card on Today counts
+down to the target for the night (`targets.bed`, `friBed`, `satBed`, or a
+planned late night), turns red past it, marks the screens-off checkpoint 30
+minutes before, and shows the next Fajr and the sleep still available. "In bed
+now" writes `m.bed` (this minute) on the wake date, which is where the check-in
+and the Coach put bedtimes, so `commitMetrics` scores Bed on time exactly as
+before; the toast has Undo. After midnight the card still belongs to last night
+until Fajr. A 30-second tick keeps it live.
+
+## Google Calendar (Today card + task sheet)
+
+`features/calendar.js`, through the `mcp` capability with the viewer's own
+Google Calendar connector (calls run as the viewer; the page never sees a
+token). Today shows today's events from a `watchTool` on `list_events` (cached
+a minute, refreshed every 5 minutes, re-registered at midnight): all-day chips,
+earlier events folded, the live one marked Now, the next one with a countdown.
+A watch cannot ask for consent, so the first time the card shows one button
+whose `callTool` asks; every error code gets its own copy (reconnect, add the
+connector, declined). The task sheet's "Add to Calendar" creates an event
+(`create_event`: title, next quarter hour today or the block's usual start on
+another day, the estimate or 30 minutes) and stores the event id as `task.cal`
+so the button reads "On calendar" afterwards. Without the capability (a local
+copy, the harness without the fake) the card and the button do not exist.
+`test/fake-runtime.js` serves a fake connector when the config carries
+`mcpEvents`, so the harness exercises both paths.
+
+## Gym mode (lift sheet)
+
+`features/gym.js`. A rest timer with 1:30 / 2:00 / 3:00 quick picks: tap the
+dial to start or pause, it chimes (WebAudio), flashes the screen and vibrates
+where the phone allows at zero, floats as a pill at the bottom of the page while
+the sheet is closed, and the lift-saved toast offers to start it. Plate math
+turns the total loaded (both sides, no bar, his convention) into plates per
+side, with a bar option. A screen wake lock holds while the sheet is open or a
+rest is running.
+
+## Ambient layer
+
+`css/fx.css`, "ambient v2": 16 ki motes in the habit colours rising on their own
+loops, 3 meteors on long staggered cycles, two slow orbit rings behind the belt
+card. `render()` sets `data-sweep="1"` on `<html>` when today is a clean sweep,
+which turns the aurora, motes and rings gold. Everything ambient is off in calm
+mode and under `prefers-reduced-motion`.

@@ -46,6 +46,7 @@ export const steps = [
   { name: 'tab: progress', run: async (page) => tab(page, 'progress') },
   { name: 'tab: build', run: async (page) => tab(page, 'build') },
   { name: 'tab: today', run: async (page) => tab(page, 'today') },
+  { name: 'calendar: the 3 PM event is live, Maghrib is next (fake connector)', run: async (page) => { await settle(page); if (!(await page.locator('#cal .cl-ev.is-live').count()) || !(await page.locator('#cal .cl-ev.is-next').count())) throw new Error('live/next rows missing'); } },
 
   // ---- Today ----
   { name: 'toggle Read', run: async (page) => { await click(page, '[data-act="toggle"][data-h="read"]'); await settle(page); await escape(page); } },
@@ -270,6 +271,9 @@ export const steps = [
   { name: 'tasks: add a second', run: async (page) => { await fill(page, '.tq-title', 'Ship the menu page'); await submit(page, '#view-today .tq-form'); await settle(page); } },
   { name: 'tasks: lock plan', run: async (page) => { await click(page, '#tasks [data-act="tk-lock"]'); await settle(page); } },
   { name: 'tasks: edit the second', run: async (page) => { await click(page, '#tasks .tk:nth-child(2) [data-act="tk-open"]'); await settle(page); await fill(page, '#tk-est', '45'); await click(page, '#tk-q [data-v="2"]'); await select(page, '#tk-link', 'habit:read'); await submit(page, '#tk-form'); await settle(page); } },
+  { name: 'calendar: today\'s events card is on Today (fake connector)', run: async (page) => { await settle(page); if (!(await page.locator('#cal:not([hidden]) .cl-ev').count())) throw new Error('missing: calendar events'); await page.evaluate(() => { const d = document.querySelector('.cl-past'); if (d) d.open = true; }); } },
+  { name: 'calendar: add the second task to Google Calendar', run: async (page) => { await click(page, '#tasks .tk:nth-child(2) [data-act="tk-open"]'); await settle(page); await click(page, '#task-sheet [data-act="tk-cal"]'); await settle(page); await settle(page); await escape(page); } },
+  { name: 'calendar: reopened task shows it is on the calendar', run: async (page) => { await click(page, '#tasks .tk:nth-child(2) [data-act="tk-open"]'); await settle(page); if (!(await page.locator('#task-sheet [data-act="tk-cal"][disabled]').count())) throw new Error('button not disabled'); await escape(page); } },
   { name: 'tasks: timer on', run: async (page) => { await click(page, '#tasks .tk [data-act="tk-timer"]'); await settle(page); } },
   { name: 'tasks: done first', run: async (page) => { await click(page, '#tasks .tk [data-act="tk-done"]'); await settle(page); } },
   { name: 'tab: tasks', run: async (page) => tab(page, 'tasks') },

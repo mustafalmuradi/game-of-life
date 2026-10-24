@@ -73,6 +73,16 @@ const COACH_SCRIPT = [
   { text: 'Five of seven sweeps. Sleep is the leak: two nights past target. Fix bedtime before anything else.' }
 ];
 const FAKE_SRC = fs.readFileSync(new URL('./fake-runtime.js', import.meta.url), 'utf8');
+// today's Google Calendar, as the fake connector serves it (the frozen clock is 15:30: one event live, one earlier, two later)
+const CAL_EVENTS = [
+  { id: 'ev1', status: 'confirmed', summary: '🏋️ Gym', start: { dateTime: TODAY + 'T06:15:00-04:00' }, end: { dateTime: TODAY + 'T07:30:00-04:00' } },
+  { id: 'ev2', status: 'confirmed', summary: '🕌 Dhuhr', start: { dateTime: TODAY + 'T12:45:00-04:00' }, end: { dateTime: TODAY + 'T13:00:00-04:00' } },
+  { id: 'ev3', status: 'confirmed', summary: '🧠 GHL lessons (done by EOD)', start: { dateTime: TODAY + 'T15:00:00-04:00' }, end: { dateTime: TODAY + 'T16:00:00-04:00' }, location: 'Home office' },
+  { id: 'ev4', status: 'confirmed', summary: '🕌 Maghrib', start: { dateTime: TODAY + 'T18:29:00-04:00' }, end: { dateTime: TODAY + 'T18:45:00-04:00' } },
+  { id: 'ev5', status: 'confirmed', summary: '😴 Sleep', start: { dateTime: TODAY + 'T21:00:00-04:00' }, end: { dateTime: TODAY.replace(/\d+$/, d => String(+d + 1).padStart(2, '0')) + 'T05:15:00-04:00' } },
+  { id: 'ev6', status: 'confirmed', summary: 'Rent due', start: { date: TODAY }, end: { date: TODAY.replace(/\d+$/, d => String(+d + 1).padStart(2, '0')) } },
+  { id: 'ev7', status: 'cancelled', summary: 'Cancelled thing', start: { dateTime: TODAY + 'T17:00:00-04:00' }, end: { dateTime: TODAY + 'T17:30:00-04:00' } }
+];
 const KILL_MOTION = '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}#boot,.stars{display:none!important}';
 
 async function openPage(browser, url, label) {
@@ -89,7 +99,7 @@ async function openPage(browser, url, label) {
     // seed once per page; a reload must find what the app itself wrote, not a fresh fixture
     try { if (!localStorage.getItem('__seeded')) { localStorage.clear(); localStorage.setItem('dojo-log-v1', JSON.stringify(local)); localStorage.setItem('gol-coach-v1', JSON.stringify(coach)); localStorage.setItem('gol-body-filter', JSON.stringify(filter)); localStorage.setItem('__seeded', '1'); } } catch (e) { }
   }, { local, coach: COACH_LOCAL, filter: BODY_FILTER });
-  await page.addInitScript(({ src, cfg }) => { window.__fakeCfg = cfg; (0, eval)(src); }, { src: FAKE_SRC, cfg: { seed: 20261007, cloud: cloudDocs(), script: COACH_SCRIPT, noClaude: NORUNTIME } });
+  await page.addInitScript(({ src, cfg }) => { window.__fakeCfg = cfg; (0, eval)(src); }, { src: FAKE_SRC, cfg: { seed: 20261007, cloud: cloudDocs(), script: COACH_SCRIPT, noClaude: NORUNTIME, mcpEvents: CAL_EVENTS } });
   await page.goto(url, { waitUntil: 'load' });
   return { context, page, console_, label };
 }
