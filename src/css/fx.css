@@ -99,7 +99,8 @@ body::after{
 .toast button{background:var(--grad)}
 
 /* ---------- boot sequence ---------- */
-#boot{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:var(--font-mono);animation:bootout .5s ease-in 1.15s forwards;pointer-events:none}
+#boot{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:var(--font-mono);pointer-events:none}
+#boot.out{animation:bootout .35s ease-in forwards}
 #boot .b-in{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 #boot .b-logo{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:.14em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;animation:bootin .5s var(--ease) both}
 #boot .b-line{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);animation:bootin .4s var(--ease) .25s both}

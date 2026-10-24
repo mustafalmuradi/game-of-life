@@ -173,6 +173,7 @@ function bind(){
 }
 
 /* ---------- HUD readout, stars, boot, calm mode ---------- */
+function bootDone(){ var b = $('#boot'); if(!b || b.classList.contains('out')) return; b.classList.add('out'); setTimeout(function(){ if(b.parentNode) b.remove(); }, 400); }
 registerHud(function(){
   var t = todayKey(), rd = readiness(t), td = taskDoc(t), open = td.items.filter(isOpen).length, st = state.stats;
   var z = rd.z ? rd.z.k : '';
@@ -189,7 +190,7 @@ registerHud(function(){
   var calm = false; try { calm = localStorage.getItem('gol-calm') === '1'; } catch(e){}
   if(calm) document.documentElement.setAttribute('data-motion', 'calm');
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
-  setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
+  setTimeout(bootDone, 6000); // failsafe: never let the boot screen outlive a broken render
   window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
   setInterval(function(){ salahTick(); windTick(); calTick(); themeTick(); }, 30000);
 })();
@@ -205,6 +206,8 @@ bind();
 bindCoach();
 gymInit();
 render();
+/* the boot screen stays exactly until the first render is on screen, then fades (no fixed timer) */
+requestAnimationFrame(function(){ requestAnimationFrame(bootDone); });
 connectCloud();
 calInit();
 initCoach();

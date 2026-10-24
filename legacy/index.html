@@ -1070,7 +1070,8 @@ body::after{
 .toast button{background:var(--grad)}
 
 /* ---------- boot sequence ---------- */
-#boot{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:var(--font-mono);animation:bootout .5s ease-in 1.15s forwards;pointer-events:none}
+#boot{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--bg);color:var(--ink);font-family:var(--font-mono);pointer-events:none}
+#boot.out{animation:bootout .35s ease-in forwards}
 #boot .b-in{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 #boot .b-logo{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:.14em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;animation:bootin .5s var(--ease) both}
 #boot .b-line{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);animation:bootin .4s var(--ease) .25s both}
@@ -5669,6 +5670,7 @@ function bind(){
 }
 
 /* ---------- HUD readout, stars, boot, calm mode ---------- */
+function bootDone(){ var b = $('#boot'); if(!b || b.classList.contains('out')) return; b.classList.add('out'); setTimeout(function(){ if(b.parentNode) b.remove(); }, 400); }
 registerHud(function(){
   var t = todayKey(), now = new Date(), rd = readiness(t), td = taskDoc(t), open = td.items.filter(isOpen).length, st = state.stats;
   var z = rd.z ? rd.z.k : '';
@@ -5682,7 +5684,7 @@ registerHud(function(){
   var calm = false; try { calm = localStorage.getItem('gol-calm') === '1'; } catch(e){}
   if(calm) document.documentElement.setAttribute('data-motion', 'calm');
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
-  setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
+  setTimeout(bootDone, 6000); // failsafe: never let the boot screen outlive a broken render
   window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
   setInterval(function(){ var c = document.querySelector('.hud-clock b'); if(c){ var n = new Date(); c.textContent = pad(n.getHours()) + ':' + pad(n.getMinutes()); } }, 30000);
 })();
@@ -5696,6 +5698,8 @@ recompute();
 bind();
 bindCoach();
 render();
+/* the boot screen stays exactly until the first render is on screen, then fades (no fixed timer) */
+requestAnimationFrame(function(){ requestAnimationFrame(bootDone); });
 connectCloud();
 initCoach();
 initCoach2();
