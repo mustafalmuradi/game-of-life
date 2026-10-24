@@ -26,7 +26,8 @@ export var DEFAULT_SETTINGS = {
   ],
   targets: null
 };
-export var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', planBy:'07:30', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144};
+export var DEFAULT_TARGETS = {cal:3274, pro:190, proMax:200, carb:430, fat:90, fib:38, sod:2300, lastMeal:'20:00', bed:'21:00', friBed:'23:00', satBed:'00:00', planBy:'07:30', trainPerWeek:6, strengthPerWeek:5, lightDays:1, restDays:1, ripMin:2, ripMax:3, goalWeight:170, startWeight:144,
+  lat:40.5795, lng:-74.1502, place:'Staten Island', fajrAngle:15, ishaAngle:15, asrHanafi:0}; // lat/lng/place/angles/asrHanafi: where and how prayer times are computed (ISNA angles; Asr standard unless asrHanafi is 1)
 
 /* ---------- daily tasks ---------- */
 export var TASK_LANES = ['Body', 'Islam', 'Family', 'Home', 'Money', 'Ock Spot', 'Upsurge', 'Build'];

@@ -14,6 +14,8 @@ import { CI_NUMS, CI_TIMES, commitMetrics, daysBetween, metricsOf, patternData, 
 import { BCOLS, bKind, BKINDS, bNode, bRank, bRemove, bSel, BSTATUS, bStatus, buildStats, bWrite, BXP, setSelected, shortName } from './build.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
 import { addTask, closeDay, dropTask, findTask, fmtMin, isOpen, linkLabel, lockPlan, moveTask, removeTemplate, saveTemplate, setDone, taskDoc, taskStats, timerToggle, undoDone, undropTask, updateTask } from './tasks.js';
+import { rawatibLeft, rawatibOf, salahBrief, setRawatib, SUNNAH_ID } from './salah.js';
+import { RAWATIB } from '../core/salah.js';
 
 /* ---------- coach: chat with Claude, which reads and writes this tracker ---------- */
 /* Claude runs through the sample capability; every change goes through the same functions the page's own buttons use. */
@@ -87,6 +89,8 @@ function dayBrief(d){
   var m = clone(doc.m || {});
   if(Array.isArray(m.wo)) m.wo = m.wo.map(function(w){ return (w.a || 'Workout') + ' ' + (w.start || '') + ' ' + (w.min || 0) + 'min' + (w.strain !== undefined ? ' strain ' + w.strain : ''); });
   if(Array.isArray(m.naps)) m.naps = m.naps.map(function(n){ return (n.start || '') + ' ' + (n.min || 0) + 'min'; });
+  if(Array.isArray(m.rawatib)){ out.rawatibDone = rawatibOf(d); out.rawatibLeft = rawatibLeft(d).map(function(x){ return x.k; }); delete m.rawatib; }
+  delete m.rawatibAuto;
   if(Object.keys(m).length) out.metrics = m;
   out.done = Object.keys(doc.done || {});
   if(doc.rest && Object.keys(doc.rest).length){ out.rest = {}; Object.keys(doc.rest).forEach(function(h){ out.rest[h] = doc.rest[h] === 'light' ? 'light' : 'rest'; }); }
@@ -106,6 +110,7 @@ function coachSnapshot(){
     yesterday: dayBrief(addDays(t, -1)),
     readiness: {recovery:r.rec, zone:r.z ? r.z.name : null, call:r.call, nextSplit:r.next ? r.next.k + (r.next.done ? ' (done today)' : '') : null, strengthDaysInARow:r.sRun, flags:r.flags.map(function(f){ return f.t + '. ' + f.x; })},
     thisWeek: weekTally(mondayOf(t)),
+    salah: salahBrief(t, true),
     targets: T(),
     rank: {overall:rankTitle(st.rank.level), totalXP:st.rank.xp, sweepStreak:st.sweepRun, bestSweepStreak:st.bestRun},
     lifts: ls.groups.slice(0, 14).map(function(g){ return {exercise:g.name, location:g.location, last:g.last.date, working:workingText(g.prog.working), nextTarget:g.quest, addWeight:g.prog.addWeight || undefined, stalled:g.prog.stall || undefined}; }),
@@ -378,7 +383,7 @@ var COACH_TOOLS = [
    };
  }},
 {name:'set_targets', busy:'Changing targets',
- description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed planBy ("HH:MM"; planBy = when the day’s task plan should be locked by), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Returns all targets.',
+ description:'Change his daily targets. Only when he explicitly asks to change one. Keys: cal pro proMax carb fat fib sod (numbers), lastMeal bed friBed satBed planBy ("HH:MM"; planBy = when the day’s task plan should be locked by), strengthPerWeek lightDays restDays trainPerWeek ripMin ripMax goalWeight startWeight. Prayer times: lat lng (decimal degrees, west and south negative), place (text, the name shown on the page), fajrAngle ishaAngle (degrees, ISNA 15), asrHanafi (0 standard, 1 Hanafi). Returns all targets.',
  schema:{type:'object', properties:{changes:{type:'object', description:'key: new value'}}, required:['changes']},
  run:function(inp){
    var ch = inp.changes && typeof inp.changes === 'object' ? inp.changes : {}, keys = Object.keys(ch);
@@ -388,6 +393,10 @@ var COACH_TOOLS = [
      if(!(k in DEFAULT_TARGETS)) throw new Error('Unknown target "' + k + '". Keys: ' + Object.keys(DEFAULT_TARGETS).join(', '));
      var v = ch[k];
      if(k === 'lastMeal' || k === 'bed' || k === 'friBed' || k === 'satBed' || k === 'planBy') v = cTime(v);
+     else if(k === 'place'){ v = String(v || '').trim().slice(0, 40); if(!v) throw new Error('place needs a name.'); }
+     else if(k === 'lat' || k === 'lng'){ v = Number(v); var lim = k === 'lat' ? 90 : 180; if(!Number.isFinite(v) || Math.abs(v) > lim) throw new Error(k + ' must be a number between -' + lim + ' and ' + lim + '.'); }
+     else if(k === 'fajrAngle' || k === 'ishaAngle'){ v = Number(v); if(!Number.isFinite(v) || v < 9 || v > 20) throw new Error(k + ' must be between 9 and 20 degrees.'); }
+     else if(k === 'asrHanafi'){ v = Number(v) ? 1 : 0; }
      else { v = Number(v); if(!Number.isFinite(v) || v < 0) throw new Error(k + ' must be a number.'); }
      s2.targets[k] = v; labels.push(k + ' ' + v);
    });
@@ -1321,6 +1330,42 @@ COACH_RULES += '\n\n' + [
 '- Recurring things he does on set weekdays go in task_templates, not as repeated tasks.',
 '- Tasks never feed habits or XP. A task like "train legs" does not check off Train; logging the lift does.'
 ].join('\n');
+
+COACH_TOOLS.push({name:'salah', busy:'Salah',
+ description:'Prayer times and the rawatib tracker. times: the six prayer times for a date (default today; future dates ok) plus, for today, the current prayer, the next one and the time left. rawatib: log (done) or remove (undone) sunnah prayers on a date; keys fajr (2 before Fajr), dhuhr1 (4 before Dhuhr), dhuhr2 (2 after Dhuhr), maghrib (2 after), isha (2 after). All five logged checks the Sunnah prayers habit by itself, so use this instead of set_habit when he names what he prayed. Returns the day’s times and rawatib state.',
+ schema:{type:'object', properties:{
+   action:{type:'string', enum:['times', 'rawatib']},
+   date:{type:'string', description:'YYYY-MM-DD, default today.'},
+   done:{type:'array', items:{type:'string'}, description:'rawatib keys he prayed'},
+   undone:{type:'array', items:{type:'string'}, description:'rawatib keys to remove (logged by mistake)'}}, required:['action']},
+ run:function(inp){
+   var a = String(inp.action || ''), d = inp.date ? String(inp.date).trim().toLowerCase() : 'today';
+   if(d === 'today') d = todayKey(); else if(d === 'tomorrow') d = addDays(todayKey(), 1); else if(d === 'yesterday') d = addDays(todayKey(), -1);
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new Error('Dates are YYYY-MM-DD, got "' + inp.date + '".');
+   if(a === 'times') return salahBrief(d, d === todayKey());
+   if(a !== 'rawatib') throw new Error('action must be times or rawatib.');
+   if(d > todayKey()) throw new Error(d + ' is in the future.');
+   var keys = RAWATIB.map(function(x){ return x.k; });
+   function arr(v){ return (Array.isArray(v) ? v : v ? [v] : []).map(function(x){ return String(x).trim().toLowerCase(); }); }
+   var done = arr(inp.done), undone = arr(inp.undone), bad = done.concat(undone).filter(function(k){ return keys.indexOf(k) < 0; });
+   if(bad.length) throw new Error('Unknown rawatib "' + bad.join('", "') + '". Keys: ' + keys.join(', '));
+   if(!done.length && !undone.length) throw new Error('Pass done and/or undone.');
+   var cur = rawatibOf(d), next = cur.filter(function(k){ return undone.indexOf(k) < 0; }).concat(done.filter(function(k){ return cur.indexOf(k) < 0; }));
+   var snap = snapDays([d]), r = setRawatib(d, next, {});
+   var names = function(ks){ return ks.map(function(k){ var x = RAWATIB.filter(function(y){ return y.k === k; })[0]; return x.n + ' ' + x.r; }).join(', '); };
+   addAct(fmtShort(d) + ' · rawatib' + (done.length ? ' +' + names(done) : '') + (undone.length ? ' −' + names(undone) : '') + (r.completes ? ' · Sunnah prayers checked' : r.uncompletes ? ' · Sunnah prayers unchecked' : ''), function(){ restoreDays(snap); });
+   var out = salahBrief(d, d === todayKey()); out.ok = true; out.sunnahHabitChanged = r.completes ? 'checked' : r.uncompletes ? 'unchecked' : 'no change';
+   var bd = state.stats.byDate[d]; out.dayXP = bd ? bd.xp : 0; out.cleanSweep = bd ? bd.sweep : false;
+   return out;
+ }});
+COACH_RULES += '\n\n' + [
+'SALAH',
+'- Prayer times are computed on the page from his saved location (targets lat, lng, place) with ISNA angles; Asr standard unless asrHanafi is 1. The live data (salah) has today’s times, the current and next prayer and the time left, plus which rawatib are logged; the salah tool gives other dates.',
+'- The Sunnah prayers habit is the 12 rawatib, tracked as five entries: fajr (2 before), dhuhr1 (4 before), dhuhr2 (2 after), maghrib (2 after), isha (2 after). When he says which ones he prayed, log them with salah rawatib; the fifth checks the habit by itself. "All my sunnahs" = all five. Duha, Tahajjud, Witr and anything beyond the 12 are extras on the habit (set_habit extra), not rawatib.',
+'- Jumu’ah replaces Dhuhr on Fridays; its 4 before are logged as dhuhr1 all the same.',
+'- When he travels, change lat, lng and place with set_targets from the city he names (he is planning a long stay in Kuala Lumpur: 3.139, 101.6869). Times follow the device clock, so they are right in the new time zone without anything else changing.'
+].join('\n');
+
 (function(){
   var base = coachSnapshot;
   coachSnapshot = function(){

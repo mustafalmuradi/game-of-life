@@ -10,6 +10,7 @@ import { ICON, miniBelt, miniRing, scoreRing } from '../core/svg.js';
 import { registerTab, render, renderSync } from '../core/render.js';
 import { FLAG_ICON, fmtClock, metricsOf, readiness, sessName, sessOf, TAGS, tagsOf, tmin } from './body.js';
 import { ensureToday, renderTasksCard } from './tasks.js';
+import { rawatibLine, rawatibOf, renderSalah, SUNNAH_ID } from './salah.js';
 
 /* ---------- mutations ---------- */
 export function mutateDay(date, fn, opts){
@@ -61,7 +62,7 @@ export function toggleHabit(hid, anchor){
   var wasDone = !!(cur && cur.done[hid]);
   if(!wasDone) ui.popSeg = hid;
   mutateDay(date, function(day){
-    if(wasDone){ delete day.done[hid]; delete day.extras[hid]; }
+    if(wasDone){ delete day.done[hid]; delete day.extras[hid]; if(hid === SUNNAH_ID && day.m) delete day.m.rawatibAuto; }
     else { day.done[hid] = Date.now(); if(day.rest) delete day.rest[hid]; }
   }, {anchor: wasDone ? null : anchor, undo: wasDone ? h.name + ' unchecked' : null});
 }
@@ -175,7 +176,7 @@ function renderHabits(){
       '<div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3>' +
       '<button class="hrank" type="button" data-act="open-rank" data-h="' + esc(hb.id) + '" aria-label="' + esc(hb.name + ' rank: ' + rankTitle(hr.level) + ', level ' + (hr.level+1)) + '">' + miniBelt(hr.level) + '<span>Lv ' + (hr.level+1) + '</span>' + (hr.capped ? '<em>Test</em>' : '') + '</button>' +
       (streak > 0 ? '<span class="streak" title="Current streak"><svg viewBox="0 0 24 24">' + ICON.flame + '</svg>' + streak + 'd</span>' : '') + '</div>' +
-      '<p class="target">' + esc(hb.id === 'sleep' && lateOf(d) ? lateLine(d) : hb.id === 'sleep' && parseKey(d).getDay() === 6 ? 'In bed by midnight (Saturday)' : hb.id === 'sleep' && parseKey(d).getDay() === 5 && T().friBed ? 'In bed by ' + fmtClock(tmin(T().friBed)) + ' (Friday)' : habitTarget(hb)) + esc(restText) + (hb.ladder ? ' \u00b7 grows with belt' : '') + '</p>';
+      '<p class="target">' + esc(hb.id === SUNNAH_ID && rawatibOf(d).length ? rawatibLine(d) : hb.id === 'sleep' && lateOf(d) ? lateLine(d) : hb.id === 'sleep' && parseKey(d).getDay() === 6 ? 'In bed by midnight (Saturday)' : hb.id === 'sleep' && parseKey(d).getDay() === 5 && T().friBed ? 'In bed by ' + fmtClock(tmin(T().friBed)) + ' (Friday)' : habitTarget(hb)) + esc(restText) + (hb.ladder ? ' \u00b7 grows with belt' : '') + '</p>';
     if(ex.length){
       h += '<div class="extras">';
       ex.forEach(function(x){
@@ -221,8 +222,8 @@ function renderHabits(){
   $('#habits').innerHTML = h;
 }
 
-/* the Today tab renders four parts; render() calls this through the registry */
-function renderToday(){ ensureToday(); renderWeek(); renderDay(); renderHabits(); renderTasksCard(); renderSync(); }
+/* the Today tab renders five parts; render() calls this through the registry */
+function renderToday(){ ensureToday(); renderWeek(); renderDay(); renderSalah(); renderHabits(); renderTasksCard(); renderSync(); }
 registerTab('today', renderToday);
 
 /* planned late nights: the Bed on time line, and whether one can still be planned for d */

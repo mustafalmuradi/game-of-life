@@ -17,6 +17,7 @@ import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, s
 import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSettings, renderSettingsList } from './core/sheets.js';
 import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
 import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, pickTaskDay, quickAdd, saveTaskForm, sheetAct, stepTaskWeek, timerToggle, undoDone } from './features/tasks.js';
+import { salahHud, salahTick, toggleRawatib } from './features/salah.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -29,6 +30,7 @@ function bind(){
       case 'rest': toggleRest(hid); break;
       case 'light': toggleRest(hid, 'light'); break;
       case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
+      case 'rawatib': toggleRawatib(t.getAttribute('data-k'), t); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }
@@ -161,12 +163,12 @@ function bind(){
 
 /* ---------- HUD readout, stars, boot, calm mode ---------- */
 registerHud(function(){
-  var t = todayKey(), now = new Date(), rd = readiness(t), td = taskDoc(t), open = td.items.filter(isOpen).length, st = state.stats;
+  var t = todayKey(), rd = readiness(t), td = taskDoc(t), open = td.items.filter(isOpen).length, st = state.stats;
   var z = rd.z ? rd.z.k : '';
-  return '<span class="' + (z ? 'z-' + z : '') + '"><i></i>' + (Number.isFinite(rd.rec) ? '<b>' + rd.rec + '%</b> rec' : 'no rec') + '</span>' +
+  return '<span class="' + (z ? 'z-' + z : '') + '"><i></i>' + (Number.isFinite(rd.rec) ? '<b>' + rd.rec + '%</b>' : 'no rec') + '</span>' +
     '<span><b>' + open + '</b> open</span>' +
     '<span><b>' + (st.sweepRun || 0) + 'd</b> sweep</span>' +
-    '<span class="hud-clock"><b>' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + '</b></span>';
+    salahHud(); // the next prayer and the time to it, in the slot the wall clock used to have (the phone shows the clock already)
 });
 (function(){
   var sf = $('#stars'); if(sf){ var h = ''; for(var i=0;i<34;i++) h += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;top:' + (Math.random()*100).toFixed(1) + '%;--d:' + (4 + Math.random()*6).toFixed(1) + 's;--o:' + (Math.random()*6).toFixed(1) + 's"></i>'; sf.innerHTML = h; }
@@ -175,7 +177,7 @@ registerHud(function(){
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
   setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
   window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
-  setInterval(function(){ var c = document.querySelector('.hud-clock b'); if(c){ var n = new Date(); c.textContent = pad(n.getHours()) + ':' + pad(n.getMinutes()); } }, 30000);
+  setInterval(salahTick, 30000);
 })();
 
 /* ---------- boot ---------- */

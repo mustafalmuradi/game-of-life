@@ -1,0 +1,41 @@
+/* Salah card (Today tab): next prayer, the day's six times on one timeline, the rawatib chips. */
+.salah-card{padding:16px 18px 14px;display:flex;flex-direction:column;gap:12px}
+.sl-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.sl-next{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.01em;margin-top:3px;line-height:1.1}
+.sl-next b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sl-next .sl-left{font-variant-numeric:tabular-nums}
+.sl-next.is-still{font-size:15px;color:var(--muted);font-family:var(--font-body);font-weight:700}
+.sl-side{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+.sl-at{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.sl-method{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+/* timeline: Fajr → Isha, equal width per window; the marker is "now" */
+.sl-line{position:relative;height:6px;border-radius:99px;background:var(--track);margin:6px 7px 2px}
+.sl-fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--grad-ki);box-shadow:0 0 10px -2px var(--neon);transition:width .6s var(--ease)}
+.sl-dot{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--surface);border:2px solid var(--track);box-sizing:border-box}
+.sl-dot.on{border-color:var(--neon);background:var(--neon)}
+.sl-now{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--ink);border:3px solid var(--surface);box-sizing:border-box;box-shadow:0 0 0 2px var(--neon),0 0 12px var(--neon);transition:left .6s var(--ease);z-index:1}
+.sl-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.sl-p{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 1px 6px;border-radius:12px;border:1px solid transparent;min-width:0;transition:background .3s,box-shadow .3s}
+.sl-p .sl-n{font-size:9px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.sl-p .sl-t{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sl-p.is-past .sl-t{color:var(--muted)}
+.sl-p.is-sun .sl-t,.sl-p.is-sun .sl-n{opacity:.65}
+.sl-p.is-cur{border-color:var(--line);background:var(--accent-soft);box-shadow:var(--glow)}
+.sl-p.is-cur .sl-n{color:var(--accent-ink)}
+/* rawatib */
+.sl-raw{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid var(--line)}
+.sl-raw-head{display:flex;justify-content:space-between;align-items:baseline}
+.sl-raw-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sl-raw-count b{color:var(--ink);font-family:var(--font-display);font-size:15px}
+.sl-chips{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sl-chip{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px 7px;border-radius:14px;border:2px solid var(--line);background:var(--surface-2);min-width:0;transition:transform .25s var(--spring),background .2s,border-color .2s,box-shadow .2s}
+.sl-chip b{font-size:11px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.sl-chip span{font-size:10px;color:var(--muted);white-space:nowrap}
+.sl-chip:hover:not(:disabled){transform:translateY(-2px);border-color:var(--hc)}
+.sl-chip:active:not(:disabled){transform:scale(.92)}
+.sl-chip.now{border-style:dashed;border-color:color-mix(in srgb,var(--hc) 65%,transparent)}
+.sl-chip.on{background:var(--hc);border-color:var(--hc);box-shadow:0 8px 18px -8px var(--hc);animation:checkpop .45s var(--spring)}
+.sl-chip.on b,.sl-chip.on span{color:var(--on-hc)}
+.sl-chip:disabled{opacity:.45;cursor:default}
+.sl-foot{font-size:12px;color:var(--muted);text-wrap:balance}
+.sl-foot b{color:var(--ink-2);font-weight:700}

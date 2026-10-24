@@ -29,8 +29,8 @@ body::after{
 /* ---------- header + HUD readout ---------- */
 .brand b{letter-spacing:.04em;font-size:22px;text-shadow:0 0 18px color-mix(in srgb,var(--neon) 55%,transparent)}
 .brand span{background:transparent;border:1px solid var(--line);color:var(--accent-ink);font-family:var(--font-mono);letter-spacing:.18em}
-.hud{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:-6px}
-.hud span{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);white-space:nowrap}
+.hud{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:-6px}
+.hud span{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border:1px solid var(--line);border-radius:8px;background:var(--surface);white-space:nowrap}
 .hud b{color:var(--ink);font-weight:700}
 .hud i{width:6px;height:6px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:blink 2.2s ease-in-out infinite}
 .hud .z-green i{background:var(--z-green);box-shadow:0 0 8px var(--z-green)} .hud .z-yellow i{background:var(--z-yellow);box-shadow:0 0 8px var(--z-yellow)} .hud .z-red i{background:var(--z-red);box-shadow:0 0 8px var(--z-red)}

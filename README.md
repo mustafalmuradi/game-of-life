@@ -1,6 +1,6 @@
 # Game of Life
 
-Moose's habit, strength, health and build tracker. It runs as a Claude artifact
+Mustafa's habit, strength, health, salah and build tracker. It runs as a Claude artifact
 with a per-user database, a signed-in viewer, and a built-in coach that can read
 and write the tracker through tools.
 
@@ -8,10 +8,10 @@ and write the tracker through tools.
 
 | Path | What it is |
 | --- | --- |
-| `legacy/index.html` | The single-file version of the app. Feature changes land here and in `src/` together, so the harness keeps proving the modules behave exactly like it. |
+| `legacy/index.html` | The single-file v2 app, frozen at the module split (Oct 2026). It is an archive now: features land in `src/` only. `npm run test:legacy` still runs the two side by side for the features both have. |
 | `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root. |
-| `test/` | The old-vs-new regression harness (see below). |
-| `tools/` | The split itself, as scripts: `split-css.py` and `split-js.py` regenerate `src/` from `legacy/index.html`; `check-cascade.py` and `reassemble-js.py` prove what changed. |
+| `test/` | The golden-master regression harness (see below), plus `salah.mjs` (prayer-time engine against reference values) and `stale-cache.mjs`. |
+| `tools/` | `publish-prep.py` builds `dist/` for the artifact (`npm run dist`). The split scripts (`split-*.py`, `check-cascade.py`, `reassemble-js.py`) are the one-off migration from `legacy/` and are kept for the record. |
 
 The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
 
@@ -20,8 +20,8 @@ The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
 | Layer | Files | Rule |
 | --- | --- | --- |
 | `app.js` | events + boot | The composition root. The only file that imports everything. |
-| `features/` | `today`, `progress`, `lifts`, `body`, `build`, `coach` | One file per tab. Each calls `registerTab()` when it loads and keeps its own UI flags behind small exported actions. |
-| `core/` | `config`, `utils`, `state`, `xp`, `strength`, `stats`, `store`, `effects`, `svg`, `render`, `sheets` | Shared by every tab, imports nothing above it. `store.js` is the only file that talks to the database. |
+| `features/` | `today`, `salah`, `tasks`, `progress`, `lifts`, `body`, `build`, `coach` | One file per tab or card. Each tab calls `registerTab()` when it loads and keeps its own UI flags behind small exported actions. |
+| `core/` | `config`, `utils`, `state`, `xp`, `strength`, `salah`, `stats`, `store`, `effects`, `svg`, `render`, `sheets` | Shared by every tab, imports nothing above it. `store.js` is the only file that talks to the database. |
 
 `npm run check` prints the cascade proof and the line-by-line difference between
 the modules and the original script (98.7% of lines moved verbatim; the rest is
@@ -31,20 +31,26 @@ the import/export plumbing, the tab registry, and the per-tab actions).
 
 ```
 npm install
-npm test              # legacy vs src, with screenshots
+npm test              # src against the recorded baseline, with screenshots (plus the stale-cache check)
+npm run test:record   # record a new baseline after a reviewed change
+npm run test:self     # src vs src side by side: must be all identical (proves the harness is deterministic)
 npm run test:local    # the same without a Claude runtime (local mode)
-npm run test:self     # legacy vs legacy: must be all identical
+npm run test:legacy   # legacy vs src side by side, for the features both have
+node test/salah.mjs   # the prayer-time engine against reference values
 ```
 
-Both directories are served locally and driven through the same 66-step
-scenario with an identical seeded fixture, a frozen clock, seeded `Math.random`
-and a fake `window.claude` (database, user, coach). After every step the DOM,
-localStorage and the cloud-write log must be identical. `--shots` adds
-light/dark screenshots of every tab with a pixel diff. Output lands in
-`test/out/`.
+The app is served locally and driven through an 89-step scenario with a seeded
+fixture, a frozen clock (2026-10-07 15:30 ET), seeded `Math.random` and a fake
+`window.claude` (database, user, coach). After every step the DOM, localStorage
+and the cloud-write log are snapshotted. The golden master is
+`test/baseline/hashes.json` (committed: one sha per step); the full snapshots
+and screenshots are written next to it, untracked, so a failing step shows a
+diff when they exist on the machine. `--shots` adds light/dark screenshots of
+every tab with a pixel diff. Output lands in `test/out/`.
 
-Proving the harness itself: `node test/harness.mjs --old legacy --new legacy`
-must pass with every step identical.
+Workflow for a change: build, `npm test` (expect DIFF only where you changed
+things, no ERROR and no console lines), read the diffs, then
+`npm run test:record` and commit `hashes.json` with the change.
 
 ## Coach and data
 
@@ -68,8 +74,9 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
 1. One file, one job. A tab's code lives in its feature file.
 2. Imports point down: `app.js` → `features/` → `core/` → the runtime.
 3. State that more than one file changes lives in `core/state.js`.
-4. Run the harness before publishing. Publish by republishing the artifact
-   with `src/index.html` as the page and `src/css`, `src/js` as its files.
+4. Run the harness before publishing. `npm run dist` builds `dist/`; publish by
+   republishing the artifact with `dist/index.html` as the page and `dist/css`,
+   `dist/js`, `dist/tools` as its files.
 
 ## Power levels (Lifts tab)
 
@@ -96,3 +103,33 @@ Pure data, no XP. One document per day at `tracker/tasks/YYYY-MM-DD`: `{date, sc
 - The Tasks tab has its own week strip (`tasksWeekHTML`, `tkSel` / `tkWeek`): any day up to 4 weeks ahead can be opened and planned; past days are read-only for adding. Future days show a planned-count badge.
 - Quick-add is text only: after the item is saved with defaults, `autoSort` asks Claude (the `sample` capability, `modelTier: complex`, JSON) for lane, quadrant, block, estimate and link, then updates the item with `sortedBy: 'claude'` unless he already edited it. No runtime or a bad answer = the defaults stay.
 - Logic: `features/tasks.js` (data, Today card, Tasks tab, task sheet), sync in `core/store.js` (dirty keys `tasks:YYYY-MM-DD` share the days queue), normalizers in `core/state.js`, Coach tools `tasks` and `task_templates` in `features/coach.js`, export adds `tasks` to data.json and `tasks.csv`.
+
+## Salah (prayer times and the rawatib tracker)
+
+Prayer times are computed on the device in `core/salah.js` from the solar
+equations (no network, no library): ISNA angles (Fajr and Isha 15°), Maghrib
+at sunset, Dhuhr a minute past the zenith, Asr standard or Hanafi. The place
+and method live in the settings doc's targets: `lat`, `lng`, `place`,
+`fajrAngle`, `ishaAngle`, `asrHanafi` (defaults: Staten Island, 15/15,
+standard). Times follow the device clock, so travelling only needs the
+coordinates changed (Coach: `set_targets`). `test/salah.mjs` checks a year of
+dates against the adhan library's values (within a minute).
+
+- Today tab, `#salah` card (`features/salah.js`, `css/salah.css`): the next
+  prayer with a live countdown, the six times on one timeline with a moving
+  "now" marker and the current window highlighted, Jumuʿah on Fridays, and the
+  start of the last third of the night. Past days show their times; future days
+  show times with the chips locked.
+- HUD: the next prayer and the time to it, in the slot the wall clock used.
+  `salahTick()` moves the countdown and marker every 30 s and re-renders when a
+  new prayer window starts.
+- Rawatib: five chips for the 12 daily sunnah rakʿāt (Fajr 2 before, Dhuhr 4
+  before, Dhuhr 2 after, Maghrib 2 after, Isha 2 after), stored on the day doc
+  as `m.rawatib` (array of keys). All five logged checks the Sunnah prayers
+  habit through `mutateDay` (same XP, sweep and promotion path as the check
+  button) and sets `m.rawatibAuto`; dropping below five again unchecks the
+  habit only if that automatic check still holds it. A hand check is left
+  alone; a hand uncheck clears the flag. `days.csv` gets a `rawatib` column.
+- Coach: the live data carries today's times, the current and next prayer and
+  the rawatib state; the `salah` tool reads times for any date and logs or
+  removes rawatib (`done` / `undone` keys); `set_targets` takes the location.

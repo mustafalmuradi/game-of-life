@@ -66,7 +66,9 @@ function cloudDocs() {
 }
 const COACH_SCRIPT = [
   { text: 'Logged: bed 11:40 PM, recovery 64, chest + biceps. Late night, **recovery is yellow**: cut volume by a third.', tools: [
-    { name: 'update_day', input: { date: TODAY, set: { bed: '23:40', rec: 64, sess: ['chest_biceps'] } } }
+    { name: 'update_day', input: { date: TODAY, set: { bed: '23:40', rec: 64, sess: ['chest_biceps'] } } },
+    { name: 'salah', input: { action: 'rawatib', date: TODAY, done: ['fajr'], undone: ['dhuhr1'] } },
+    { name: 'salah', input: { action: 'times', date: '2026-10-09' } }
   ] },
   { text: 'Five of seven sweeps. Sleep is the leak: two nights past target. Fix bedtime before anything else.' }
 ];
