@@ -267,6 +267,11 @@ export const steps = [
     await page.clock.runFor(60000);
     await settle(page);
   } },
+  // ---- Wind-down card: after midnight the night's bedtime is still open ----
+  { name: 'wind-down: card shows past bedtime after midnight', run: async (page) => { await tab(page, 'today'); if (await page.locator('[data-act="go-today"]').count()) { await click(page, '[data-act="go-today"]'); await settle(page); } if (!(await page.locator('#wind:not([hidden]) [data-act="in-bed"]').count())) throw new Error('missing: wind-down card'); } },
+  { name: 'wind-down: in bed now logs the bedtime and re-scores Bed on time', run: async (page) => { await click(page, '[data-act="in-bed"]'); await settle(page); } },
+  { name: 'wind-down: undo brings the card back', run: async (page) => { await click(page, '#toast-host button'); await settle(page); if (!(await page.locator('#wind:not([hidden])').count())) throw new Error('card did not return'); } },
+  { name: 'wind-down: in bed now, for real', run: async (page) => { await click(page, '[data-act="in-bed"]'); await settle(page); await escape(page); } },
   { name: 'reload: cache round-trip', run: async (page) => {
     await page.reload();
     await page.waitForFunction(() => /Synced|Saved in this browser/.test((document.querySelector('#sync') || {}).textContent || ''), null, { timeout: 10000 });

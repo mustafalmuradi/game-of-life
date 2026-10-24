@@ -1,0 +1,16 @@
+/* Wind-down card (Today, from Isha until bedtime is logged): countdown to bed, screens-off checkpoint, one-tap "In bed now". */
+.wind-card{padding:16px 18px 16px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent-3) 14%,var(--surface)),var(--surface) 60%);border-color:color-mix(in srgb,var(--accent-3) 40%,var(--line))}
+.wd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.wd-big{font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:-.01em;line-height:1.05;margin-top:3px;font-variant-numeric:tabular-nums;background:var(--grad-cool);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wd-big.is-past{background:none;-webkit-text-fill-color:var(--pr);color:var(--pr)}
+.wd-side{display:flex;flex-direction:column;align-items:flex-end;flex:none}
+.wd-target{font-family:var(--font-mono);font-size:15px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.wd-sub{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:700;white-space:nowrap}
+.wd-bar{position:relative;height:6px;border-radius:99px;background:var(--track);margin:2px 2px 0}
+.wd-fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--grad-cool);box-shadow:0 0 10px -2px var(--neon-3);transition:width .6s var(--ease)}
+.wd-fill.is-past{background:var(--pr);box-shadow:0 0 10px -2px var(--pr)}
+.wd-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--muted);opacity:.7;border-radius:2px}
+.wd-facts{display:flex;flex-direction:column;gap:4px}
+.wd-fact{font-size:13px;color:var(--ink-2)}
+.wd-fact b{color:var(--ink)}
+.wd-btn{width:100%;font-size:16px;padding:14px 18px;border-radius:16px}

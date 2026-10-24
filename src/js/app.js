@@ -18,6 +18,7 @@ import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSett
 import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
 import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, pickTaskDay, quickAdd, saveTaskForm, sheetAct, stepTaskWeek, timerToggle, undoDone } from './features/tasks.js';
 import { salahHud, salahTick, toggleRawatib } from './features/salah.js';
+import { logInBed, windTick } from './features/winddown.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -31,6 +32,7 @@ function bind(){
       case 'light': toggleRest(hid, 'light'); break;
       case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
       case 'rawatib': toggleRawatib(t.getAttribute('data-k'), t); break;
+      case 'in-bed': logInBed(); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }
@@ -177,7 +179,7 @@ registerHud(function(){
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
   setTimeout(function(){ var b = $('#boot'); if(b) b.remove(); }, 2600);
   window.addEventListener('resize', syncTabs); window.addEventListener('load', syncTabs); if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTabs); setTimeout(syncTabs, 1200);
-  setInterval(salahTick, 30000);
+  setInterval(function(){ salahTick(); windTick(); }, 30000);
 })();
 
 /* ---------- boot ---------- */
