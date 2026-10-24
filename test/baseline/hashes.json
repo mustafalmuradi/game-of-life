@@ -1,0 +1,441 @@
+{
+ "recorded": "2026-10-24T02:11:10.289Z",
+ "frozenClock": "2026-10-07T15:30:00-04:00",
+ "steps": {
+  "10": {
+   "name": "open extra sheet (Read)",
+   "sha": "eb541eb1d32fed948885b0f6c8580540d8cf7b9105a3f620fa20ef59dfe6ee38",
+   "bytes": 209409
+  },
+  "11": {
+   "name": "log preset extra",
+   "sha": "dc6678177ab92aaba29c1cd6185f9727a74bd7502e0b83025a9b5fd5db225923",
+   "bytes": 209928
+  },
+  "12": {
+   "name": "open extra sheet, type a note",
+   "sha": "6e3bff483468feb1a8b052f94a9d896bfc813c544b2a2cba85bf9dee8c969b6b",
+   "bytes": 210280
+  },
+  "13": {
+   "name": "remove an extra",
+   "sha": "2cfb5d2c25ecad8e815537c918e63df165326faf010b16e21703f3ac16069dbb",
+   "bytes": 209920
+  },
+  "14": {
+   "name": "Train: rest day",
+   "sha": "785c91a2b0bdf23fc3c8f5ba1d874bc339ffb9048298c767a82b0ee6fe8bbd46",
+   "bytes": 209923
+  },
+  "15": {
+   "name": "Train: light day",
+   "sha": "32e6d3ad672dbecc73f8264907a98b3cc30a8efe8c023e9a676b26afa217da60",
+   "bytes": 209934
+  },
+  "16": {
+   "name": "Train: done",
+   "sha": "8b9f31a0a48575b4ce969c0bdbf0093525d118acbd0c2cbd1bce1b2cb96d358c",
+   "bytes": 210128
+  },
+  "17": {
+   "name": "toggle every remaining habit (clean sweep)",
+   "sha": "2154399f27e3313224e7fe71b053ae3b258d037772127579d770206267c313df",
+   "bytes": 210335
+  },
+  "18": {
+   "name": "open rank sheet (overall)",
+   "sha": "f6f0b752489cdd0b7ac067269f584aa3c5fd22167df66c6bc4969bff4c56984b",
+   "bytes": 222149
+  },
+  "19": {
+   "name": "close rank sheet",
+   "sha": "3c4c4657f1fc224fd3b7e8c830aab1d96be2389670388d47f3637a58865ce0cc",
+   "bytes": 222159
+  },
+  "20": {
+   "name": "open rank sheet (habit)",
+   "sha": "d03ba3e155c17237d4b563da51364a4c04750a495dd03b4d4a116c42256ff2b4",
+   "bytes": 213973
+  },
+  "21": {
+   "name": "week prev",
+   "sha": "645e4dc1ea999555fe58febce4a573b7d16115c271be27790e550ed02e926b5b",
+   "bytes": 212598
+  },
+  "22": {
+   "name": "pick a day",
+   "sha": "c25fe7d5084e25fc80f16b320dfe3aa051f33cbedcd642885f96f98a204e9f5f",
+   "bytes": 212191
+  },
+  "23": {
+   "name": "toggle a habit on a past day",
+   "sha": "0ffc98a30d722ff0707c5872819a0afddfe7d7aab9ad3fd5ebbb49dbc9e2e35f",
+   "bytes": 211874
+  },
+  "24": {
+   "name": "back to today",
+   "sha": "c7a8968c2c7e616e46afa4187d7eb134982f70dc26dd73bc338a5faf3b90743f",
+   "bytes": 213927
+  },
+  "25": {
+   "name": "week next is disabled on this week",
+   "sha": "c7a8968c2c7e616e46afa4187d7eb134982f70dc26dd73bc338a5faf3b90743f",
+   "bytes": 213927
+  },
+  "26": {
+   "name": "open settings",
+   "sha": "11075f65931019b4b1e3edb0d6bc9978f987b325385012dbee1f83c352cd7da1",
+   "bytes": 221021
+  },
+  "27": {
+   "name": "rename a habit, add one, pause one",
+   "sha": "2be53e85972d79d6cb9a285226ddbdd64ccf609b676f0bca404e31c5a1d9e5e6",
+   "bytes": 221930
+  },
+  "28": {
+   "name": "save habits",
+   "sha": "dcfd6d91ca01f275b86fd80678a09d6d24d7994851f0a122b31280f6e74f2e36",
+   "bytes": 226226
+  },
+  "29": {
+   "name": "reopen settings, resume, cancel",
+   "sha": "4bc9d645e11dab07ce95174b541bb5787e4dc88877743088f439a1d780850550",
+   "bytes": 226179
+  },
+  "30": {
+   "name": "lifts: open sheet",
+   "sha": "5183291a0481eb6e8cdd9f5c09cc6e0da17083081366425f0eae218232e50ada",
+   "bytes": 228188
+  },
+  "31": {
+   "name": "lifts: choose a past exercise (prefill)",
+   "sha": "8f31f4422bee5a2cb68b30b61028f0bedb588f4b9956441c9c266247261c593f",
+   "bytes": 228246
+  },
+  "32": {
+   "name": "lifts: fill sets and save",
+   "sha": "68c3d829ea747a351b7b877640fa8e3fffb837d48173c7d61aba9306de517898",
+   "bytes": 232048
+  },
+  "33": {
+   "name": "lifts: celebrate timers fire",
+   "sha": "e3b28a2ae760eae4f63e1c767cdd0f6258f2a82e0106f49ff20ccb60de5886aa",
+   "bytes": 232061
+  },
+  "34": {
+   "name": "lifts: filter by location",
+   "sha": "c3754a140880da3145135ba3da671d48757f0509fef19ca3f3c7e27e0dba0f9e",
+   "bytes": 205750
+  },
+  "35": {
+   "name": "lifts: filter All, toggle ladder",
+   "sha": "890e4806986c8c26f418d456218d7f903308803b54a57aee868d85a812580d04",
+   "bytes": 232556
+  },
+  "36": {
+   "name": "lifts: open lift progress",
+   "sha": "603a5b6cc5a08ea17e6b8a640424ca624c8812762dedd39489cc7a3a3bce7bd5",
+   "bytes": 232564
+  },
+  "37": {
+   "name": "lifts: arm delete",
+   "sha": "ef648499a885d763ac9ebaf886664b843831214002bce60dc0bd31f8e2fb6b04",
+   "bytes": 232583
+  },
+  "38": {
+   "name": "lifts: arm expires",
+   "sha": "1cf8590e8325902f97f7f32c76bcde05c98e1fd3bfed4609308e4a45687623e6",
+   "bytes": 234522
+  },
+  "39": {
+   "name": "lifts: delete for real",
+   "sha": "404c4eec32681967e4ddd2056a1fdf565abbd504ed29eee7c206b12a8b8fd1ce",
+   "bytes": 231930
+  },
+  "40": {
+   "name": "lifts: save with a validation error",
+   "sha": "579f07e2e4961365c0ddcab30129665414ad33e364d9aa16a50c29e85cdfba56",
+   "bytes": 231312
+  },
+  "41": {
+   "name": "lifts: band set, light band, yesterday",
+   "sha": "308d76cec480c7bd2a634f6f0e757c8dc99477a42b8c2bb8e539eb90049c809c",
+   "bytes": 233668
+  },
+  "42": {
+   "name": "lifts: band set, thick band, today (prefill keeps the band)",
+   "sha": "f5c67cef4086ea77b4b23052b163c5083b348d1e7e88ef2e73b6faec4c5ed66e",
+   "bytes": 232610
+  },
+  "43": {
+   "name": "lifts: band progression panel open",
+   "sha": "2ec4e507fd847aabcedfa58c8e2890ed70c363f60a2775d0ae65f902972a9e5d",
+   "bytes": 232626
+  },
+  "44": {
+   "name": "today: band day shows Train as light",
+   "sha": "3d5593ee217125285f9494abfb916d458de66c38cb19ab23fb623974c85e4448",
+   "bytes": 232626
+  },
+  "45": {
+   "name": "body: open check-in",
+   "sha": "9612828c655bf11547a107f86460f6955f48d9f473d50ca8cd3b2ed0c023102d",
+   "bytes": 234820
+  },
+  "46": {
+   "name": "body: fill and save check-in",
+   "sha": "33041ecc0cfc9a329a3ebc0cfa6fdab94289629dcc7f2b8d1df53e51f967f22a",
+   "bytes": 234895
+  },
+  "47": {
+   "name": "body: toggle filter",
+   "sha": "582d24fa630359fb47419a4024317c093d230748446264fcafe2e0f0c54b9398",
+   "bytes": 235214
+  },
+  "48": {
+   "name": "body: previous week",
+   "sha": "fa33d8f5a82ccc9b489a6cedba86403da4046e8bbf0c03592131e8c0eb80b7b6",
+   "bytes": 235211
+  },
+  "49": {
+   "name": "body: next week",
+   "sha": "582d24fa630359fb47419a4024317c093d230748446264fcafe2e0f0c54b9398",
+   "bytes": 235214
+  },
+  "50": {
+   "name": "body: apply calorie suggestion",
+   "sha": "c7fe30f923a72fa8178995ee47b1b865d226afcf31c5af235f57d039715df94a",
+   "bytes": 235248
+  },
+  "51": {
+   "name": "progress: hover chart bar",
+   "sha": "36b60253ccfe2d53d6c43321cf609fec260b5c18bb04b3d163ad0ee9e0cffd4f",
+   "bytes": 235724
+  },
+  "52": {
+   "name": "progress: click heatmap cell",
+   "sha": "4091822460acfbc5e848d70732697e117caf427691b4303233473911380636ac",
+   "bytes": 235831
+  },
+  "53": {
+   "name": "progress: set a reward",
+   "sha": "b9c40f18c15280942bd051f3cb79f01c9200a57330b411dac40900ad5735835c",
+   "bytes": 240969
+  },
+  "54": {
+   "name": "progress: open day from heatmap",
+   "sha": "4e64def7e3b60ae8d5760f4289011448aa5c562e7c2cd8d636798276382ee6d7",
+   "bytes": 239105
+  },
+  "55": {
+   "name": "build: select a node",
+   "sha": "3e118dafcf927179f16370ee1e6695250a155e4acb50432802f43780364ea59a",
+   "bytes": 239783
+  },
+  "56": {
+   "name": "build: new ship from node",
+   "sha": "de0a1a811ce41bc05414e67c9280a9d1e61aeaa228a36197ce1e05c9bc890a53",
+   "bytes": 242057
+  },
+  "57": {
+   "name": "build: new node with a link",
+   "sha": "2b2d8e39353f7f4d0df0860ef716b4e017a2ff45b8a49a7819d0d6805b7086cf",
+   "bytes": 244206
+  },
+  "58": {
+   "name": "build: new skill",
+   "sha": "a6619eb443cbd4b7acbda2664bd8a149aabb12af2528d25e4592baf5d9994a80",
+   "bytes": 243746
+  },
+  "59": {
+   "name": "build: edit a ship, delete it",
+   "sha": "bc50d83398d1253c8349a2f6d379c392a0b1fdb2fe7c881e6ef14a0b1cadb8e0",
+   "bytes": 243742
+  },
+  "60": {
+   "name": "build: unlink, show all, ladder",
+   "sha": "44621427ed42731562d63b28648791da41ed98a2a451aa213c21b17bc7b20d8d",
+   "bytes": 245322
+  },
+  "61": {
+   "name": "build: clear selection",
+   "sha": "0fe1ab750259fa6965673931957ad0234a1f208de07a6131eae2fa9f13fd06d8",
+   "bytes": 244771
+  },
+  "62": {
+   "name": "coach: open",
+   "sha": "6cdc6c93b1bd66dade1908086d520b28daa8e69f9cc057c81070a4646207caa6",
+   "bytes": 244761
+  },
+  "63": {
+   "name": "coach: send a message (scripted tool call)",
+   "sha": "4e58716e0f0234e9fdf82e806edaed4715230595a4b878ae8ba0657101fc6efa",
+   "bytes": 246708
+  },
+  "64": {
+   "name": "coach: undo the change",
+   "sha": "71fa05682d41bac8b19db0dade04b9555a54b3e9ace4dd24478bae1dc1c505ab",
+   "bytes": 246615
+  },
+  "65": {
+   "name": "coach: send another (plain answer)",
+   "sha": "3b727f37e668811e41890dd29ca5367107f1dfc2abc5327c9fd2a6499cf25cf7",
+   "bytes": 248322
+  },
+  "66": {
+   "name": "coach: new chat, close",
+   "sha": "65d9d0621af5e619ecc6664f19fb6e125794b93696858050cdce89ee17fbcd27",
+   "bytes": 247693
+  },
+  "67": {
+   "name": "cloud write fails once, then retries",
+   "sha": "c2b1e00317017deb3953324b0376dd1b1d3da0f01572952202a3a2736b7777a8",
+   "bytes": 251517
+  },
+  "68": {
+   "name": "midnight rollover",
+   "sha": "f9dc278896290cb7335575e393b8baa265df46346c4759fbe23e63275647c5d4",
+   "bytes": 251437
+  },
+  "69": {
+   "name": "reload: cache round-trip",
+   "sha": "24d49325270fb3edd863e77647dbb5d0090e0872f847d6db5b2271e041929fca",
+   "bytes": 68240
+  },
+  "70": {
+   "name": "tasks: quick add",
+   "sha": "e374003346806410319a6c9d3faf86230f9834a0ae8072f8a1f8f077d5c606ac",
+   "bytes": 69870
+  },
+  "71": {
+   "name": "tasks: add a second",
+   "sha": "ca775571970baf6e3a34ee26bcf05fda18a26face12388bb5d098b727cf8705f",
+   "bytes": 71142
+  },
+  "72": {
+   "name": "tasks: lock plan",
+   "sha": "6d6553b0287d0a3f18e1c1332daeb10f2e114ad2489d07600d42bb117ce69d7d",
+   "bytes": 71156
+  },
+  "73": {
+   "name": "tasks: edit the second",
+   "sha": "69ff91df65841bba9f567db42126e7daf90d91b0cb14b7b15b8de413a43d670d",
+   "bytes": 71428
+  },
+  "74": {
+   "name": "tasks: timer on",
+   "sha": "fff01de0750a46b2d4e93dab6eb6a1c409708545db69cae54258aec2407c168d",
+   "bytes": 71497
+  },
+  "75": {
+   "name": "tasks: done first",
+   "sha": "35b0875a8eb91c49c61e1a391fd913904c2e6b72da2c31e5d2ede8b12bda2967",
+   "bytes": 71350
+  },
+  "76": {
+   "name": "tab: tasks",
+   "sha": "d96007b85762ee5c067b71578f556c10a038a1b9df8c94e8188687f0ed57ae92",
+   "bytes": 79829
+  },
+  "77": {
+   "name": "tasks: quick add from the Tasks tab",
+   "sha": "9b0b7167a4c89f6547a3c164b686577c822f8eca082d08e54714ddd835772e3e",
+   "bytes": 81101
+  },
+  "78": {
+   "name": "tasks: plan tomorrow",
+   "sha": "40aeaf7789939589b23d00d1e1d25497cea3cd405caa5e6687ea880ca5668673",
+   "bytes": 79980
+  },
+  "79": {
+   "name": "tasks: move one to tomorrow",
+   "sha": "9106389b945eb88e572112993345314047fa0c62cd993220f62c98dfd9bf7bc3",
+   "bytes": 81993
+  },
+  "80": {
+   "name": "tasks: next week and back",
+   "sha": "9106389b945eb88e572112993345314047fa0c62cd993220f62c98dfd9bf7bc3",
+   "bytes": 81993
+  },
+  "81": {
+   "name": "tasks: recurring template",
+   "sha": "805fac3f7bc289bd2a2fec1aa65c6e948092a847cb43d14390c9b999696759a1",
+   "bytes": 89049
+  },
+  "82": {
+   "name": "tasks: drop one",
+   "sha": "dca09908e61d5a7a0198b97a2adde356b11f23cb66e98284dedabb5e6fc4965c",
+   "bytes": 88821
+  },
+  "83": {
+   "name": "tasks: close day",
+   "sha": "4800a51c67953c4cca07a591787928e4827714bdec3eecf9a0626ad822233428",
+   "bytes": 88749
+  },
+  "84": {
+   "name": "visibility change flushes",
+   "sha": "4800a51c67953c4cca07a591787928e4827714bdec3eecf9a0626ad822233428",
+   "bytes": 88749
+  },
+  "01": {
+   "name": "load (cloud connected, or local mode with --noruntime)",
+   "sha": "9100744724a85321d2a0a9d1e333ffe8d351d4a03a9000365bb31fa90cf75e62",
+   "bytes": 69908
+  },
+  "02": {
+   "name": "tab: lifts",
+   "sha": "0ea237e56dc598e37caaf1425556382994cf45d74986e77439cba23f575144cf",
+   "bytes": 115176
+  },
+  "03": {
+   "name": "tab: body",
+   "sha": "d50da2efd15f24be77aeb1ebefbf374d51ff491d3b44a74585850910198de1e6",
+   "bytes": 131560
+  },
+  "04": {
+   "name": "tab: progress",
+   "sha": "55a664b2f84e7d4d2c601e9d2b40db4645fd3891d9fe3ada5ae76ef1d67592ba",
+   "bytes": 198114
+  },
+  "05": {
+   "name": "tab: build",
+   "sha": "1e5ad6966e81f63da743d399a23f9f4d4268f2da450614917476f76879047879",
+   "bytes": 209309
+  },
+  "06": {
+   "name": "tab: today",
+   "sha": "3b064d6ae524cc5cf78ff9fbbd133615eb611c48fa7736082c4d53d23b3ab0cd",
+   "bytes": 209309
+  },
+  "07": {
+   "name": "toggle Read",
+   "sha": "dd76a2bed2c7613eb9ac30115ddd55d8061df27348073f6210bf3f92261d1cd3",
+   "bytes": 208766
+  },
+  "08": {
+   "name": "toggle Read back",
+   "sha": "103277e1f19aa48463e10d9f16bfd01eaa90326d565b5a90432b48804726e119",
+   "bytes": 208966
+  },
+  "09": {
+   "name": "make sure Read is done",
+   "sha": "103277e1f19aa48463e10d9f16bfd01eaa90326d565b5a90432b48804726e119",
+   "bytes": 208966
+  }
+ },
+ "console": "58f3b8602c3272be7c7fda05e05918d1de33265522d179e9c8438fe97762e56c",
+ "shots": {
+  "light-today": "2f310be7ffcb600b7bba99991394ed76c347a42bb091c289b3888bdabca389c3",
+  "light-tasks": "117f1a16084f8a3a6d9679b7cf2455cd9754bcc5981caa6a07ad24bf0903380b",
+  "light-lifts": "df3171613fbb2c1c4af2bddcb2b7f4a3b1f5ee146f59bcc22687c9c3b9fe3373",
+  "light-body": "c58d53d2a5e8aa7dedad36ba35d22ae8750ff717dc8a869dad0f7f378c1d97fa",
+  "light-progress": "c1126889bdc27cd88fe1a5f4e86e5fe63b94b832b770f7fc7dfa2091ed22d268",
+  "light-build": "adaf44ad00367d809c51fdd9d52e4c0cfaf898cce532b64fe5c3c55d4e7cc574",
+  "dark-today": "535eae9ec3955a6d81ebf4515967d861c61e9cc4fa49052c316820213b468120",
+  "dark-tasks": "c3ce2a9d5c7823212602ae5c8ffdd44c74e2f0a6771200780e9ed7fa3a3aaac4",
+  "dark-lifts": "67b7c1723f04cae93a2d89dad5939f1adf5b3f610e9a74d0344bbd45bc682c95",
+  "dark-body": "69fb9cfbc37d66ffc6b633952a64394584347b0bbdf0ac819fb88d133011ac23",
+  "dark-progress": "06c1eb1379703bf79c155f0b9e2571a49f2a560f7c003b3b2edcdfb1baa97a48",
+  "dark-build": "a3d4b9c1238e123d6c8b7791301e4eb23056d1ea39a5d8bc6b6039ed0dfa6a42"
+ }
+}

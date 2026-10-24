@@ -1,4 +1,6 @@
 node_modules/
-test/out/
+test/out*/
+test/baseline/full/
+test/baseline/shots/
 .DS_Store
 dist/

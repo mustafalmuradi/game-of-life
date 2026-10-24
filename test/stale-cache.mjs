@@ -1,6 +1,6 @@
 // Regression: a device whose localStorage cache is days old must not roll its stale "open" tasks into today
 // and overwrite the real cloud docs. (Happened on 2026-10-21: a Mac browser with an Oct 19 cache replayed over Oct 19-21.)
-// Run: node test/stale-cache.mjs [--old legacy | --new src]   (default: both)
+// Run: node test/stale-cache.mjs [--old legacy | --new src]   (default: src)
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import http from 'node:http';
@@ -66,6 +66,6 @@ async function run(variant) {
 }
 
 const args = process.argv.slice(2);
-const variants = args.includes('--old') ? ['legacy'] : args.includes('--new') ? ['src'] : ['legacy', 'src'];
+const variants = args.includes('--old') ? ['legacy'] : args.includes('--new') ? ['src'] : ['src'];
 let ok = true; for (const v of variants) ok = (await run(v)) && ok;
 process.exit(ok ? 0 : 1);
