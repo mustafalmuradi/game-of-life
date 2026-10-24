@@ -69,6 +69,7 @@ var FIX = {
 export function renderCal(){
   var el = $('#cal'); if(!el) return;
   if(!cal.mcp || state.selected !== todayKey()){ el.hidden = true; el.innerHTML = ''; return; }
+  var pastOpen = !!(el.querySelector('.cl-past') && el.querySelector('.cl-past').open); // the fold survives the 30-second re-render
   var h = '<div class="cl-head"><p class="eyebrow">Google Calendar · today</p>';
   if(cal.events && cal.events.length) h += '<span class="cl-count">' + cal.events.length + (cal.events.length === 1 ? ' event' : ' events') + '</span>';
   h += '</div>';
@@ -87,7 +88,7 @@ export function renderCal(){
     var live = timed.filter(function(e){ return e.s.getTime() <= now && (e.en ? e.en.getTime() : e.s.getTime() + 1800000) > now; });
     var next = timed.filter(function(e){ return e.s.getTime() > now; });
     h += '<div class="cl-list">';
-    if(past.length) h += '<details class="cl-past"><summary>' + past.length + ' earlier</summary>' + past.map(function(e){ return row(e, 'past'); }).join('') + '</details>';
+    if(past.length) h += '<details class="cl-past"' + (pastOpen ? ' open' : '') + '><summary>' + past.length + ' earlier</summary>' + past.map(function(e){ return row(e, 'past'); }).join('') + '</details>';
     h += live.map(function(e){ return row(e, 'live'); }).join('');
     h += next.slice(0, 6).map(function(e, i){ return row(e, i === 0 ? 'next' : ''); }).join('');
     if(next.length > 6) h += '<p class="cl-more">+ ' + (next.length - 6) + ' later</p>';

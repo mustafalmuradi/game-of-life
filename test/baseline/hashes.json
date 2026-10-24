@@ -1,5 +1,5 @@
 {
- "recorded": "2026-10-24T03:07:21.730Z",
+ "recorded": "2026-10-24T03:11:59.546Z",
  "frozenClock": "2026-10-07T15:30:00-04:00",
  "steps": {
   "10": {
@@ -379,68 +379,68 @@
   },
   "85": {
    "name": "calendar: add the second task to Google Calendar",
-   "sha": "1b8c146521ae97d2f89258993328c70e7c321ec1f2d416347b3de0e1d595f658",
-   "bytes": 77304
+   "sha": "8defc5215ef85e579939ea4b87d451185e0a304649b6145ddfc5f0fcfea17601",
+   "bytes": 77312
   },
   "86": {
    "name": "calendar: reopened task shows it is on the calendar",
-   "sha": "1b8c146521ae97d2f89258993328c70e7c321ec1f2d416347b3de0e1d595f658",
-   "bytes": 77304
+   "sha": "8defc5215ef85e579939ea4b87d451185e0a304649b6145ddfc5f0fcfea17601",
+   "bytes": 77312
   },
   "87": {
    "name": "tasks: timer on",
-   "sha": "056d65614169943031328ef48d3854f431fe02d95e1c3113643838d1df94d2ee",
-   "bytes": 77350
+   "sha": "63f869e8bdffdf695a160c1f80f34aa3392cf9deff27e04b682e4672f8ab9dff",
+   "bytes": 77358
   },
   "88": {
    "name": "tasks: done first",
-   "sha": "79ca2547077e4a7277ab8a4e25b1ff1e0d1b5fe5aa90fd74593e0271bd820bed",
-   "bytes": 77203
+   "sha": "93cc95446276980e902f9691cb59bfca906ac5024f509242c758f5e39083bcb0",
+   "bytes": 77211
   },
   "89": {
    "name": "tab: tasks",
-   "sha": "daf680e2d979795ddcd6932ac4622055a60c51bb678ebf9b9898555f968a435d",
-   "bytes": 85682
+   "sha": "296bcb79109f1aaf052ba18136cccbfa61609ddd0e252d3babcb6d9dfd78ec31",
+   "bytes": 85690
   },
   "90": {
    "name": "tasks: quick add from the Tasks tab",
-   "sha": "9d18b8df016b294f5bbd39281c15b2468a5991a1fc581ebcba95816a76ad132c",
-   "bytes": 86967
+   "sha": "43d9312caf6d681518e7f67333b499cea3ab2ea0a97e3f854a2d6181330f363d",
+   "bytes": 86975
   },
   "91": {
    "name": "tasks: plan tomorrow",
-   "sha": "36ac52d83c59b2274f04f361b8c459f739981ba73276f684feb8f2ce6edd544b",
-   "bytes": 85859
+   "sha": "81f0c040dc7c28e853d69a1586bf4ce1b2ec36721b46a63a10885d27dddd83e3",
+   "bytes": 85867
   },
   "92": {
    "name": "tasks: move one to tomorrow",
-   "sha": "c25fecef88120dbfe82e02a429b9884fe40751dc2c42eabb192437932d5a611c",
-   "bytes": 87891
+   "sha": "dadbf2b1986ce1b7ad7757eca37bad8aafccbe5b01f9e22f01a31117d7967c2d",
+   "bytes": 87899
   },
   "93": {
    "name": "tasks: next week and back",
-   "sha": "c25fecef88120dbfe82e02a429b9884fe40751dc2c42eabb192437932d5a611c",
-   "bytes": 87891
+   "sha": "dadbf2b1986ce1b7ad7757eca37bad8aafccbe5b01f9e22f01a31117d7967c2d",
+   "bytes": 87899
   },
   "94": {
    "name": "tasks: recurring template",
-   "sha": "ca087e12332086ab85c2c8792e915dc16f27d212ae2a1c9691477bb2d8392b99",
-   "bytes": 95093
+   "sha": "a2c5a056d9d0e9e227879b2f3adf51749910def3fb408a575597589de55d0083",
+   "bytes": 95101
   },
   "95": {
    "name": "tasks: drop one",
-   "sha": "fc23aada0c5d1f2d190eab8be1887abb0bcf70da14f0a2be89f9fa0b0ee698d9",
-   "bytes": 94865
+   "sha": "1b5630bf25b8a73a696991fcf3252bdde9c6a42b925177265efc0c7e4562622a",
+   "bytes": 94873
   },
   "96": {
    "name": "tasks: close day",
-   "sha": "a938f65475078ed744494cdb6b273d2fe29a2dfa76c8fcde981010095eaa846d",
-   "bytes": 94793
+   "sha": "840f7f1c3e295bd39a45c9e8688349f90978901fce5b1fdc942d52d533eab031",
+   "bytes": 94801
   },
   "97": {
    "name": "visibility change flushes",
-   "sha": "a938f65475078ed744494cdb6b273d2fe29a2dfa76c8fcde981010095eaa846d",
-   "bytes": 94793
+   "sha": "840f7f1c3e295bd39a45c9e8688349f90978901fce5b1fdc942d52d533eab031",
+   "bytes": 94801
   },
   "01": {
    "name": "load (cloud connected, or local mode with --noruntime)",
@@ -490,17 +490,17 @@
  },
  "console": "58f3b8602c3272be7c7fda05e05918d1de33265522d179e9c8438fe97762e56c",
  "shots": {
-  "light-today": "3000cc38ebd2a81e4c4f67f1bb5868523798ce6804b9068b85c6fb015ae062a5",
-  "light-tasks": "6cde695b1f42cc90b3a5dd8fefd2f097e78f5d5d1981ee33b13a4bd72f6c0f9f",
-  "light-lifts": "e91897e6a3f243edd5c4187c2ca93bf4b395c91bc57a94f6934eaf23a93a5384",
-  "light-body": "387cf5885a371d5211f092ffca164612235e14f7b350b084e70f2d07f9f91b78",
+  "light-today": "839e890203db6b9696c608d80b7e87a31f610605d214bbaaa8c639f632f9392b",
+  "light-tasks": "eaf31fe4ceeaee231965192764e52c971c3790861480c3f3c9905e53f662228b",
+  "light-lifts": "b250848d9063cd18664688f5115bb7e56fd5a26a9aaf8a722ff8cb943a55ae2b",
+  "light-body": "c7ad785bd304fa26ae2153f45a3419c93ea052a0167c0953f2eb1f5014d56f92",
   "light-progress": "5389df8483bf3c2c8aaada6d9eb085c1386d075c597a09cf3cbee889dacf2919",
-  "light-build": "d442efbe16229c80115d623ecb1491e2fc44e9fb2499a72a8424ad20c6217862",
-  "dark-today": "cdc7e12a4ebe5d90508c26fb98635317a5f3124e9117db72e1e4f20e74c627be",
+  "light-build": "ba4594c93908af4106c77f9f0a1a2e729a4f46a124621ff9c71bcbb5d18cb790",
+  "dark-today": "7b3e3bff909d5ac1bddb01701755bd06d520352c913e6fcd96b7d825e318f35e",
   "dark-tasks": "46fe9e3ea367fc553ca74aee485636272044a5dc6c288eac1116c6792d5bfa5b",
-  "dark-lifts": "14f37ee3197762249bc02f1b20e43d13ead887a13dc705e4a9f0b2c225c4a6e0",
+  "dark-lifts": "85fc9ba2a75f0af9545603dcc3f045c29f94f521c0c430080c4a26dfe6eefcdb",
   "dark-body": "fbda354e1209ac56d0a590f94b310847d16a40c13bc878866a7a2fa6a6ae5de9",
   "dark-progress": "d7e0b771f315e7a591234d63848cd027534b197f404ba66483b2724fdf1e34bd",
-  "dark-build": "51efd733feecfa85a3235b84b708fc3b08b1915c0e25b9e618d4e8214e976e8a"
+  "dark-build": "4d971647004f44bde517f67d1e63e408a037aead864f9f5c9e8eca809660988c"
  }
 }
