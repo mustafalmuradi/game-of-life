@@ -15,6 +15,7 @@ export function render(){
   (tabs[state.tab] || tabs.progress)();
   ui.popSeg = null;
   renderHud(); syncTabs(); decorate();
+  var td = state.stats.byDate[todayKey()]; document.documentElement.setAttribute('data-sweep', td && td.sweep ? '1' : '0'); // the ambient layer turns gold on a clean sweep
 }
 /* HUD chrome: corner brackets on every card (re-added after each innerHTML render), the liquid tab indicator, the readout line */
 var hudFn = null;

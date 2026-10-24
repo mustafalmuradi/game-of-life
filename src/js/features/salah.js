@@ -1,5 +1,5 @@
-// Salah: the day's prayer times on Today with a live "next prayer" readout, the HUD countdown, and the rawatib
-// tracker (five taps for the 12 daily sunnah rakʿāt) that checks the Sunnah prayers habit when all five are in.
+// Salah: the day's prayer times on Today with a live "next prayer" readout and the HUD countdown. Rawatib (the 12 daily
+// sunnah rakʿāt, five entries) are logged through the Coach; all five check the Sunnah prayers habit.
 import { $, esc, fmtShort, todayKey } from '../core/utils.js';
 import { habitById, isActive, state, T, ui } from '../core/state.js';
 import { fmtLeft, fmtMin, fmtMin24, PRAYERS, prayerName, RAWATIB, RAWATIB_TOTAL, salahConfig, salahNight, salahNow, salahTimes } from '../core/salah.js';
@@ -38,13 +38,6 @@ export function setRawatib(date, keys, opts){
   }, opts || {});
   return {done:next, completes:completes, uncompletes:uncompletes};
 }
-/* one tap on a chip for the selected day */
-export function toggleRawatib(key, anchor){
-  var date = state.selected; if(date > todayKey()) return;
-  var def = rawDef(key); if(!def) return;
-  var cur = rawatibOf(date), was = cur.indexOf(key) >= 0;
-  setRawatib(date, was ? cur.filter(function(k){ return k !== key; }) : cur.concat([key]), {anchor: was ? null : anchor, undo: was ? def.n + ' ' + def.r + ' ' + def.when + ' removed' : null});
-}
 /* a summary for the coach: the day's times (24h), the live position for today, and the rawatib logged */
 export function salahBrief(d, live){
   var cfg = salahCfg(), t = salahTimes(d, cfg), night = salahNight(d, cfg), out = {date:d, place:cfg.place, method:'ISNA ' + cfg.fajrAngle + '/' + cfg.ishaAngle + ', Asr ' + (cfg.asrHanafi ? 'Hanafi' : 'standard'), times:{}};
@@ -77,17 +70,7 @@ export function renderSalah(){
     var cls = 'sl-p' + (w && w.idx === i ? ' is-cur' : w && i < w.idx ? ' is-past' : '') + (p.k === 'sunrise' ? ' is-sun' : '');
     return '<div class="' + cls + '"' + (w && w.idx === i ? ' aria-current="true"' : '') + '><span class="sl-n">' + esc(prayerName(p.k, d)) + '</span><span class="sl-t">' + esc(fmtMin(t[p.k]).replace(/ [AP]M$/, '')) + '</span></div>';
   }).join('') + '</div>';
-  var done = rawatibOf(d), cnt = rawatibCount(d), hb = habitById(SUNNAH_ID), col = hb ? 'var(--h-' + hb.color + ')' : 'var(--accent)';
-  var habitOn = !!(hb && isActive(hb, d));
-  h += '<div class="sl-raw" style="--hc:' + col + '"><div class="sl-raw-head"><span class="eyebrow">Rawatib</span><span class="sl-raw-count"><b>' + cnt + '</b> / ' + RAWATIB_TOTAL + ' rak\u02bf\u0101t</span></div><div class="sl-chips">' +
-    RAWATIB.map(function(r){
-      var on = done.indexOf(r.k) >= 0, live = !!(w && w.cur.k === r.p && !w.cur.night);
-      return '<button type="button" class="sl-chip' + (on ? ' on' : '') + (live ? ' now' : '') + '" data-act="rawatib" data-k="' + r.k + '" aria-pressed="' + on + '"' + (fut ? ' disabled' : '') +
-        ' aria-label="' + esc(r.n + ': ' + r.r + ' ' + r.when + (on ? ', logged' : '')) + '"><b>' + esc(r.n) + '</b><span>' + r.r + ' ' + r.when + '</span></button>';
-    }).join('') + '</div>';
-  var foot = fut ? 'Rawatib unlock on the day' : done.length === RAWATIB.length ? 'All ' + RAWATIB_TOTAL + ' rak\u02bf\u0101t' + (habitOn ? ' \u00b7 Sunnah prayers checked' : '') :
-    (RAWATIB.length - done.length) + ' to go' + (habitOn ? ' \u00b7 all five checks Sunnah prayers' : '');
-  h += '<p class="sl-foot">' + esc(foot) + ' \u00b7 Last third of the night from <b>' + esc(fmtMin(night.lastThird)) + '</b></p></div>';
+  h += '<p class="sl-foot">Last third of the night from <b>' + esc(fmtMin(night.lastThird)) + '</b>' + (rawatibOf(d).length ? ' \u00b7 rawatib ' + rawatibCount(d) + ' of ' + RAWATIB_TOTAL + ' logged' : '') + '</p>';
   el.innerHTML = h;
 }
 /* the HUD readout: the next prayer and the time left, compact so the readout stays on one line on a phone */

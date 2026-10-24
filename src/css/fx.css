@@ -141,3 +141,23 @@ body::after{
 .switch{width:46px;height:26px;border-radius:99px;border:0;background:var(--track);position:relative;flex:none;transition:background .25s}
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .25s var(--spring)}
 .switch[aria-checked="true"]{background:var(--accent)} .switch[aria-checked="true"]::after{transform:translateX(20px)}
+
+/* ---------- ambient v2: ki motes, meteors, orbit rings; gold when today is a clean sweep ---------- */
+.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.orbit{position:absolute;left:50%;top:96px;width:560px;height:560px;margin-left:-280px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--neon) 38%,transparent);opacity:.35;animation:spin 110s linear infinite}
+.orbit::before{content:"";position:absolute;left:50%;top:-4px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon)}
+.orbit.two{width:400px;height:400px;margin-left:-200px;top:176px;border-style:dotted;border-color:color-mix(in srgb,var(--neon-2) 38%,transparent);animation:spin 70s linear infinite reverse}
+.orbit.two::before{background:var(--neon-2);box-shadow:0 0 10px var(--neon-2)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ki i{position:absolute;bottom:-4vh;width:4px;height:4px;border-radius:50%;background:var(--c,var(--neon));box-shadow:0 0 8px var(--c,var(--neon));opacity:0;animation:kirise var(--d,18s) linear var(--o,0s) infinite}
+@keyframes kirise{0%{transform:translate3d(0,0,0) scale(.5);opacity:0}8%{opacity:.85}50%{transform:translate3d(calc(var(--x,0px)*.6),-55vh,0) scale(1)}92%{opacity:.5}100%{transform:translate3d(var(--x,0px),-112vh,0) scale(1.15);opacity:0}}
+.meteors i{position:absolute;top:var(--t,12%);left:-12%;width:160px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--neon) 60%,#fff);opacity:0;animation:meteor var(--d,16s) linear var(--o,0s) infinite}
+@keyframes meteor{0%{transform:translate3d(0,0,0) rotate(-16deg);opacity:0}1.5%{opacity:.9}9%{transform:translate3d(125vw,36vh,0) rotate(-16deg);opacity:0}100%{transform:translate3d(125vw,36vh,0) rotate(-16deg);opacity:0}}
+/* victory: a clean sweep today turns the sky gold */
+:root[data-sweep="1"]{--blob-a:rgba(255,197,61,.22);--blob-b:rgba(255,138,61,.2)}
+:root[data-sweep="1"] .ki i{--c:var(--gold);animation-duration:calc(var(--d,18s)*.65)}
+:root[data-sweep="1"] .orbit{border-color:color-mix(in srgb,var(--gold) 45%,transparent)} :root[data-sweep="1"] .orbit::before{background:var(--gold);box-shadow:0 0 12px var(--gold)}
+:root[data-sweep="1"] .meteors i{background:linear-gradient(90deg,transparent,var(--gold) 60%,#fff)}
+:root[data-sweep="1"] .brand b{text-shadow:0 0 18px color-mix(in srgb,var(--gold) 70%,transparent)}
+@media (prefers-reduced-motion: reduce){.ambient{display:none}}
+:root[data-motion="calm"] .ambient{display:none}

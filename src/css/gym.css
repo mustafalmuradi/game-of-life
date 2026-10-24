@@ -1,0 +1,42 @@
+/* Gym mode (lift sheet): rest timer with quick picks, floating rest pill, flash at zero, plate math. */
+.gym{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:18px;background:var(--surface-2);border:1px solid var(--line)}
+.gym-timer{display:flex;align-items:center;gap:12px}
+.gym-big{--p:0;position:relative;flex:none;width:112px;height:112px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:conic-gradient(var(--accent) calc(var(--p)*360deg),var(--track) 0);transition:transform .25s var(--spring)}
+.gym-big::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--surface)}
+.gym-big:active{transform:scale(.95)}
+.gym-big b,.gym-big span{position:relative}
+.gym-big b{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.gym-big span{display:block;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px;max-width:84px;text-align:center;line-height:1.2}
+.gym-big.on{background:conic-gradient(var(--h-workout) calc(var(--p)*360deg),var(--track) 0);box-shadow:0 0 0 4px color-mix(in srgb,var(--h-workout) 18%,transparent)}
+.gym-big.on b{color:var(--h-workout)}
+.gym-big.paused{opacity:.75}
+.gym-side{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+.gym-side .eyebrow{font-size:10px}
+.gym-picks{display:flex;gap:6px;flex-wrap:wrap}
+.gchip{border:2px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:800;color:var(--ink-2);font-variant-numeric:tabular-nums;transition:transform .2s var(--spring),border-color .2s,background .2s}
+.gchip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.gchip:active{transform:scale(.94)}
+.gym-reset{border:0;background:none;padding:2px 0;font-size:12px;font-weight:800;color:var(--muted);text-align:left}
+.gym-plates summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--ink-2);list-style:none;display:flex;align-items:center;gap:6px}
+.gym-plates summary::-webkit-details-marker{display:none}
+.gym-plates summary::before{content:"";width:6px;height:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s}
+.gym-plates[open] summary::before{transform:rotate(45deg)}
+.pl-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.pl-row input,.pl-row select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;min-width:0}
+.pl-row input{width:110px;font-variant-numeric:tabular-nums}
+.pl-out{display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:13px;color:var(--ink-2)}
+.pl-side{display:flex;gap:6px;flex-wrap:wrap}
+.plate{display:inline-flex;align-items:baseline;gap:1px;min-width:40px;justify-content:center;padding:6px 8px;border-radius:10px;font-family:var(--font-mono);font-weight:800;font-size:13px;color:var(--on-hc);background:var(--ink-2)}
+.plate small{font-size:10px;opacity:.85}
+.plate.p45{background:#1D4ED8} .plate.p35{background:#B45309} .plate.p25{background:#15803D} .plate.p10{background:#475569} .plate.p5{background:#64748B} .plate.p2_5{background:#94A3B8;color:#0B1230}
+.pl-note em{color:var(--dip);font-style:normal}
+/* floating rest pill when the sheet is closed */
+.rest-pill{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:99px;border:0;background:var(--h-workout);color:var(--on-hc);font-weight:800;font-size:14px;box-shadow:0 12px 28px -10px var(--h-workout);animation:chipIn .35s var(--spring) both}
+.rest-pill b{font-family:var(--font-display);font-size:16px;font-variant-numeric:tabular-nums}
+.rest-pill.paused{background:var(--ink-2)}
+.rest-pill i{width:8px;height:8px;border-radius:50%;background:var(--on-hc);animation:blink 1s ease-in-out infinite}
+/* flash at zero */
+#rest-flash{position:fixed;inset:0;z-index:60;pointer-events:none;background:var(--h-workout);opacity:0}
+#rest-flash.go{animation:restflash 1.5s ease-out both}
+@keyframes restflash{0%{opacity:.55}20%{opacity:0}35%{opacity:.45}60%{opacity:0}75%{opacity:.35}100%{opacity:0}}
+:root[data-motion="calm"] #rest-flash.go{animation-duration:.6s}

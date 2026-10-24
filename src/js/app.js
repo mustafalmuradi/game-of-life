@@ -17,8 +17,9 @@ import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, s
 import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSettings, renderSettingsList } from './core/sheets.js';
 import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
 import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, pickTaskDay, quickAdd, saveTaskForm, sheetAct, stepTaskWeek, timerToggle, undoDone } from './features/tasks.js';
-import { salahHud, salahTick, toggleRawatib } from './features/salah.js';
+import { salahHud, salahTick } from './features/salah.js';
 import { logInBed, windTick } from './features/winddown.js';
+import { gymInit, restPick, restReset, restToggle } from './features/gym.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -31,8 +32,11 @@ function bind(){
       case 'rest': toggleRest(hid); break;
       case 'light': toggleRest(hid, 'light'); break;
       case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
-      case 'rawatib': toggleRawatib(t.getAttribute('data-k'), t); break;
       case 'in-bed': logInBed(); break;
+      case 'rest-toggle': restToggle(); break;
+      case 'rest-pick': restPick(Number(t.getAttribute('data-s')) || 120); break;
+      case 'rest-reset': restReset(); break;
+      case 'rest-open': openLiftSheet(); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }
@@ -174,6 +178,9 @@ registerHud(function(){
 });
 (function(){
   var sf = $('#stars'); if(sf){ var h = ''; for(var i=0;i<34;i++) h += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;top:' + (Math.random()*100).toFixed(1) + '%;--d:' + (4 + Math.random()*6).toFixed(1) + 's;--o:' + (Math.random()*6).toFixed(1) + 's"></i>'; sf.innerHTML = h; }
+  /* ambient v2: 16 ki motes in the habit colours rising on their own loops, 3 meteors on long staggered cycles */
+  var ki = $('#ki'); if(ki){ var cols = ['neon','neon-2','neon-3','h-money','h-sleep','h-read','gold'], kh = ''; for(var j=0;j<16;j++) kh += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;--d:' + (14 + Math.random()*14).toFixed(1) + 's;--o:' + (-Math.random()*24).toFixed(1) + 's;--x:' + ((Math.random()-.5)*160).toFixed(0) + 'px;--c:var(--' + cols[j % cols.length] + ')"></i>'; ki.innerHTML = kh; }
+  var me = $('#meteors'); if(me){ var mh = ''; for(var k=0;k<3;k++) mh += '<i style="--t:' + (6 + Math.random()*30).toFixed(0) + '%;--d:' + (13 + Math.random()*9).toFixed(1) + 's;--o:' + (-Math.random()*20).toFixed(1) + 's"></i>'; me.innerHTML = mh; }
   var calm = false; try { calm = localStorage.getItem('gol-calm') === '1'; } catch(e){}
   if(calm) document.documentElement.setAttribute('data-motion', 'calm');
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }
@@ -190,6 +197,7 @@ state.mode = sync.lsOK ? 'local' : 'memory';
 recompute();
 bind();
 bindCoach();
+gymInit();
 render();
 connectCloud();
 initCoach();

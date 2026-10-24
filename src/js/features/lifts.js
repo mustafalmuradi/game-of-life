@@ -10,6 +10,7 @@ import { registerTab, render } from '../core/render.js';
 import { badgeSVG } from './progress.js';
 import { tmin } from './body.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
+import { renderPlates, restStart, restState } from './gym.js';
 
 /* ---------- lifts view ---------- */
 var liftArmed = null, liftArmTimer = null;
@@ -169,6 +170,7 @@ export function addSetRow(w, r, b){
   /* each set is pounds or a band: picking a band disables the weight box */
   row.innerHTML = '<span class="idx" aria-hidden="true"></span><select id="lf-u-' + i + '" class="lf-u" aria-label="Pounds or band"><option value="">lb</option>' + BANDS.map(function(x){ return '<option value="' + x[0] + '">' + esc(x[1].replace(/ band$/, '')) + '</option>'; }).join('') + '</select><input id="lf-w-' + i + '" type="number" inputmode="decimal" step="0.5" min="0" placeholder="lb" aria-label="Weight in pounds"><input id="lf-r-' + i + '" type="number" inputmode="numeric" step="1" min="1" placeholder="reps" aria-label="Reps"><button type="button" class="rm" aria-label="Remove set">×</button>';
   var u = row.querySelector('#lf-u-' + i), wi = row.querySelector('#lf-w-' + i);
+  wi.addEventListener('input', renderPlates);
   function syncUnit(){ var on = !!u.value; wi.disabled = on; wi.placeholder = on ? 'band' : 'lb'; if(on) wi.value = ''; row.classList.toggle('is-band', on); }
   u.value = cleanBand(b) || ''; u.addEventListener("change", syncUnit);
   wi.value = (w === undefined || w === null || b) ? '' : w;
@@ -233,7 +235,8 @@ export function celebrateLift(prev, next, id){
   else if(e._cleared) msg = 'Quest cleared: ' + e.exercise;
   else msg = e.exercise + ' logged';
   if(next.level > prev.level || e._status === 'pr' || nb || e._cleared) burst();
-  setTimeout(function(){ toast(msg + ' · +' + gained + ' power XP'); }, 60);
+  var rs = restState();
+  setTimeout(function(){ toast(msg + ' · +' + gained + ' power XP', rs.on ? null : {label:'Rest ' + Math.floor(rs.dur/60) + ':' + pad(rs.dur % 60), fn:function(){ restStart(); }}); }, 60);
 }
 export function deleteLift(id){
   if(liftArmed !== id){

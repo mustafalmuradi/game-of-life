@@ -1,4 +1,4 @@
-/* Salah card (Today tab): next prayer, the day's six times on one timeline, the rawatib chips. */
+/* Salah card (Today tab): next prayer, the day's six times on one timeline, the night facts. */
 .salah-card{padding:16px 18px 14px;display:flex;flex-direction:column;gap:12px}
 .sl-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .sl-next{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.01em;margin-top:3px;line-height:1.1}
@@ -22,20 +22,5 @@
 .sl-p.is-sun .sl-t,.sl-p.is-sun .sl-n{opacity:.65}
 .sl-p.is-cur{border-color:var(--line);background:var(--accent-soft);box-shadow:var(--glow)}
 .sl-p.is-cur .sl-n{color:var(--accent-ink)}
-/* rawatib */
-.sl-raw{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid var(--line)}
-.sl-raw-head{display:flex;justify-content:space-between;align-items:baseline}
-.sl-raw-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.sl-raw-count b{color:var(--ink);font-family:var(--font-display);font-size:15px}
-.sl-chips{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.sl-chip{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px 7px;border-radius:14px;border:2px solid var(--line);background:var(--surface-2);min-width:0;transition:transform .25s var(--spring),background .2s,border-color .2s,box-shadow .2s}
-.sl-chip b{font-size:11px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.sl-chip span{font-size:10px;color:var(--muted);white-space:nowrap}
-.sl-chip:hover:not(:disabled){transform:translateY(-2px);border-color:var(--hc)}
-.sl-chip:active:not(:disabled){transform:scale(.92)}
-.sl-chip.now{border-style:dashed;border-color:color-mix(in srgb,var(--hc) 65%,transparent)}
-.sl-chip.on{background:var(--hc);border-color:var(--hc);box-shadow:0 8px 18px -8px var(--hc);animation:checkpop .45s var(--spring)}
-.sl-chip.on b,.sl-chip.on span{color:var(--on-hc)}
-.sl-chip:disabled{opacity:.45;cursor:default}
 .sl-foot{font-size:12px;color:var(--muted);text-wrap:balance}
 .sl-foot b{color:var(--ink-2);font-weight:700}

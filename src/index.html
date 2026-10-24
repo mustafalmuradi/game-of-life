@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="css/today.css">
 <link rel="stylesheet" href="css/salah.css">
 <link rel="stylesheet" href="css/winddown.css">
+<link rel="stylesheet" href="css/gym.css">
 <link rel="stylesheet" href="css/progress.css">
 <link rel="stylesheet" href="css/lifts.css">
 <link rel="stylesheet" href="css/body.css">
@@ -18,6 +19,7 @@
 
 <div id="boot" aria-hidden="true"><div class="b-in"><div class="b-logo">Game Of Life</div><div class="b-line">Systems online</div><div class="b-bar"><span></span></div></div></div>
 <div class="stars" id="stars" aria-hidden="true"></div>
+<div class="ambient" aria-hidden="true"><div class="orbit"></div><div class="orbit two"></div><div class="ki" id="ki"></div><div class="meteors" id="meteors"></div></div>
 <div class="app">
   <header class="top">
     <div class="brand"><b>Game Of Life</b><span>Mustafa</span></div>
@@ -116,6 +118,19 @@
     <div class="grip"></div>
     <div class="sheet-head"><h3 id="lf-title">Log a lift</h3><span class="gold-tag">+10 / set</span></div>
     <form id="lift-form" class="lift-form" novalidate autocomplete="off">
+      <div class="gym full" id="gym">
+        <div class="gym-timer">
+          <button type="button" class="gym-big" id="rest-big" data-act="rest-toggle" aria-label="Rest timer"><b id="rest-time">2:00</b><span id="rest-sub">Rest timer · tap to start</span></button>
+          <div class="gym-side"><span class="eyebrow">Gym mode · rest</span>
+            <div class="gym-picks" role="group" aria-label="Rest length"><button type="button" class="gchip" data-act="rest-pick" data-s="90">1:30</button><button type="button" class="gchip" data-act="rest-pick" data-s="120" aria-pressed="true">2:00</button><button type="button" class="gchip" data-act="rest-pick" data-s="180">3:00</button></div>
+            <button type="button" class="gym-reset" data-act="rest-reset">Reset timer</button><span class="muted small">Screen stays awake while this sheet is open or a rest is running.</span>
+          </div>
+        </div>
+        <details class="gym-plates"><summary>Plate math</summary>
+          <div class="pl-row"><input id="pl-w" type="number" inputmode="decimal" step="2.5" min="0" placeholder="total lb" aria-label="Total weight loaded"><select id="pl-bar" aria-label="Bar"><option value="0">no bar (plate-loaded)</option><option value="45">45 lb bar</option><option value="35">35 lb bar</option><option value="15">15 lb bar</option></select></div>
+          <div class="pl-out" id="pl-out"></div>
+        </details>
+      </div>
       <label class="lf-field full" for="lf-ex"><span>Exercise</span><input id="lf-ex" list="lf-ex-list" placeholder="Hack squat (plate-loaded)"></label>
       <datalist id="lf-ex-list"></datalist>
       <label class="lf-field" for="lf-date"><span>Date</span><input id="lf-date" type="date"></label>
@@ -185,6 +200,8 @@
 </div>
 
 <div class="promo-back" id="promo" hidden></div>
+<button class="rest-pill" id="rest-pill" type="button" data-act="rest-open" hidden><i aria-hidden="true"></i><b>2:00</b> rest</button>
+<div id="rest-flash" hidden aria-hidden="true"></div>
 <div id="powerup" hidden aria-hidden="true"></div>
 <div id="toast-host"></div>
 <div class="sheet-back" id="task-sheet" hidden>

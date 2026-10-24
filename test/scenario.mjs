@@ -57,23 +57,6 @@ export const steps = [
   { name: 'log preset extra', run: async (page) => { await click(page, '[data-act="log-preset"]'); await settle(page); await escape(page); } },
   { name: 'open extra sheet, type a note', run: async (page) => { await click(page, '[data-act="open-extra"][data-h="read"]'); await fill(page, '#ex-note', 'Tafsir session'); await submit(page, '#ex-form'); await settle(page); await escape(page); } },
   { name: 'remove an extra', run: async (page) => { await click(page, '[data-act="rm-extra"][data-h="read"]'); await settle(page); } },
-  // ---- Salah card: rawatib chips feed the Sunnah prayers habit ----
-  { name: 'salah: start unchecked, tap four rawatib', run: async (page) => {
-    if (await page.locator('[data-act="toggle"][data-h="sunnah"][aria-pressed="true"]').count()) { await click(page, '[data-act="toggle"][data-h="sunnah"]'); await settle(page); await escape(page); }
-    for (const k of ['fajr', 'dhuhr1', 'dhuhr2', 'maghrib']) { await click(page, '[data-act="rawatib"][data-k="' + k + '"]'); await settle(page); }
-    await escape(page);
-  } },
-  { name: 'salah: the fifth checks Sunnah prayers', run: async (page) => { await click(page, '[data-act="rawatib"][data-k="isha"]'); await settle(page); await escape(page); } },
-  { name: 'salah: taking one away unchecks it', run: async (page) => { await click(page, '[data-act="rawatib"][data-k="isha"]'); await settle(page); await escape(page); } },
-  { name: 'salah: undo from the toast brings it back', run: async (page) => {
-    if (await page.locator('#toast-host button').count()) { await click(page, '#toast-host button'); await settle(page); }
-    else await page.evaluate(() => { document.body.setAttribute('data-step-note', 'no undo toast'); });
-  } },
-  { name: 'salah: a hand uncheck is not undone by chips', run: async (page) => {
-    await click(page, '[data-act="toggle"][data-h="sunnah"]'); await settle(page); await escape(page);   // uncheck by hand (five chips stay)
-    await click(page, '[data-act="rawatib"][data-k="maghrib"]'); await settle(page); await escape(page); // four chips: habit stays unchecked
-    await click(page, '[data-act="rawatib"][data-k="maghrib"]'); await settle(page); await escape(page); // back to five: checks it again
-  } },
   { name: 'Train: rest day', run: async (page) => { await undoRest(page, 'workout'); await click(page, '.rest-btn[data-act="rest"][data-h="workout"]'); await settle(page); await escape(page); } },
   { name: 'Train: light day', run: async (page) => { await undoRest(page, 'workout'); await click(page, '[data-act="light"][data-h="workout"]'); await settle(page); await escape(page); } },
   { name: 'Train: done', run: async (page) => { await undoRest(page, 'workout'); await click(page, '[data-act="toggle"][data-h="workout"]'); await settle(page); await escape(page); } },
@@ -106,6 +89,12 @@ export const steps = [
 
   // ---- Lifts ----
   { name: 'lifts: open sheet', run: async (page) => { await tab(page, 'lifts'); await click(page, '[data-act="open-lift"]'); await settle(page); } },
+  // ---- Gym mode inside the sheet ----
+  { name: 'gym: start the rest timer, two seconds pass', run: async (page) => { await click(page, '#rest-big'); await page.clock.runFor(2000); await settle(page); } },
+  { name: 'gym: switch to 3:00, pause, reset', run: async (page) => { await click(page, '[data-act="rest-pick"][data-s="180"]'); await click(page, '#rest-big'); await settle(page); await click(page, '[data-act="rest-reset"]'); await settle(page); } },
+  { name: 'gym: plate math for 230 lb', run: async (page) => { await page.evaluate(() => { document.querySelector('.gym-plates').open = true; }); await fill(page, '#pl-w', '230'); await page.locator('#pl-w').dispatchEvent('input'); await settle(page); } },
+  { name: 'gym: rest runs out while the sheet is closed (pill, flash, toast)', run: async (page) => { await click(page, '#rest-big'); await escape(page); await page.clock.runFor(179 * 1000); await settle(page); if (!(await page.locator('#rest-pill:not([hidden])').count())) throw new Error('no rest pill'); await page.clock.runFor(1200); await settle(page); } },
+  { name: 'gym: reopen the sheet', run: async (page) => { await click(page, '[data-act="open-lift"]'); await settle(page); } },
   { name: 'lifts: choose a past exercise (prefill)', run: async (page) => {
     await fill(page, '#lf-ex', 'Lat pulldown');
     await page.locator('#lf-ex').dispatchEvent('change');
