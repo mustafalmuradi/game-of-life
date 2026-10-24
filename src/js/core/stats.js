@@ -36,7 +36,7 @@ export function recompute(){
         var bx = h.id === 'sleep' ? lateXP(d) : null; if(bx === null) bx = BASE_XP;
         baseXP += bx;
         s.xp += bx + n*EXTRA_XP;
-      } else if(used < allow && (restMarked || d !== today) && restDayOK(h, d)){
+      } else if(used < allow && (restMarked || (d !== today && !h.restManual)) && restDayOK(h, d)){ // restManual: only a declared rest counts (passes aren't spent by silent misses)
         restUsed[rk] = used + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         if(restMarked){ done++; required++; restDone.push(h.id); }

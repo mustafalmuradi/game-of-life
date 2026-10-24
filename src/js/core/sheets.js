@@ -67,7 +67,7 @@ export function renderSettingsList(){
       '<div class="st-fields">' + (paused ? '<span class="paused-tag">Paused</span>' : '') +
       '<input id="st-name-' + esc(h.id) + '" data-f="name" data-h="' + esc(h.id) + '" type="text" maxlength="40" value="' + esc(h.name) + '" aria-label="Habit name">' +
       (h.ladder ? '<p class="ladder-note">Target grows with belt: ' + h.ladder.join(' \u2192 ') + ' ' + esc(h.unit) + '</p>' : '<input id="st-target-' + esc(h.id) + '" data-f="target" data-h="' + esc(h.id) + '" type="text" maxlength="50" value="' + esc(h.target) + '" aria-label="Target">') +
-      '<label class="rest-sel" for="st-rest-' + esc(h.id) + '">Rest days a week<select id="st-rest-' + esc(h.id) + '" data-f="restPerWeek" data-h="' + esc(h.id) + '">' +
+      '<label class="rest-sel" for="st-rest-' + esc(h.id) + '">' + (h.id === 'sleep' ? 'Life-happens passes a week' : 'Rest days a week') + '<select id="st-rest-' + esc(h.id) + '" data-f="restPerWeek" data-h="' + esc(h.id) + '">' +
         [0,1,2,3].map(function(n){ return '<option value="' + n + '"' + ((h.restPerWeek || 0) === n ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></label></div>' +
       '<button class="ghost" type="button" data-act="' + (paused ? 'resume' : 'pause') + '" data-h="' + esc(h.id) + '">' + (paused ? 'Resume' : 'Pause') + '</button></div>';
   }).join('');

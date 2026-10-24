@@ -196,7 +196,7 @@ var COACH_TOOLS = [
    return {ok:true, date:date, wrote:parts, habitChanges:notes};
  }},
 {name:'set_habit', busy:'Updating habits',
- description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day), light (Train only: light day), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
+ description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
  schema:{type:'object', properties:{
    date:{type:'string', description:'YYYY-MM-DD'},
    habit:{type:'string', description:'Habit id or name: read, meditate, workout (Train), money, sleep (Bed on time), nicotine, eat, sunnah.'},
@@ -1185,6 +1185,7 @@ COACH_RULES += '\n\n' + [
 'PLANNED LATE NIGHTS (Bed on time)',
 '- His normal bedtime is in targets.bed (Friday: friBed, 11 PM; Saturday: satBed, midnight). He gets 2 planned late nights a week, not counting Friday or Saturday, latest midnight, and only if set BEFORE his normal bedtime. Use late_night status when unsure.',
 '- When he wants one: get the planned time and his reason in his words (ask in one line if missing), judge the points, then late_night plan. If the deadline has passed or both are used, say so plainly; don’t look for a workaround.',
+'- Bed on time also has two "life happens" passes a week (its rest days: full points, streak and sweep kept): when he says life got in the way tonight, use set_habit sleep rest on the night\u2019s date (today before midnight, yesterday after). A pass is for the unplanned; a planned late night is the tool below. Both show on the Wind-down card.',
 '- He wakes for Fajr around 4:15-5:10 no matter what, so a late night cuts sleep 1:1. His own data: ~62% average recovery after nights in bed by ~10:30 vs ~46% after 11 PM+; nights under 5h came after late beds. Say the cost in hours of sleep when you confirm.',
 '- XP rubric (0-20; hitting his normal time instead always pays the full 20):',
 '  20: can’t be moved and matters: family obligation or emergency, travel, religious occasion, a hard deadline with real money or a promise attached.',

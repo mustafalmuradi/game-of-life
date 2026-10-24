@@ -18,7 +18,7 @@ import { closeSheets, draft, draftHabit, extraFor, openExtra, openRank, openSett
 import { bindCoach, initCoach, initCoach2, onExportClick, openCoachWith, renderDataBox } from './features/coach.js';
 import { closeDay, lockPlan, onDone, openTaskSheet, openTemplateSheet, pickTaskDay, quickAdd, saveTaskForm, sheetAct, stepTaskWeek, timerToggle, undoDone } from './features/tasks.js';
 import { salahHud, salahTick } from './features/salah.js';
-import { logInBed, windTick } from './features/winddown.js';
+import { lifeHappens, logInBed, windTick } from './features/winddown.js';
 import { gymInit, restPick, restReset, restToggle } from './features/gym.js';
 import { calConnect, calInit, calTick } from './features/calendar.js';
 
@@ -34,6 +34,7 @@ function bind(){
       case 'light': toggleRest(hid, 'light'); break;
       case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
       case 'in-bed': logInBed(); break;
+      case 'life-happens': lifeHappens(); break;
       case 'rest-toggle': restToggle(); break;
       case 'rest-pick': restPick(Number(t.getAttribute('data-s')) || 120); break;
       case 'rest-reset': restReset(); break;

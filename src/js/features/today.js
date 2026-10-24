@@ -68,15 +68,17 @@ export function toggleHabit(hid, anchor){
     else { day.done[hid] = Date.now(); if(day.rest) delete day.rest[hid]; }
   }, {anchor: wasDone ? null : anchor, undo: wasDone ? h.name + ' unchecked' : null});
 }
-export function toggleRest(hid, kind){
-  var date = state.selected, h = habitById(hid); if(!h || date > todayKey()) return;
+export function toggleRest(hid, kind, dateArg){
+  var date = dateArg || state.selected, h = habitById(hid); if(!h || date > todayKey()) return;
   var cur = state.days[date], marked = !!(cur && cur.rest && cur.rest[hid]);
   if(!marked) ui.popSeg = hid;
   mutateDay(date, function(day){
     day.rest = day.rest || {};
     if(marked) delete day.rest[hid]; else { day.rest[hid] = kind === 'light' ? 'light' : Date.now(); delete day.done[hid]; delete day.extras[hid]; }
-  }, {undo: marked ? null : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
+  }, {undo: marked ? null : hid === 'sleep' && kind !== 'light' ? 'Life happens: tonight is excused, full points kept' : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
 }
+/* Bed on time's rest days are "life happens" passes: same engine, different words */
+export function restWords(hb){ return hb.id === 'sleep' ? {btn:'Life happens', tag:'Life happens', one:'pass', many:'passes', undo:'pass'} : {btn:'Rest day', tag:'Rest day', one:'rest day', many:'rest days', undo:'rest day'}; }
 export function addExtra(hid, note, anchor){
   var date = state.selected; if(date > todayKey()) return;
   var cur = state.days[date];
@@ -168,10 +170,11 @@ function renderHabits(){
     var restMarked = !!(doc && doc.rest && doc.rest[hb.id]);
     var allow = hb.restPerWeek || 0, left = allow - ((st.restUsed || {})[hb.id + '|' + mondayOf(d)] || 0);
     var restDays = hb.restOn && hb.restOn.length ? hb.restOn.map(function(n){ return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][n]; }).join('/') : '';
-    var restText = !allow ? '' : restDays ? ' · ' + restDays + ' rest day' + (hb.restFull ? ' (full points)' : '') : (mondayOf(d) === mondayOf(today) ? ' · ' + Math.max(left, 0) + ' of ' + allow + ' rest days left this week' : ' · ' + allow + ' rest days a week');
+    var rw = restWords(hb);
+    var restText = !allow ? '' : restDays ? ' · ' + restDays + ' rest day' + (hb.restFull ? ' (full points)' : '') : (mondayOf(d) === mondayOf(today) ? ' · ' + Math.max(left, 0) + ' of ' + allow + ' ' + rw.many + ' left this week' : ' · ' + allow + ' ' + rw.many + ' a week');
     var restToday = !hb.restOn || !hb.restOn.length || hb.restOn.indexOf(parseKey(d).getDay()) >= 0;
     var restLogged = rested && !!(bd && bd.restDone && bd.restDone.indexOf(hb.id) >= 0);
-    var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : 'rest day';
+    var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : rw.undo;
     h += '<article class="habit' + (done || restLogged ? ' is-done' : '') + (rested && !restLogged ? ' is-rest' : '') + (ui.popSeg === hb.id && done ? ' just-done' : '') + '" style="--hc:var(--h-' + hb.color + ')">' +
       (restLogged ? '<button class="check" type="button" data-act="rest" data-h="' + esc(hb.id) + '" aria-pressed="true" aria-label="' + esc('Undo ' + restKind + ': ' + hb.name) + '">' :
       '<button class="check" type="button" data-act="toggle" data-h="' + esc(hb.id) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? 'Undo ' : 'Mark done: ') + hb.name) + '">') + '<svg viewBox="0 0 24 24">' + ICON.check + '</svg></button>' +
@@ -189,7 +192,7 @@ function renderHabits(){
     h += '</div><div class="habit-side">';
     if(rested){
       var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0);
-      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag' + (hb.restFull && restMarked ? ' light' : '') + '">Rest day' + (hb.restFull && restMarked ? ' · +' + BASE_XP : '') + '</span>';
+      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag' + (hb.restFull && restMarked ? ' light' : '') + '">' + rw.tag + (hb.restFull && restMarked ? ' · +' + BASE_XP : hb.id === 'sleep' ? ' · excused' : '') + '</span>';
       if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
       var lx = hb.id === 'sleep' ? lateXP(d) : null;
@@ -197,7 +200,7 @@ function renderHabits(){
       if(hb.id === 'sleep' && lateOpen(d).ok) h += '<button class="rest-btn" type="button" data-act="plan-late">Late night</button>';
       if(allow && d === today && left > 0 && restToday){
         if(hb.id === 'workout') h += '<span class="rest-pair"><button class="rest-btn" type="button" data-act="light" data-h="' + esc(hb.id) + '">' + (((hb.lightPerWeek || 0) - ((st.lightUsed || {})[hb.id + '|' + mondayOf(d)] || 0)) > 0 ? 'Light +' + LIGHT_XP : 'Light day') + '</button><button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest</button></span>';
-        else h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest day</button>';
+        else h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">' + rw.btn + '</button>';
       }
     } else if(bd && bd.overCap && bd.overCap.indexOf(hb.id) >= 0){
       h += '<span class="rest-tag warn">Over ' + hb.maxPerWeek + '/wk \u00b7 0 XP</span>';

@@ -259,7 +259,9 @@ export const steps = [
   } },
   // ---- Wind-down card: after midnight the night's bedtime is still open ----
   { name: 'wind-down: card shows past bedtime after midnight', run: async (page) => { await tab(page, 'today'); if (await page.locator('[data-act="go-today"]').count()) { await click(page, '[data-act="go-today"]'); await settle(page); } if (!(await page.locator('#wind:not([hidden]) [data-act="in-bed"]').count())) throw new Error('missing: wind-down card'); } },
-  { name: 'wind-down: in bed now logs the bedtime and re-scores Bed on time', run: async (page) => { await click(page, '[data-act="in-bed"]'); await settle(page); } },
+  { name: 'wind-down: life happens pass (Bed on time keeps its points)', run: async (page) => { await click(page, '#wind [data-act="life-happens"]'); await settle(page); await escape(page); if (!(await page.locator('#wind .wd-big.is-pass').count())) throw new Error('pass not shown'); } },
+  { name: 'wind-down: undo the pass, then take it again', run: async (page) => { await click(page, '#wind [data-act="life-happens"]'); await settle(page); await click(page, '#wind [data-act="life-happens"]'); await settle(page); await escape(page); } },
+  { name: 'wind-down: in bed now logs the bedtime (late, but the pass holds the points)', run: async (page) => { await click(page, '[data-act="in-bed"]'); await settle(page); } },
   { name: 'wind-down: undo brings the card back', run: async (page) => { await click(page, '#toast-host button'); await settle(page); if (!(await page.locator('#wind:not([hidden])').count())) throw new Error('card did not return'); } },
   { name: 'wind-down: in bed now, for real', run: async (page) => { await click(page, '[data-act="in-bed"]'); await settle(page); await escape(page); } },
   { name: 'reload: cache round-trip', run: async (page) => {

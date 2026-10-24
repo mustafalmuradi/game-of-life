@@ -149,6 +149,18 @@ and the Coach put bedtimes, so `commitMetrics` scores Bed on time exactly as
 before; the toast has Undo. After midnight the card still belongs to last night
 until Fajr. A 30-second tick keeps it live.
 
+### "Life happens" passes (Bed on time)
+
+Bed on time has two passes a week: its habit record carries `restPerWeek: 2`,
+`restFull: true` (a declared pass pays the full 20 and counts for the sweep)
+and `restManual: true` (only a declared pass spends one; a silent miss is a
+miss, as before). `normalizeSettings` gives an older saved doc the three flags
+once. The Wind-down card shows "Life happens · n of 2 left this week" and
+toggles the night's `rest.sleep` through `toggleRest('sleep', null, night)`;
+the habit row calls the same thing a pass and shows "Life happens · +20"; the
+settings sheet labels the number "Life-happens passes a week"; the Coach uses
+`set_habit sleep rest`. Passes reset with the week (Monday).
+
 ## Google Calendar (Today card + task sheet)
 
 `features/calendar.js`, through the `mcp` capability with the viewer's own

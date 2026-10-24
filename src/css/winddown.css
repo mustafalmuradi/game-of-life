@@ -14,3 +14,10 @@
 .wd-fact{font-size:13px;color:var(--ink-2)}
 .wd-fact b{color:var(--ink)}
 .wd-btn{width:100%;font-size:16px;padding:14px 18px;border-radius:16px}
+.wd-big.is-pass{background:none;-webkit-text-fill-color:var(--h-money);color:var(--h-money);font-size:20px}
+.wd-actions{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}
+.wd-actions .wd-btn{width:auto}
+.wd-pass{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:8px 14px;border-radius:16px;min-width:118px}
+.wd-pass b{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap}
+.wd-pass span{font-size:10px;color:var(--muted);white-space:nowrap}
+.wd-pass.is-out{border:2px dashed var(--line);opacity:.75}

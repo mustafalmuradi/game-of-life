@@ -26,6 +26,10 @@ export function normalizeSettings(s){
   var list = (s && Array.isArray(s.habits)) ? s.habits : [];
   list.forEach(function(h, i){
     if(!h || !h.id || !h.name) return;
+    /* Bed on time grew two "life happens" passes a week (Oct 2026): a saved doc from before has neither flag, so give it both once;
+       after that the settings sheet owns the number (restFull stays as the marker) */
+    if(String(h.id) === 'sleep' && !h.restFull && !(parseInt(h.restPerWeek, 10) > 0)){ h = Object.assign({}, h, {restPerWeek:2, restFull:true, restManual:true}); }
+    if(String(h.id) === 'sleep' && h.restFull && h.restManual === undefined){ h = Object.assign({}, h, {restManual:true}); }
     out.habits.push({
       id: String(h.id), name: String(h.name), target: String(h.target || ''),
       color: COLOR_SLOTS.indexOf(h.color) >= 0 ? h.color : COLOR_SLOTS[i % COLOR_SLOTS.length],
@@ -39,7 +43,8 @@ export function normalizeSettings(s){
       extraCap: h.extraCap === undefined || h.extraCap === null ? EXTRA_CAP : Math.max(0, Math.min(3, parseInt(h.extraCap, 10) || 0)),
       presets: Array.isArray(h.presets) && h.presets.length ? h.presets.slice(0,4).map(String) : ['Extra session'],
       restOn: Array.isArray(h.restOn) && h.restOn.length ? h.restOn.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : null,
-      restFull: !!h.restFull
+      restFull: !!h.restFull,
+      restManual: !!h.restManual
     });
   });
   if(!out.habits.length){ var dflt = clone(DEFAULT_SETTINGS); dflt.targets = out.targets; return normalizeSettings(dflt); }
