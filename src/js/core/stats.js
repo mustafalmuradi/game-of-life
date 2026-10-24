@@ -15,10 +15,10 @@ export function recompute(){
   state.settings.habits.forEach(function(h){ hs[h.id] = {days:0, extras:0, run:0, best:0, xp:0, rest:0, light:0, age:0, held:0, heldBest:0}; });
   var multi = CURVES.overall.multi, multiBest = multi.map(function(){ return 0; }), earned = {}, msTotal = 0;
   var age = 0;
-  var restUsed = {}, weekDone = {}, lightUsed = {};
+  var restUsed = {}, weekDone = {}, lightUsed = {}, fullUsed = {};
   for(var d = start; d <= today; d = addDays(d, 1)){
     var act = activeHabits(d), doc = state.days[d], wk = mondayOf(d);
-    var done = 0, required = 0, extraXP = 0, extraHabits = 0, excused = [], overCap = [], baseXP = 0, lightXP = 0, lightDays = [], restDone = [];
+    var done = 0, required = 0, extraXP = 0, extraHabits = 0, excused = [], overCap = [], baseXP = 0, lightXP = 0, lightDays = [], restDone = [], fullDays = [];
     age++;
     act.forEach(function(h){
       var s = hs[h.id];
@@ -40,7 +40,8 @@ export function recompute(){
         restUsed[rk] = used + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         if(restMarked){ done++; required++; restDone.push(h.id); }
-        if(restMarked && h.restFull && doc.rest[h.id] !== 'light'){ baseXP += BASE_XP; s.xp += BASE_XP; }
+        /* a declared full rest pays full base XP when the habit allows it, capped at restFullMax a week (0 = no cap) */
+        if(restMarked && h.restFull && doc.rest[h.id] !== 'light' && (!h.restFullMax || (fullUsed[rk] || 0) < h.restFullMax)){ fullUsed[rk] = (fullUsed[rk] || 0) + 1; baseXP += BASE_XP; s.xp += BASE_XP; fullDays.push(h.id); }
         if(doc && doc.rest && doc.rest[h.id] === 'light' && (lightUsed[rk] || 0) < (h.lightPerWeek || 0)){
           lightUsed[rk] = (lightUsed[rk] || 0) + 1; s.light++; s.xp += LIGHT_XP; lightXP += LIGHT_XP; lightDays.push(h.id);
         }
@@ -60,7 +61,7 @@ export function recompute(){
     var xp = baseXP + lightXP + extraXP + sweepBonus + msXP;
     total += xp; baseChecks += done - restDone.length;
     if(extraHabits > maxExtraHabits) maxExtraHabits = extraHabits;
-    byDate[d] = {done:done, total:required, excused:excused, restDone:restDone, overCap:overCap, light:lightDays, base:baseXP + lightXP, extra:extraXP, sweepBonus:sweepBonus, ms:msXP, bonus:extraXP+sweepBonus+msXP, xp:xp, sweep:sweep};
+    byDate[d] = {done:done, total:required, excused:excused, restDone:restDone, overCap:overCap, light:lightDays, full:fullDays.length ? fullDays : undefined, base:baseXP + lightXP, extra:extraXP, sweepBonus:sweepBonus, ms:msXP, bonus:extraXP+sweepBonus+msXP, xp:xp, sweep:sweep};
   }
   var todaySweep = byDate[today] && byDate[today].sweep;
   state.settings.habits.forEach(function(h){ var s = hs[h.id]; s.rank = rankInfo(s.xp, s.best, s.run, habitCurve(h), s.age); });

@@ -6,7 +6,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node test/stale-cache.mjs --new && node test/harness.mjs --shots",
+    "test": "node test/stale-cache.mjs --new && node test/rest-full.mjs && node test/harness.mjs --shots",
     "test:record": "node test/harness.mjs --record --shots",
     "test:self": "node test/harness.mjs --old src --new src",
     "test:local": "node test/harness.mjs --old src --new src --noruntime",
@@ -14,7 +14,8 @@
     "test:stale": "node test/stale-cache.mjs --new",
     "check": "python3 tools/check-cascade.py && python3 tools/reassemble-js.py",
     "split": "python3 tools/split-css.py && python3 tools/split-js.py",
-    "dist": "python3 tools/publish-prep.py"
+    "dist": "python3 tools/publish-prep.py",
+    "test:rest": "node test/rest-full.mjs"
   },
   "devDependencies": {
     "pixelmatch": "^6.0.0",

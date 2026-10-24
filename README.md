@@ -85,6 +85,10 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
 
 The strength rank is themed on Dragon Ball Z: `MOOSE_RANKS` in `core/strength.js` maps strength level to a form, paced for about a year at ~1,400 XP/week (1 Saiyan Warrior, 4 Kaioken, 9 Super Saiyan, 15 Super Saiyan 2, 22 Super Saiyan 3, 30 Super Saiyan Blue, 40 Ultra Instinct). Each entry's third element lists the levels where its 3 stages start; `mooseStage(L)` returns `{form, stage, next}` for the stage row under the title, the ladder and the level-up toast. Per-lift tiers (`TIERS`, est. 1RM gain): Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai's Planet +20%, Over 9,000 +35%. Only labels changed; tier keys (`bronze`…`diamond`) and their colors are unchanged.
 
+## Full-points rest days, capped per week
+
+A habit with `restFull: true` pays full base XP for a declared (non-light) rest day. `restFullMax` (0-3, unset = no cap) limits how many of those pay per week; the rest still keep the streak but score 0. Train is set to `restFull: true, restFullMax: 1`: the one full rest day in the 5 strength + 1 light + 1 rest program pays +20, a second full rest in the same week keeps the streak at 0 XP, and the light day keeps its own light XP. `byDate[d].full` lists the habits whose rest paid that day. Scoring is recomputed from history, so it applies to past weeks too. `test/rest-full.mjs` covers it (runs in `npm test`).
+
 ## Band sets (RipRight and other band work)
 
 A lift set can be a resistance band instead of pounds: `{w: 0, r: 220, b: 'thick'}`. The ladder is `BANDS` in `src/js/core/strength.js` (Light band, Thick band; add a heavier band at the end of the list). In the lift sheet each set row has an lb/band picker; Coach's `log_lift` and `update_lift` take `b`.

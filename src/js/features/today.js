@@ -171,7 +171,7 @@ function renderHabits(){
     var allow = hb.restPerWeek || 0, left = allow - ((st.restUsed || {})[hb.id + '|' + mondayOf(d)] || 0);
     var restDays = hb.restOn && hb.restOn.length ? hb.restOn.map(function(n){ return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][n]; }).join('/') : '';
     var rw = restWords(hb);
-    var restText = !allow ? '' : restDays ? ' · ' + restDays + ' rest day' + (hb.restFull ? ' (full points)' : '') : (mondayOf(d) === mondayOf(today) ? ' · ' + Math.max(left, 0) + ' of ' + allow + ' ' + rw.many + ' left this week' : ' · ' + allow + ' ' + rw.many + ' a week');
+    var restText = !allow ? '' : restDays ? ' · ' + restDays + ' rest day' + (hb.restFull ? (hb.restFullMax ? ' (' + hb.restFullMax + ' a week at full points)' : ' (full points)') : '') : (mondayOf(d) === mondayOf(today) ? ' · ' + Math.max(left, 0) + ' of ' + allow + ' ' + rw.many + ' left this week' : ' · ' + allow + ' ' + rw.many + ' a week');
     var restToday = !hb.restOn || !hb.restOn.length || hb.restOn.indexOf(parseKey(d).getDay()) >= 0;
     var restLogged = rested && !!(bd && bd.restDone && bd.restDone.indexOf(hb.id) >= 0);
     var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : rw.undo;
@@ -191,8 +191,8 @@ function renderHabits(){
     }
     h += '</div><div class="habit-side">';
     if(rested){
-      var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0);
-      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag' + (hb.restFull && restMarked ? ' light' : '') + '">' + rw.tag + (hb.restFull && restMarked ? ' · +' + BASE_XP : hb.id === 'sleep' ? ' · excused' : '') + '</span>';
+      var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0), fullPaid = !!(bd && bd.full && bd.full.indexOf(hb.id) >= 0);
+      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.id === 'sleep' ? ' · excused' : '') + '</span>';
       if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
       var lx = hb.id === 'sleep' ? lateXP(d) : null;

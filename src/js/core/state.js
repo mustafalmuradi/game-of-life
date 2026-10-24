@@ -44,6 +44,7 @@ export function normalizeSettings(s){
       presets: Array.isArray(h.presets) && h.presets.length ? h.presets.slice(0,4).map(String) : ['Extra session'],
       restOn: Array.isArray(h.restOn) && h.restOn.length ? h.restOn.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : null,
       restFull: !!h.restFull,
+      restFullMax: Math.max(0, Math.min(3, parseInt(h.restFullMax, 10) || 0)) || undefined, // full-points rests per week; unset = every marked rest pays
       restManual: !!h.restManual
     });
   });
