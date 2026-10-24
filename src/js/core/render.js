@@ -8,9 +8,15 @@ import { beltSVG, miniBelt, rankProgressHTML } from './svg.js';
 /* ---------- render ---------- */
 var tabs = {};
 export function registerTab(name, fn){ tabs[name] = fn; }
+/* Three sections on the main bar, two views each (Oct 2026). state.tab is still the view id, so every view,
+   Coach's navigate tool and the data model are unchanged; the section is derived from it. */
+export var SECTIONS = {hq:['today','tasks'], body:['body','lifts'], progress:['progress','build']};
+export function sectionOf(view){ var k = 'hq'; Object.keys(SECTIONS).forEach(function(s){ if(SECTIONS[s].indexOf(view) >= 0) k = s; }); return k; }
 export function render(){
   renderBelt();
-  ['today','tasks','lifts','body','progress','build'].forEach(function(t){ $('#tab-' + t).setAttribute('aria-selected', state.tab === t); $('#view-' + t).hidden = state.tab !== t; });
+  var sec = sectionOf(state.tab);
+  Object.keys(SECTIONS).forEach(function(s){ var b = $('#sec-' + s); if(s === sec) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  ['today','tasks','lifts','body','progress','build'].forEach(function(t){ var b = $('#tab-' + t); b.setAttribute('aria-selected', state.tab === t); b.hidden = SECTIONS[sec].indexOf(t) < 0; $('#view-' + t).hidden = state.tab !== t; });
   $('#view-today').style.display = state.tab === 'today' ? 'flex' : 'none';
   (tabs[state.tab] || tabs.progress)();
   ui.popSeg = null;
@@ -22,7 +28,7 @@ var hudFn = null;
 export function registerHud(fn){ hudFn = fn; }
 function renderHud(){ var el = $('#hud'); if(!el) return; var h = hudFn ? hudFn() : ''; if(el.innerHTML !== h) el.innerHTML = h; }
 export function syncTabs(){
-  var bar = $('.tabs'), b = bar && bar.querySelector('[aria-selected="true"]'); if(!b) return;
+  var bar = $('.tabs'), b = bar && bar.querySelector('[aria-current="page"]'); if(!b) return;
   var rs = document.documentElement.style; rs.setProperty('--tab-x', b.offsetLeft + 'px'); rs.setProperty('--tab-w', b.offsetWidth + 'px');
 }
 function decorate(){

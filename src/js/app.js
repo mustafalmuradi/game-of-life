@@ -6,7 +6,7 @@ import { recompute } from './core/stats.js';
 import { connectCloud, flushUnsynced, loadLocal, saveSettings, sync, testLS } from './core/store.js';
 import { addExtra, removeExtra, toggleHabit, toggleRest } from './features/today.js';
 import { clearPromos, nextPromo, toast } from './core/effects.js';
-import { registerHud, render, syncTabs } from './core/render.js';
+import { registerHud, render, SECTIONS, syncTabs } from './core/render.js';
 import { readiness } from './features/body.js';
 import { isOpen, taskDoc } from './features/tasks.js';
 import { pad } from './core/utils.js';
@@ -26,7 +26,8 @@ import { applyTheme, renderThemeRow, setThemePref, themeTick } from './features/
 /* ---------- events ---------- */
 function bind(){
   document.addEventListener('click', function(e){
-    var t = e.target.closest('[data-act],[data-tab]'); if(!t) return;
+    var t = e.target.closest('[data-act],[data-tab],[data-sec]'); if(!t) return;
+    if(t.hasAttribute('data-sec')){ state.tab = SECTIONS[t.getAttribute('data-sec')][0]; render(); window.scrollTo({top:0}); return; } // a section always opens on its home view
     if(t.hasAttribute('data-tab')){ state.tab = t.getAttribute('data-tab'); render(); return; }
     var act = t.getAttribute('data-act'), hid = t.getAttribute('data-h');
     switch(act){

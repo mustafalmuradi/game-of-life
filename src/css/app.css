@@ -76,11 +76,11 @@ main>section>*:nth-child(5){animation-delay:.24s}
 .next b{color:var(--ink);font-variant-numeric:tabular-nums}
 
 /* tabs */
-.tabs{display:grid;grid-template-columns:repeat(6,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:5px;gap:4px;box-shadow:var(--shadow)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:5px;gap:4px;box-shadow:var(--shadow)}
 .tabs button{border:0;background:transparent;border-radius:13px;padding:10px 0;font-weight:800;font-size:12px;color:var(--muted);transition:color .2s,background .25s var(--ease),transform .25s var(--spring),box-shadow .25s}
 .tabs button:hover{color:var(--ink);background:var(--surface-2)}
 .tabs button:active{transform:scale(.95)}
-.tabs button[aria-selected="true"]{background:var(--grad);background-size:200% 200%;color:#fff;box-shadow:0 6px 16px -6px rgba(108,61,255,.6);animation:hue 4s ease-in-out infinite alternate,tabpop .35s var(--spring)}
+.tabs button[aria-current="page"]{background:var(--grad);background-size:200% 200%;color:#fff;box-shadow:0 6px 16px -6px rgba(108,61,255,.6);animation:hue 4s ease-in-out infinite alternate,tabpop .35s var(--spring)}
 @keyframes tabpop{0%{transform:scale(.9)}100%{transform:scale(1)}}
 
 /* sheets, toast, promo */

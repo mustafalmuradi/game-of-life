@@ -34,7 +34,13 @@ async function settle(page) {
   await page.evaluate(() => new Promise(r => { let i = 0; (function tick() { if (++i > 20) return r(); Promise.resolve().then(tick); })(); }));
 }
 async function escape(page) { await page.keyboard.press('Escape'); await settle(page); }
-async function tab(page, name) { await click(page, '[data-tab="' + name + '"]'); await settle(page); }
+// three sections on the main bar, two views each: open the section, then the view inside it (Oct 2026)
+const SECTION_OF = { today:'hq', tasks:'hq', body:'body', lifts:'body', progress:'progress', build:'progress' };
+async function tab(page, name) {
+  await click(page, '[data-sec="' + SECTION_OF[name] + '"]');
+  if (await page.locator('[data-tab="' + name + '"]').getAttribute('aria-selected') !== 'true') await click(page, '[data-tab="' + name + '"]');
+  await settle(page);
+}
 
 export const steps = [
   { name: 'load (cloud connected, or local mode with --noruntime)', run: async (page) => {

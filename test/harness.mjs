@@ -132,7 +132,8 @@ async function shots(run, dir) {
   for (const scheme of ['light', 'dark']) {
     await run.page.emulateMedia({ colorScheme: scheme });
     for (const t of ['today', 'tasks', 'lifts', 'body', 'progress', 'build']) {
-      await run.page.locator('[data-tab="' + t + '"]').click({ force: true });
+      await run.page.locator('[data-sec="' + ({ today:'hq', tasks:'hq', body:'body', lifts:'body', progress:'progress', build:'progress' })[t] + '"]').click({ force: true }); // section, then the view inside it
+      if (!['today', 'body', 'progress'].includes(t)) await run.page.locator('[data-tab="' + t + '"]').click({ force: true });
       await run.page.evaluate(() => window.scrollTo(0, 0));
       const f = path.join(dir, scheme + '-' + t + '.png');
       await run.page.screenshot({ path: f, fullPage: true });

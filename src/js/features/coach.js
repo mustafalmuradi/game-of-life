@@ -1113,7 +1113,7 @@ COACH_RULES += '\n\n' + [
 '- Rewards: rewards list/set/claim.',
 '- Notes: save a note when he says remember/note/keep this, makes a decision or plan change, defines a rule, or tells you something worth keeping that has no field. Search notes when he asks about anything from the past that isn’t in the logs. Don’t save chit-chat.',
 '- Storage: every Coach conversation and every photo is archived permanently. data_status reports usage; export_data packs everything into one .zip for him to keep or move.',
-'- navigate opens a tab or a day behind the chat when showing him is faster than telling him.',
+'- navigate opens a tab or a day behind the chat when showing him is faster than telling him. Layout: three sections on the main bar, Headquarters (Today + Tasks), Body (Body + Lifts), Progress (Progress + Build); call them by those names (e.g. "Body → Lifts").',
 '- What you cannot do: change how the page looks or works (new screens, charts, scoring rules, new kinds of fields). When he asks for that, say so in one line, save it as a note tagged feature-request with the full ask, and tell him a Claude chat can build it straight from that note.'
 ].join('\n');
 

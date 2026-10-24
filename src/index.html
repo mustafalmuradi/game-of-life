@@ -36,14 +36,19 @@
 
   <section class="card belt-card" id="belt" aria-live="polite"></section>
 
-  <nav class="tabs" role="tablist" aria-label="Views">
+  <nav class="tabs" aria-label="Sections">
+    <button type="button" id="sec-hq" data-sec="hq" aria-current="page">Headquarters</button>
+    <button type="button" id="sec-body" data-sec="body">Body</button>
+    <button type="button" id="sec-progress" data-sec="progress">Progress</button>
+  </nav>
+  <div class="subtabs" role="tablist" aria-label="Views">
     <button type="button" role="tab" id="tab-today" data-tab="today" aria-selected="true" aria-controls="view-today">Today</button>
     <button type="button" role="tab" id="tab-tasks" data-tab="tasks" aria-selected="false" aria-controls="view-tasks">Tasks</button>
-    <button type="button" role="tab" id="tab-lifts" data-tab="lifts" aria-selected="false" aria-controls="view-lifts">Lifts</button>
-    <button type="button" role="tab" id="tab-body" data-tab="body" aria-selected="false" aria-controls="view-body">Body</button>
-    <button type="button" role="tab" id="tab-progress" data-tab="progress" aria-selected="false" aria-controls="view-progress">Progress</button>
-    <button type="button" role="tab" id="tab-build" data-tab="build" aria-selected="false" aria-controls="view-build">Build</button>
-  </nav>
+    <button type="button" role="tab" id="tab-body" data-tab="body" aria-selected="false" aria-controls="view-body" hidden>Body</button>
+    <button type="button" role="tab" id="tab-lifts" data-tab="lifts" aria-selected="false" aria-controls="view-lifts" hidden>Lifts</button>
+    <button type="button" role="tab" id="tab-progress" data-tab="progress" aria-selected="false" aria-controls="view-progress" hidden>Progress</button>
+    <button type="button" role="tab" id="tab-build" data-tab="build" aria-selected="false" aria-controls="view-build" hidden>Build</button>
+  </div>
 
   <main>
     <section id="view-today" role="tabpanel" aria-labelledby="tab-today" style="display:flex;flex-direction:column;gap:14px">
