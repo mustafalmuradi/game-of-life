@@ -1,7 +1,7 @@
 // recompute(): walks every day and rebuilds state.stats and state.liftStats. Call it after any data change. Plus habit30(), the 30-day hit rate.
 import { BASE_XP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from './config.js';
 import { addDays, mondayOf, parseKey, todayKey } from './utils.js';
-import { activeHabits, capOf, hasHabitData, isActive, lateXP, state } from './state.js';
+import { activeHabits, capOf, hasHabitData, isActive, lateXP, lightXPOf, state } from './state.js';
 import { checkMilestones, CURVES, habitCurve, rankInfo } from './xp.js';
 import { analyzeLifts } from './strength.js';
 
@@ -43,7 +43,7 @@ export function recompute(){
         /* a declared full rest pays full base XP when the habit allows it, capped at restFullMax a week (0 = no cap) */
         if(restMarked && h.restFull && doc.rest[h.id] !== 'light' && (!h.restFullMax || (fullUsed[rk] || 0) < h.restFullMax)){ fullUsed[rk] = (fullUsed[rk] || 0) + 1; baseXP += BASE_XP; s.xp += BASE_XP; fullDays.push(h.id); }
         if(doc && doc.rest && doc.rest[h.id] === 'light' && (lightUsed[rk] || 0) < (h.lightPerWeek || 0)){
-          lightUsed[rk] = (lightUsed[rk] || 0) + 1; s.light++; s.xp += LIGHT_XP; lightXP += LIGHT_XP; lightDays.push(h.id);
+          var lx = lightXPOf(h); lightUsed[rk] = (lightUsed[rk] || 0) + 1; s.light++; s.xp += lx; lightXP += lx; lightDays.push(h.id);
         }
       } else {
         required++;

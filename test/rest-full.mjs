@@ -30,5 +30,12 @@ const hs = s.habits.workout; if (hs.heldBest < plan.length) fails.push('held str
 // no cap set = every marked full rest pays (Money / Bed on time keep their behaviour)
 habits[0].restFullMax = 0; st.state.settings = st.normalizeSettings({ version:1, habits, targets:{} }); stats.recompute();
 if (!(st.state.stats.byDate[addDays(mon, 3)].full || []).includes('workout')) fails.push('without a cap, the second rest should pay');
+// light days: LIGHT_XP by default, full base XP with lightFull (Train's light day is programmed rehab), still capped by lightPerWeek
+const { LIGHT_XP } = await import('../src/js/core/config.js');
+habits[0].restFullMax = 1; habits[0].lightFull = false; st.state.settings = st.normalizeSettings({ version:1, habits, targets:{} }); stats.recompute();
+if (st.state.stats.byDate[addDays(mon, 4)].base !== LIGHT_XP) fails.push('light day without lightFull should pay ' + LIGHT_XP);
+habits[0].lightFull = true; st.state.settings = st.normalizeSettings({ version:1, habits, targets:{} }); stats.recompute();
+if (st.state.stats.byDate[addDays(mon, 4)].base !== BASE_XP) fails.push('light day with lightFull should pay ' + BASE_XP + ', got ' + st.state.stats.byDate[addDays(mon, 4)].base);
+if (st.state.stats.byDate[addDays(mon, 11)].base !== BASE_XP) fails.push('week 2 light day with lightFull should pay ' + BASE_XP);
 console.log(fails.length ? 'rest-full: FAIL\n  ' + fails.join('\n  ') : 'rest-full: ok');
 process.exit(fails.length ? 1 : 0);

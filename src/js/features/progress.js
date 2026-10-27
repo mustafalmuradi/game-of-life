@@ -1,7 +1,7 @@
 // Progress tab: charts, heatmap, badges, trophy room, rewards.
 import { BASE_XP, EXTRA_CAP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, parseKey, range7, todayKey } from '../core/utils.js';
-import { activeHabits, habitById, normalizeSettings, state } from '../core/state.js';
+import { activeHabits, habitById, lightXPOf, normalizeSettings, state } from '../core/state.js';
 import { HABIT_MS, habitCurve, MILESTONES, rewardSlots, rewardText, ROMAN, tierColor, trophySVG } from '../core/xp.js';
 import { saveSettings } from '../core/store.js';
 import { burst, toast } from '../core/effects.js';
@@ -177,9 +177,9 @@ function renderProgress(){
     '<li><b>+' + BASE_XP + '</b><span>Base habit done. The commitment itself.</span></li>' +
     '<li><b class="g">+' + EXTRA_XP + '</b><span>Each extra session, up to ' + EXTRA_CAP + ' per habit a day (Train: 1, recovery work only). Unlocks after the base is done.</span></li>' +
     '<li><b>' + trainCap + '/wk</b><span>Train earns XP on up to ' + trainCap + ' strength days a week. One more logs but earns nothing, so missed days can\u2019t be made up by stacking.</span></li>' +
-    '<li><b class="g">+' + LIGHT_XP + '</b><span>Light day on Train (walk, RipRight, mobility, easy pads): 1 a week. It uses a rest slot, doesn\u2019t count toward the 5 sessions, and a 2nd light day that week earns 0. Full rest stays at 0 on purpose.</span></li>' +
+    '<li><b class="g">+' + lightXPOf(wkH) + '</b><span>Light day on Train (walk, RipRight, mobility, shoulder rehab): ' + ((wkH && wkH.lightPerWeek) || 1) + ' a week. It uses a rest slot and doesn\u2019t count toward the ' + trainCap + ' sessions; a 2nd light day that week earns 0.' + (wkH && wkH.restFull ? ' The full rest day pays +' + BASE_XP + ' too (' + (wkH.restFullMax || 'every') + ' a week): both are part of the program.' : '') + '</span></li>' +
     '<li><b class="g">+' + SWEEP_XP + '</b><span>Clean sweep: every habit done. Adds ' + SWEEP_STEP + ' more for each sweep day in a row, up to +' + SWEEP_MAX + '.</span></li>' +
-    '<li><b>Rest</b><span>Habits like training can have up to 3 rest days a week (set in the habit editor). Log it and it counts as done for the day (ring and clean sweep). Full rest earns 0 XP but doesn’t break the streak. Unlogged misses use up rest days first, and those don’t count as done.</span></li>' +
+    '<li><b>Rest</b><span>Habits like training can have up to 3 rest days a week (set in the habit editor). Log it and it counts as done for the day (ring and clean sweep) and doesn’t break the streak. A full rest earns 0 XP unless the habit pays full points for it (Train: 1 a week, Money: Sunday). Unlogged misses use up rest days first, and those don’t count as done.</span></li>' +
     '<li><b>4</b><span>Stripes per belt, then the next one: White, Blue, Purple, Brown, then Black with degrees. Each degree costs three times a normal stripe.</span></li>' +
     '<li><b>Habit</b><span>Every habit has its own belt, fed by its own base and extra XP. First stripe at 80 XP, each one after costs 45 more. Train scales to ' + (7 - (wkH ? wkH.restPerWeek : 0)) + ' days a week (' + trainC.base + ', then +' + trainC.step + ') so its Black takes the same calendar time.</span></li>' +
     '<li><b>Overall</b><span>Fed by everything, including sweep bonuses and trophies. First stripe at 500 XP, each one after costs 300 more.</span></li>' +

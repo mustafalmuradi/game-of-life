@@ -1,7 +1,7 @@
 // Today tab: week strip, day card, habit list, and the habit mutations (toggle, rest, extras).
 import { BASE_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, hijri, mondayOf, parseKey, range7, reduceMotion, timeOf, todayKey, uid } from '../core/utils.js';
-import { activeHabits, capOf, habitById, habitTarget, isActive, isEmptyDay, ladderStep, LATE, lateOf, lateUsed, lateXP, state, T, ui } from '../core/state.js';
+import { activeHabits, capOf, habitById, lightXPOf, habitTarget, isActive, isEmptyDay, ladderStep, LATE, lateOf, lateUsed, lateXP, state, T, ui } from '../core/state.js';
 import { beltOf, habitCurve, msMeta, nextTrophy, rankInfo, rankTitle, rewardText, trophySVG } from '../core/xp.js';
 import { recompute } from '../core/stats.js';
 import { scheduleSave } from '../core/store.js';
@@ -192,14 +192,14 @@ function renderHabits(){
     h += '</div><div class="habit-side">';
     if(rested){
       var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0), fullPaid = !!(bd && bd.full && bd.full.indexOf(hb.id) >= 0);
-      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + LIGHT_XP : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.id === 'sleep' ? ' · excused' : '') + '</span>';
+      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + lightXPOf(hb) : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.id === 'sleep' ? ' · excused' : '') + '</span>';
       if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
       var lx = hb.id === 'sleep' ? lateXP(d) : null;
       h += '<span class="xp-hint">+' + (lx === null ? BASE_XP : lx) + '</span>';
       if(hb.id === 'sleep' && lateOpen(d).ok) h += '<button class="rest-btn" type="button" data-act="plan-late">Late night</button>';
       if(allow && d === today && left > 0 && restToday){
-        if(hb.id === 'workout') h += '<span class="rest-pair"><button class="rest-btn" type="button" data-act="light" data-h="' + esc(hb.id) + '">' + (((hb.lightPerWeek || 0) - ((st.lightUsed || {})[hb.id + '|' + mondayOf(d)] || 0)) > 0 ? 'Light +' + LIGHT_XP : 'Light day') + '</button><button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest</button></span>';
+        if(hb.id === 'workout') h += '<span class="rest-pair"><button class="rest-btn" type="button" data-act="light" data-h="' + esc(hb.id) + '">' + (((hb.lightPerWeek || 0) - ((st.lightUsed || {})[hb.id + '|' + mondayOf(d)] || 0)) > 0 ? 'Light +' + lightXPOf(hb) : 'Light day') + '</button><button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Rest</button></span>';
         else h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">' + rw.btn + '</button>';
       }
     } else if(bd && bd.overCap && bd.overCap.indexOf(hb.id) >= 0){

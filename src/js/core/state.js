@@ -1,5 +1,5 @@
 // The one state object, the normalizers that keep stored data well-formed, and the habit activity rules.
-import { BASE_XP, COLOR_SLOTS, DEFAULT_SETTINGS, DEFAULT_TARGETS, EXTRA_CAP, TASK_LANE_ALIASES } from './config.js';
+import { BASE_XP, COLOR_SLOTS, DEFAULT_SETTINGS, DEFAULT_TARGETS, EXTRA_CAP, LIGHT_XP, TASK_LANE_ALIASES } from './config.js';
 import { addDays, clone, fmt, mondayOf, todayKey, uid } from './utils.js';
 import { beltOf } from './xp.js';
 
@@ -45,6 +45,7 @@ export function normalizeSettings(s){
       restOn: Array.isArray(h.restOn) && h.restOn.length ? h.restOn.map(Number).filter(function(n){ return n >= 0 && n <= 6; }) : null,
       restFull: !!h.restFull,
       restFullMax: Math.max(0, Math.min(3, parseInt(h.restFullMax, 10) || 0)) || undefined, // full-points rests per week; unset = every marked rest pays
+      lightFull: h.lightFull ? true : undefined, // a paid light day earns full base XP instead of LIGHT_XP
       restManual: !!h.restManual
     });
   });
@@ -118,6 +119,8 @@ export function isActive(h, d){
 }
 export function activeHabits(d){ return state.settings.habits.filter(function(h){ return isActive(h, d); }); }
 export function T(){ return state.settings.targets || DEFAULT_TARGETS; }
+/* what a paid light day earns for this habit: full base XP when lightFull is on (Train: light days are programmed rehab work) */
+export function lightXPOf(h){ return h && h.lightFull ? BASE_XP : LIGHT_XP; }
 export function habitById(id){ return state.settings.habits.filter(function(h){ return h.id === id; })[0]; }
 
 /* ---------- planned late nights (Bed on time) ---------- */

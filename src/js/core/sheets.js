@@ -1,7 +1,7 @@
 // Bottom sheets: open/close, the rank sheet, the extras sheet, habit settings.
 import { BELTS, EXTRA_XP, LIGHT_XP } from './config.js';
 import { $, clone, esc, fmt, fmtShort, todayKey } from './utils.js';
-import { activeHabits, capOf, habitById, habitTarget, isActive, state } from './state.js';
+import { activeHabits, capOf, habitById, habitTarget, isActive, lightXPOf, state } from './state.js';
 import { beltOf, CURVES, habitCurve, rankInfo, rankSub, rankTitle } from './xp.js';
 import { habit30 } from './stats.js';
 import { beltSVG, rankProgressHTML, testsListHTML } from './svg.js';
@@ -42,7 +42,7 @@ export function openRank(id){
       beltSVG(hr.level) + rankProgressHTML(hr, 'var(--h-' + hb.color + ')') +
       '<div class="rk-stats"><div><b>' + hs.run + (hb.restPerWeek ? '' : 'd') + '</b><span>' + (hb.restPerWeek ? 'Session streak' : 'Streak') + '</span></div><div><b>' + hs.best + (hb.restPerWeek ? '' : 'd') + '</b><span>Best</span></div><div><b>' + hs.days + '</b><span>Days done</span></div><div><b>' + (m.elig ? m.pct + '%' : '–') + '</b><span>Last 30</span></div></div>' +
       '<p class="eyebrow">Belt tests · streak + time in</p>' + testsListHTML(hr, hb) +
-      (hb.restPerWeek ? '<p class="test-d">Up to ' + hb.restPerWeek + (hb.restPerWeek === 1 ? ' rest day' : ' rest days') + ' a week don’t break this streak or your clean sweep. A miss beyond that does.' + (hb.lightPerWeek ? ' Log one as a light day and it earns +' + LIGHT_XP + ' XP (' + hb.lightPerWeek + ' a week).' : '') + '</p>' : '');
+      (hb.restPerWeek ? '<p class="test-d">Up to ' + hb.restPerWeek + (hb.restPerWeek === 1 ? ' rest day' : ' rest days') + ' a week don’t break this streak or your clean sweep. A miss beyond that does.' + (hb.lightPerWeek ? ' Log one as a light day and it earns +' + lightXPOf(hb) + ' XP (' + hb.lightPerWeek + ' a week).' : '') + '</p>' : '');
   }
   $('#rk-body').innerHTML = h;
   if(!wasOpen) openSheet('#rank-sheet'); else { var sh = el.querySelector('.sheet'); if(sh) sh.scrollTop = 0; }

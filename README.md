@@ -91,7 +91,7 @@ The main bar is **Headquarters · Body · Progress**. Under it, a switch shows t
 
 ## Full-points rest days, capped per week
 
-A habit with `restFull: true` pays full base XP for a declared (non-light) rest day. `restFullMax` (0-3, unset = no cap) limits how many of those pay per week; the rest still keep the streak but score 0. Train is set to `restFull: true, restFullMax: 1`: the one full rest day in the 5 strength + 1 light + 1 rest program pays +20, a second full rest in the same week keeps the streak at 0 XP, and the light day keeps its own light XP. `byDate[d].full` lists the habits whose rest paid that day. Scoring is recomputed from history, so it applies to past weeks too. `test/rest-full.mjs` covers it (runs in `npm test`).
+A habit with `restFull: true` pays full base XP for a declared (non-light) rest day. `restFullMax` (0-3, unset = no cap) limits how many of those pay per week; the rest still keep the streak but score 0. Train is set to `restFull: true, restFullMax: 1`: the one full rest day in the 5 strength + 1 light + 1 rest program pays +20, a second full rest in the same week keeps the streak at 0 XP, and the light day keeps its own light XP. `byDate[d].full` lists the habits whose rest paid that day. `lightFull: true` makes a paid light day earn full base XP (+20) instead of `LIGHT_XP` (+10); Train has it on (Oct 27, 2026: light days are programmed shoulder rehab), still capped by `lightPerWeek`. Scoring is recomputed from history, so it applies to past weeks too. `test/rest-full.mjs` covers it (runs in `npm test`).
 
 ## Band sets (RipRight and other band work)
 
