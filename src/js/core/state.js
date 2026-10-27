@@ -46,6 +46,7 @@ export function normalizeSettings(s){
       restFull: !!h.restFull,
       restFullMax: Math.max(0, Math.min(3, parseInt(h.restFullMax, 10) || 0)) || undefined, // full-points rests per week; unset = every marked rest pays
       lightFull: h.lightFull ? true : undefined, // a paid light day earns full base XP instead of LIGHT_XP
+      levelFloor: parseInt(h.levelFloor, 10) > 0 ? parseInt(h.levelFloor, 10) : undefined, // a belt kept through a ladder rebalance
       restManual: !!h.restManual
     });
   });

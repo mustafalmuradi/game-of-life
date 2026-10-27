@@ -10,8 +10,17 @@ export var CURVES = {
   habit:   {base:80,  step:45,  tests:[14,30,90,180], floors:[30,90,180,365], unit:'days in a row'}
 };
 /* Habits with rest days (Train) scale XP and streak tests to their weekly frequency, so Black takes the same calendar time. */
+/* Only passes that pay nothing shrink the ladder (Oct 27, 2026): a full rest capped by restFullMax and a lightFull light day
+   earn like a session, so they count as active days. Train: 3 passes - 1 paid rest - 1 paid light = 1 -> 6 days a week. */
+export function unpaidPasses(h){
+  if(!h) return 0;
+  var r = h.restPerWeek || 0;
+  if(h.restFull && h.restFullMax) r -= h.restFullMax;
+  if(h.lightFull) r -= (h.lightPerWeek || 0);
+  return Math.max(0, r);
+}
 export function habitCurve(h){
-  var rest = Math.min((h && h.restPerWeek) || 0, 6), c = CURVES.habit;
+  var rest = Math.min(unpaidPasses(h), 6), c = CURVES.habit;
   if(!rest) return c;
   var f = (7 - rest)/7;
   return {base:Math.round(c.base*f), step:Math.round(c.step*f), floors:c.floors, unit:'sessions in a row',
@@ -19,6 +28,13 @@ export function habitCurve(h){
 }
 /* Degrees past Black cost 3x, so they come every few months, not every few weeks. */
 function levelCost(c, L){ return (c.base + c.step*L) * (L >= 20 ? 3 : 1); }
+/* A belt he already earned stays when a ladder is rebalanced (levelFloor on the habit): the level holds at the floor and
+   the bar shows total XP against what the next stripe costs on the new ladder, until XP catches up and takes over. */
+export function floorRank(rk, floor){
+  if(!floor || rk.level >= floor) return rk;
+  var cum = 0; for(var L = 0; L <= floor; L++) cum += levelCost(rk.curve, L);
+  return Object.assign({}, rk, {level:floor, capped:false, banked:0, into:rk.xp, need:cum, floored:true});
+}
 function levelFromXP(xp, c){ var L=0, cum=0; while(xp >= cum + levelCost(c, L)){ cum += levelCost(c, L); L++; } return {L:L, into:xp-cum, need:levelCost(c, L)}; }
 export function rankInfo(xp, best, run, c, age){
   age = age || 0;

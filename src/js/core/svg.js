@@ -44,7 +44,8 @@ export function rankProgressHTML(rk, color){
   }
   var pct2 = Math.min(100, rk.into/rk.need*100);
   h += '<div class="next"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + rk.need + '" aria-valuenow="' + rk.into + '" aria-label="Progress to ' + esc(nextLabel(rk.level)) + '"><span style="width:' + pct2.toFixed(1) + '%' + (color ? ';background:' + color : '') + '"></span></div>' +
-    '<p><b>' + fmt(rk.into) + '</b> / ' + fmt(rk.need) + ' XP to ' + esc(nextLabel(rk.level)) + '</p>';
+    '<p><b>' + fmt(rk.into) + '</b> / ' + fmt(rk.need) + ' XP to ' + esc(nextLabel(rk.level)) + '</p>' +
+    (rk.floored ? '<p class="test-d">Belt kept through the ladder rebalance. Your XP is catching up on the new ladder; total XP shown.</p>' : '');
   var nbi = r.b + 1, t2 = testFor(c, nbi);
   if(t2){
     var ts2 = testState(rk, nbi), ok = ts2.streakOk && ts2.timeOk;

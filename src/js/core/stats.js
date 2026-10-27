@@ -2,7 +2,7 @@
 import { BASE_XP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from './config.js';
 import { addDays, mondayOf, parseKey, todayKey } from './utils.js';
 import { activeHabits, capOf, hasHabitData, isActive, lateXP, lightXPOf, state } from './state.js';
-import { checkMilestones, CURVES, habitCurve, rankInfo } from './xp.js';
+import { checkMilestones, CURVES, floorRank, habitCurve, rankInfo } from './xp.js';
 import { analyzeLifts } from './strength.js';
 
 function restDayOK(h, d){ return !h.restOn || !h.restOn.length || h.restOn.indexOf(parseKey(d).getDay()) >= 0; }
@@ -64,7 +64,7 @@ export function recompute(){
     byDate[d] = {done:done, total:required, excused:excused, restDone:restDone, overCap:overCap, light:lightDays, full:fullDays.length ? fullDays : undefined, base:baseXP + lightXP, extra:extraXP, sweepBonus:sweepBonus, ms:msXP, bonus:extraXP+sweepBonus+msXP, xp:xp, sweep:sweep};
   }
   var todaySweep = byDate[today] && byDate[today].sweep;
-  state.settings.habits.forEach(function(h){ var s = hs[h.id]; s.rank = rankInfo(s.xp, s.best, s.run, habitCurve(h), s.age); });
+  state.settings.habits.forEach(function(h){ var s = hs[h.id]; s.rank = floorRank(rankInfo(s.xp, s.best, s.run, habitCurve(h), s.age), h.levelFloor); });
   var heldNow = activeHabits(today).map(function(h){ return hs[h.id].held; }).sort(function(a, b){ return b - a; });
   var multiNow = multi.map(function(m){ return heldNow.filter(function(v){ return v >= m.d; }).length; });
   state.stats = {
