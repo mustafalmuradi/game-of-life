@@ -2,7 +2,7 @@
 import { BASE_XP, EXTRA_CAP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, parseKey, range7, todayKey } from '../core/utils.js';
 import { activeHabits, habitById, lightXPOf, normalizeSettings, state } from '../core/state.js';
-import { HABIT_MS, habitCurve, MILESTONES, unpaidPasses, rewardSlots, rewardText, ROMAN, tierColor, trophySVG } from '../core/xp.js';
+import { CURVES, HABIT_MS, habitCurve, MILESTONES, unpaidPasses, rewardSlots, rewardText, ROMAN, tierColor, trophySVG } from '../core/xp.js';
 import { saveSettings } from '../core/store.js';
 import { burst, toast } from '../core/effects.js';
 import { ICON } from '../core/svg.js';
@@ -181,7 +181,7 @@ function renderProgress(){
     '<li><b class="g">+' + SWEEP_XP + '</b><span>Clean sweep: every habit done. Adds ' + SWEEP_STEP + ' more for each sweep day in a row, up to +' + SWEEP_MAX + '.</span></li>' +
     '<li><b>Rest</b><span>Habits like training can have up to 3 rest days a week (set in the habit editor). Log it and it counts as done for the day (ring and clean sweep) and doesn’t break the streak. A full rest earns 0 XP unless the habit pays full points for it (Train: 1 a week, Money: Sunday). Unlogged misses use up rest days first, and those don’t count as done.</span></li>' +
     '<li><b>4</b><span>Stripes per belt, then the next one: White, Blue, Purple, Brown, then Black with degrees. Each degree costs three times a normal stripe.</span></li>' +
-    '<li><b>Habit</b><span>Every habit has its own belt, fed by its own base and extra XP. First stripe at 80 XP, each one after costs 45 more. Train scales to ' + (7 - unpaidPasses(wkH)) + ' days a week, counting rest and light days that pay (' + trainC.base + ', then +' + trainC.step + ') so its Black takes the same calendar time.</span></li>' +
+    '<li><b>Habit</b><span>Every habit has its own belt, fed by its own base and extra XP. First stripe at ' + CURVES.habit.base + ' XP, each one after costs ' + CURVES.habit.step + ' more, so a habit done every day earns each belt as its time in opens, in step with your overall belt. Train scales to ' + (7 - unpaidPasses(wkH)) + ' days a week, counting rest and light days that pay (' + trainC.base + ', then +' + trainC.step + ') so its Black takes the same calendar time.</span></li>' +
     '<li><b>Overall</b><span>Fed by everything, including sweep bonuses and trophies. First stripe at 500 XP, each one after costs 300 more.</span></li>' +
     '<li><b>Test</b><span>XP earns stripes. A new belt also needs a streak and time in. Habit belts: 14, 30, 90, 180 days in a row (Train: ' + trainC.tests.join(', ') + ' sessions). Overall belts: hold habits on a streak at the same time, 5 for 14 days, 7 for 30, 9 for 90, 12 for 180. Rest days count as held, a miss resets that habit. Time in: Blue 1 month, Purple 3, Brown 6, Black 1 year. XP past the 4th stripe is banked until you pass.</span></li>' +
     '<li><b class="g">Cups</b><span>Trophies pay bonus XP to your overall belt: Pillars (5 habits held together), Full House (habits held 7+ days), Clean Streak, Sweep Count, and a streak trophy for every habit at 30, 75 and 250 days. Big ones unlock a real reward you name in advance.</span></li>' +

@@ -4,18 +4,21 @@ import { ord, todayKey } from './utils.js';
 import { activeHabits, habitById, state } from './state.js';
 
 /* ---------- XP + ranks ---------- */
-/* Black is built to take a year minimum: XP (~12-15 months at a solid pace) + an unbroken streak + time in. */
+/* Black is built to take a year minimum: XP + an unbroken streak + time in.
+   Habit ladder calibrated Oct 29, 2026 (was 80+45): a habit done every day at base XP reaches each belt as its time-in floor
+   opens (Blue ~30 days, Purple ~98, Brown ~203, Black ~345 -> held to 365), in step with the overall belts. */
 export var CURVES = {
   overall: {base:500, step:300, tests:[5,7,9,12], multi:[{n:5,d:14},{n:7,d:30},{n:9,d:90},{n:12,d:180}], floors:[30,90,180,365], unit:'habits held at once'},
-  habit:   {base:80,  step:45,  tests:[14,30,90,180], floors:[30,90,180,365], unit:'days in a row'}
+  habit:   {base:60,  step:30,  tests:[14,30,90,180], floors:[30,90,180,365], unit:'days in a row'}
 };
 /* Habits with rest days (Train) scale XP and streak tests to their weekly frequency, so Black takes the same calendar time. */
-/* Only passes that pay nothing shrink the ladder (Oct 27, 2026): a full rest capped by restFullMax and a lightFull light day
-   earn like a session, so they count as active days. Train: 3 passes - 1 paid rest - 1 paid light = 1 -> 6 days a week. */
+/* Only passes that pay nothing shrink the ladder (Oct 27, 2026): paid full rests (restFull: every pass, or restFullMax a week)
+   and lightFull light days earn like a session, so they count as active days.
+   Train: 3 passes - 1 paid rest - 1 paid light = 1 -> 6 days a week. Money (Sunday) and Bed on time (life happens): all paid -> 7. */
 export function unpaidPasses(h){
   if(!h) return 0;
   var r = h.restPerWeek || 0;
-  if(h.restFull && h.restFullMax) r -= h.restFullMax;
+  if(h.restFull) r -= (h.restFullMax || r);
   if(h.lightFull) r -= (h.lightPerWeek || 0);
   return Math.max(0, r);
 }
