@@ -50,5 +50,16 @@ if (low.level !== 5 || !low.floored || low.capped) fails.push('floor should hold
 if (low.need <= 300) fails.push('floored bar should point at the next stripe cost on the new ladder, got need ' + low.need);
 const high = xp.floorRank(xp.rankInfo(1100, 14, 14, c6, 40), 5);
 if (high.floored || high.level < 6) fails.push('once XP passes the floor, the real level should show, got ' + high.level);
+// Life happens on Eat enough: 1 declared pass a week keeps streak + sweep at 0 XP; a silent miss still breaks it
+const eatH = [{ id:'eat', name:'Eat enough', target:'Cal AI goal', color:'x2', since:'2000-01-01', pauses:[], restPerWeek:1, restManual:true }];
+st.state.settings = st.normalizeSettings({ version:1, habits:eatH, targets:{} });
+const eplan = ['done','done','pass','done','done','miss','done'];
+st.state.days = {}; eplan.forEach((p, i) => { const d = addDays(mon, i), doc = { date:d, done:{}, extras:{}, rest:{} }; if (p === 'done') doc.done.eat = 1; if (p === 'pass') doc.rest.eat = 1; st.state.days[d] = st.normalizeDay(doc, d); });
+stats.recompute();
+const eb = (i) => st.state.stats.byDate[addDays(mon, i)];
+if (!eb(2).sweep || eb(2).base !== 0) fails.push('declared Life happens pass should keep the sweep and pay 0, got sweep ' + eb(2).sweep + ' base ' + eb(2).base);
+if (eb(5).sweep) fails.push('an undeclared miss must still break the day (restManual)');
+const { restWords } = await import('../src/js/features/today.js').catch(() => ({}));
+if (restWords && restWords(st.state.settings.habits[0]).btn !== 'Life happens') fails.push('Eat enough pass button should read Life happens');
 console.log(fails.length ? 'rest-full: FAIL\n  ' + fails.join('\n  ') : 'rest-full: ok');
 process.exit(fails.length ? 1 : 0);

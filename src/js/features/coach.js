@@ -696,7 +696,7 @@ function commitSettings(s2, label){
   state.settings = normalizeSettings(s2); recompute(); render(); saveSettings();
   addAct(label, function(){ state.settings = normalizeSettings(old); recompute(); render(); saveSettings(); });
 }
-function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined, restFullMax:h.restFullMax || undefined, lightFull:h.lightFull || undefined}; }
+function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined, restManual:h.restManual || undefined, restFullMax:h.restFullMax || undefined, lightFull:h.lightFull || undefined}; }
 
 /* ----- notes ----- */
 function noteWrite(obj){
@@ -904,6 +904,7 @@ COACH_TOOLS.push(
    restPerWeek:{type:'integer', description:'0-3 rest days a week that don’t break the streak.'},
    restOn:{type:'array', items:{type:'integer'}, description:'Weekdays a rest day is allowed on, 0 = Sunday ... 6 = Saturday. Empty array = any day.'},
    restFull:{type:'boolean', description:'true: a rest day he logs pays the full base XP (keeps the streak either way).'},
+   restManual:{type:'boolean', description:'true: passes are "Life happens": only a declared pass counts, a silent miss breaks the streak (Bed on time, Eat enough).'},
    restFullMax:{type:'integer', description:'0-3: how many full rests a week pay full XP (0 = every one). Train uses 1: his one full rest day is part of the program.'},
    maxPerWeek:{type:'integer', description:'0-7, days a week that earn XP (0 = no cap).'},
    lightPerWeek:{type:'integer', description:'0-2 light days a week.'},
@@ -921,6 +922,7 @@ COACH_TOOLS.push(
      if(inp.restPerWeek !== undefined) x.restPerWeek = intIn(inp.restPerWeek, 0, 3, 'restPerWeek');
      if(inp.restOn !== undefined){ var ro = (Array.isArray(inp.restOn) ? inp.restOn : [inp.restOn]).map(Number).filter(function(n){ return n >= 0 && n <= 6; }); x.restOn = ro.length ? ro : null; }
      if(inp.restFull !== undefined) x.restFull = !!inp.restFull;
+     if(inp.restManual !== undefined) x.restManual = !!inp.restManual;
      if(inp.restFullMax !== undefined) x.restFullMax = intIn(inp.restFullMax, 0, 3, 'restFullMax');
      if(inp.maxPerWeek !== undefined) x.maxPerWeek = intIn(inp.maxPerWeek, 0, 7, 'maxPerWeek');
      if(inp.lightPerWeek !== undefined) x.lightPerWeek = intIn(inp.lightPerWeek, 0, 2, 'lightPerWeek');

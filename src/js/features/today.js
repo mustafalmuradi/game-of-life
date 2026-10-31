@@ -75,10 +75,11 @@ export function toggleRest(hid, kind, dateArg){
   mutateDay(date, function(day){
     day.rest = day.rest || {};
     if(marked) delete day.rest[hid]; else { day.rest[hid] = kind === 'light' ? 'light' : Date.now(); delete day.done[hid]; delete day.extras[hid]; }
-  }, {undo: marked ? null : hid === 'sleep' && kind !== 'light' ? 'Life happens: tonight is excused, full points kept' : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
+  }, {undo: marked ? null : h.restManual && kind !== 'light' ? 'Life happens: ' + (hid === 'sleep' ? 'tonight' : 'today') + ' is excused, ' + (h.restFull ? 'full points kept' : 'streak kept') : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
 }
 /* Bed on time's rest days are "life happens" passes: same engine, different words */
-export function restWords(hb){ return hb.id === 'sleep' ? {btn:'Life happens', tag:'Life happens', one:'pass', many:'passes', undo:'pass'} : {btn:'Rest day', tag:'Rest day', one:'rest day', many:'rest days', undo:'rest day'}; }
+/* declared-only passes (restManual: Bed on time, Eat enough) are "Life happens"; the rest are rest days */
+export function restWords(hb){ return hb.restManual ? {btn:'Life happens', tag:'Life happens', one:'pass', many:'passes', undo:'pass'} : {btn:'Rest day', tag:'Rest day', one:'rest day', many:'rest days', undo:'rest day'}; }
 export function addExtra(hid, note, anchor){
   var date = state.selected; if(date > todayKey()) return;
   var cur = state.days[date];
@@ -192,7 +193,7 @@ function renderHabits(){
     h += '</div><div class="habit-side">';
     if(rested){
       var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0), fullPaid = !!(bd && bd.full && bd.full.indexOf(hb.id) >= 0);
-      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + lightXPOf(hb) : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.id === 'sleep' ? ' · excused' : '') + '</span>';
+      h += isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + lightXPOf(hb) : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.restManual ? ' · excused' : '') + '</span>';
       if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
       var lx = hb.id === 'sleep' ? lateXP(d) : null;
