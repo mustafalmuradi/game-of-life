@@ -73,5 +73,5 @@ export function habitRankRow(hb){
     '<div class="hb-rank">' + miniBelt(rk.level) + '<span>' + esc(rankTitle(rk.level)) + ' · ' + esc(rankSub(rk.level)) + '</span><em>' + fmt(rk.xp) + ' XP</em></div>' +
     '<div class="bar' + (rk.capped ? ' gold' : '') + '"><span style="width:' + pct.toFixed(1) + '%' + (rk.capped ? '' : ';background:var(--h-' + hb.color + ')') + '"></span></div>' +
     '<p class="hb-sub">' + (rk.capped ? esc(capTxt) : fmt(rk.into) + ' / ' + fmt(rk.need) + ' to ' + esc(nextLabel(rk.level)) + ' · ') +
-    '30-day ' + (m.elig ? m.pct + '%' : '–') + ' · streak ' + hs.run + (hb.restPerWeek ? ' sessions' : 'd') + '</p></button>';
+    '30-day ' + (m.elig ? m.pct + '%' : '–') + ' · streak ' + (hs.held || 0) + 'd' + (hb.restPerWeek ? ' (' + hs.run + (hs.run === 1 ? ' session)' : ' sessions)') : '') + '</p></button>';
 }

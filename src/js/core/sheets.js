@@ -40,7 +40,7 @@ export function openRank(id){
       '<div class="rk-head"><div><p class="eyebrow"><i class="dot" style="background:var(--h-' + hb.color + ')"></i>' + esc(hb.name) + ' · Level ' + (hr.level+1) + '</p><h3 id="rk-title">' + esc(rankTitle(hr.level)) + '</h3><p class="rank-sub">' + esc(rankSub(hr.level)) + ' · ' + esc(habitTarget(hb)) + '</p></div>' +
       '<div class="total"><span class="n">' + fmt(hr.xp) + '</span><span class="l">Habit XP</span></div></div>' +
       beltSVG(hr.level) + rankProgressHTML(hr, 'var(--h-' + hb.color + ')') +
-      '<div class="rk-stats"><div><b>' + hs.run + (hb.restPerWeek ? '' : 'd') + '</b><span>' + (hb.restPerWeek ? 'Session streak' : 'Streak') + '</span></div><div><b>' + hs.best + (hb.restPerWeek ? '' : 'd') + '</b><span>Best</span></div><div><b>' + hs.days + '</b><span>Days done</span></div><div><b>' + (m.elig ? m.pct + '%' : '–') + '</b><span>Last 30</span></div></div>' +
+      '<div class="rk-stats"><div><b>' + (hs.held || 0) + 'd</b><span>Streak (days held)</span></div><div><b>' + (hb.restPerWeek ? hs.run : (hs.heldBest || 0) + 'd') + '</b><span>' + (hb.restPerWeek ? 'Sessions in a row' : 'Best') + '</span></div><div><b>' + hs.days + '</b><span>Days done</span></div><div><b>' + (m.elig ? m.pct + '%' : '–') + '</b><span>Last 30</span></div></div>' +
       '<p class="eyebrow">Belt tests · streak + time in</p>' + testsListHTML(hr, hb) +
       (hb.restPerWeek ? '<p class="test-d">Up to ' + hb.restPerWeek + (hb.restPerWeek === 1 ? ' rest day' : ' rest days') + ' a week don’t break this streak or your clean sweep. A miss beyond that does.' + (hb.lightPerWeek ? ' Log one as a light day and it earns +' + lightXPOf(hb) + ' XP (' + hb.lightPerWeek + ' a week).' : '') + '</p>' : '');
   }

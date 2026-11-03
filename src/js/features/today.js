@@ -165,7 +165,7 @@ function renderHabits(){
     var done = !!(doc && doc.done[hb.id]);
     var ex = (doc && doc.extras[hb.id]) || [];
     var hs = st.habits[hb.id] || {run:0};
-    var streak = hs.run;
+    var streak = hs.held || 0; // days held: done, or a planned rest / light day / Life happens pass (same count the trophies use)
     var hr = hs.rank || rankInfo(0, 0, 0, habitCurve(hb), 0);
     var bd = st.byDate[d], rested = !done && !!(bd && bd.excused && bd.excused.indexOf(hb.id) >= 0);
     var restMarked = !!(doc && doc.rest && doc.rest[hb.id]);
