@@ -34,6 +34,7 @@ function bind(){
       case 'toggle': toggleHabit(hid, t); break;
       case 'rest': toggleRest(hid); break;
       case 'light': toggleRest(hid, 'light'); break;
+      case 'life': toggleRest(hid, 'life'); break;
       case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
       case 'in-bed': logInBed(); break;
       case 'life-happens': lifeHappens(); break;

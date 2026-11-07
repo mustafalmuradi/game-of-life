@@ -61,5 +61,19 @@ if (!eb(2).sweep || eb(2).base !== 0) fails.push('declared Life happens pass sho
 if (eb(5).sweep) fails.push('an undeclared miss must still break the day (restManual)');
 const { restWords } = await import('../src/js/features/today.js').catch(() => ({}));
 if (restWords && restWords(st.state.settings.habits[0]).btn !== 'Life happens') fails.push('Eat enough pass button should read Life happens');
+// Life happens on Money (Nov 6 2026): Sunday stays the full-points rest; 1 extra declared pass a week, any day, 0 XP, holds the streak.
+// A 2nd pass that week, or a silent weekday miss, still breaks it. The pass doesn't change the belt ladder.
+const monH = [{ id:'money', name:'Money', target:'Income block', color:'money', since:'2000-01-01', pauses:[], restPerWeek:1, restFull:true, restOn:[0], lifePerWeek:1 }];
+st.state.settings = st.normalizeSettings({ version:1, habits:monH, targets:{} });
+const mplan = ['done','life','done','done','done','done','rest', 'done','life','life','done','miss','done','done'];
+st.state.days = {}; mplan.forEach((p, i) => { const d = addDays(mon, i), doc = { date:d, done:{}, extras:{}, rest:{} }; if (p === 'done') doc.done.money = 1; if (p === 'life') doc.rest.money = 'life'; if (p === 'rest') doc.rest.money = 1; st.state.days[d] = st.normalizeDay(doc, d); });
+stats.recompute();
+const mb = (i) => st.state.stats.byDate[addDays(mon, i)];
+if (!mb(1).sweep || mb(1).base !== 0) fails.push('Money Life happens pass should hold the sweep at 0 XP, got sweep ' + mb(1).sweep + ' base ' + mb(1).base);
+if (!(mb(6).full || []).includes('money')) fails.push('Money Sunday rest should still pay full points alongside the pass');
+if (mb(9).sweep) fails.push('a 2nd Life happens pass in one week must break the day');
+if (mb(11).sweep) fails.push('a silent weekday miss must not spend the pass');
+if (st.state.stats.habits.money.heldBest !== 9) fails.push('Money held streak should run 9 days (Mon wk1 to the 2nd pass), got ' + st.state.stats.habits.money.heldBest);
+if (xp.habitCurve({ restPerWeek:1, restFull:true, lifePerWeek:1 }).base !== 60) fails.push('the Life happens pass must not change Money\'s ladder');
 console.log(fails.length ? 'rest-full: FAIL\n  ' + fails.join('\n  ') : 'rest-full: ok');
 process.exit(fails.length ? 1 : 0);

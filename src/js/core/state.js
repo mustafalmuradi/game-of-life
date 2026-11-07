@@ -47,7 +47,8 @@ export function normalizeSettings(s){
       restFullMax: Math.max(0, Math.min(3, parseInt(h.restFullMax, 10) || 0)) || undefined, // full-points rests per week; unset = every marked rest pays
       lightFull: h.lightFull ? true : undefined, // a paid light day earns full base XP instead of LIGHT_XP
       levelFloor: parseInt(h.levelFloor, 10) > 0 ? parseInt(h.levelFloor, 10) : undefined, // a belt kept through a ladder rebalance
-      restManual: !!h.restManual
+      restManual: !!h.restManual,
+      lifePerWeek: Math.max(0, Math.min(2, parseInt(h.lifePerWeek, 10) || 0)) || undefined // extra declared-only "Life happens" passes, any day, 0 XP, on top of the rest days (Money, Nov 6 2026)
     });
   });
   if(!out.habits.length){ var dflt = clone(DEFAULT_SETTINGS); dflt.targets = out.targets; return normalizeSettings(dflt); }

@@ -93,7 +93,7 @@ function dayBrief(d){
   delete m.rawatibAuto;
   if(Object.keys(m).length) out.metrics = m;
   out.done = Object.keys(doc.done || {});
-  if(doc.rest && Object.keys(doc.rest).length){ out.rest = {}; Object.keys(doc.rest).forEach(function(h){ out.rest[h] = doc.rest[h] === 'light' ? 'light' : 'rest'; }); }
+  if(doc.rest && Object.keys(doc.rest).length){ out.rest = {}; Object.keys(doc.rest).forEach(function(h){ out.rest[h] = doc.rest[h] === 'light' || doc.rest[h] === 'life' ? doc.rest[h] : 'rest'; }); }
   var ex = {}; Object.keys(doc.extras || {}).forEach(function(h){ ex[h] = doc.extras[h].map(function(x){ return x.note; }); });
   if(Object.keys(ex).length) out.extras = ex;
   out.open = act.filter(function(h){ return !doc.done[h.id] && !(doc.rest && doc.rest[h.id]); }).map(function(h){ return h.id; });
@@ -196,11 +196,11 @@ var COACH_TOOLS = [
    return {ok:true, date:date, wrote:parts, habitChanges:notes};
  }},
 {name:'set_habit', busy:'Updating habits',
- description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
+ description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), life (a Life happens pass on a habit with lifePerWeek, e.g. Money: any day, holds the streak, 0 XP), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
  schema:{type:'object', properties:{
    date:{type:'string', description:'YYYY-MM-DD'},
    habit:{type:'string', description:'Habit id or name: read, meditate, workout (Train), money, sleep (Bed on time), nicotine, eat, sunnah.'},
-   status:{type:'string', enum:['done', 'undone', 'rest', 'light', 'extra']},
+   status:{type:'string', enum:['done', 'undone', 'rest', 'light', 'life', 'extra']},
    note:{type:'string', description:'For extra: what the extra session was.'}}, required:['date', 'habit', 'status']},
  run:function(inp){
    var date = cDate(inp.date), h = findHabit(inp.habit), status = String(inp.status || '');
@@ -215,6 +215,10 @@ var COACH_TOOLS = [
      if(!(cur && (cur.done[h.id] || (cur.rest && cur.rest[h.id])))) return {ok:true, note:'Nothing to undo.'};
      mutateDay(date, function(d){ delete d.done[h.id]; delete d.extras[h.id]; if(d.rest) delete d.rest[h.id]; }, {});
      label = h.name + ' unchecked';
+   } else if(status === 'life'){
+     if(!h.lifePerWeek) throw new Error(h.name + ' has no Life happens pass.');
+     mutateDay(date, function(d){ d.rest = d.rest || {}; d.rest[h.id] = 'life'; delete d.done[h.id]; delete d.extras[h.id]; }, {});
+     label = h.name + ' Life happens pass';
    } else if(status === 'rest' || status === 'light'){
      if(!h.restPerWeek) throw new Error(h.name + ' has no rest days.');
      if(status === 'light' && !h.lightPerWeek) throw new Error(h.name + ' has no light days.');
@@ -696,7 +700,7 @@ function commitSettings(s2, label){
   state.settings = normalizeSettings(s2); recompute(); render(); saveSettings();
   addAct(label, function(){ state.settings = normalizeSettings(old); recompute(); render(); saveSettings(); });
 }
-function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined, restManual:h.restManual || undefined, restFullMax:h.restFullMax || undefined, lightFull:h.lightFull || undefined}; }
+function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined, restManual:h.restManual || undefined, restFullMax:h.restFullMax || undefined, lightFull:h.lightFull || undefined, lifePerWeek:h.lifePerWeek || undefined}; }
 
 /* ----- notes ----- */
 function noteWrite(obj){
@@ -835,7 +839,7 @@ async function buildExport(withPhotos, onStep){
   mkeys = Object.keys(mkeys).sort();
   files.push({name:'days.csv', data:toCSV(['date'].concat(hab.map(function(h){ return h.name; }), ['extras'], mkeys), dayKeys.map(function(k){
     var d = state.days[k];
-    return [k].concat(hab.map(function(h){ return d.done[h.id] ? 1 : d.rest && d.rest[h.id] ? (d.rest[h.id] === 'light' ? 'light' : 'rest') : ''; }),
+    return [k].concat(hab.map(function(h){ return d.done[h.id] ? 1 : d.rest && d.rest[h.id] ? (d.rest[h.id] === 'light' || d.rest[h.id] === 'life' ? d.rest[h.id] : 'rest') : ''; }),
       [Object.keys(d.extras || {}).map(function(h){ var hb = habitById(h); return (hb ? hb.name : h) + ': ' + d.extras[h].map(function(x){ return x.note; }).join(' | '); }).join('; ')],
       mkeys.map(function(f){ var v = (d.m || {})[f]; return Array.isArray(v) && typeof v[0] !== 'object' ? v.join('+') : v; }));
   }))});
@@ -906,6 +910,7 @@ COACH_TOOLS.push(
    restFull:{type:'boolean', description:'true: a rest day he logs pays the full base XP (keeps the streak either way).'},
    restManual:{type:'boolean', description:'true: passes are "Life happens": only a declared pass counts, a silent miss breaks the streak (Bed on time, Eat enough).'},
    restFullMax:{type:'integer', description:'0-3: how many full rests a week pay full XP (0 = every one). Train uses 1: his one full rest day is part of the program.'},
+   lifePerWeek:{type:'integer', description:'0-2 extra "Life happens" passes a week on top of the rest days: any day, declared only, hold the streak, 0 XP (Money has 1).'},
    maxPerWeek:{type:'integer', description:'0-7, days a week that earn XP (0 = no cap).'},
    lightPerWeek:{type:'integer', description:'0-2 light days a week.'},
    lightFull:{type:'boolean', description:'true: a paid light day earns full base XP (Train: light days are programmed rehab work).'},
@@ -924,6 +929,7 @@ COACH_TOOLS.push(
      if(inp.restFull !== undefined) x.restFull = !!inp.restFull;
      if(inp.restManual !== undefined) x.restManual = !!inp.restManual;
      if(inp.restFullMax !== undefined) x.restFullMax = intIn(inp.restFullMax, 0, 3, 'restFullMax');
+     if(inp.lifePerWeek !== undefined) x.lifePerWeek = intIn(inp.lifePerWeek, 0, 2, 'lifePerWeek') || undefined;
      if(inp.maxPerWeek !== undefined) x.maxPerWeek = intIn(inp.maxPerWeek, 0, 7, 'maxPerWeek');
      if(inp.lightPerWeek !== undefined) x.lightPerWeek = intIn(inp.lightPerWeek, 0, 2, 'lightPerWeek');
      if(inp.lightFull !== undefined) x.lightFull = !!inp.lightFull || undefined;
@@ -1064,7 +1070,7 @@ COACH_TOOLS.push(
 (function(){
   var sh = findTool('set_habit'), base = sh.run;
   sh.description = 'Check, uncheck or rest a habit on a date, log an extra, or remove one extra. Statuses: done, undone (also clears its extras), rest, light (Train only), extra (needs the habit done; note says what), remove_extra (note = the extra to remove). Returns the day XP and clean-sweep state.';
-  sh.schema.properties.status.enum = ['done', 'undone', 'rest', 'light', 'extra', 'remove_extra'];
+  sh.schema.properties.status.enum = ['done', 'undone', 'rest', 'light', 'life', 'extra', 'remove_extra'];
   sh.run = function(inp){
     if(inp.status !== 'remove_extra') return base(inp);
     var date = cDate(inp.date), h = findHabit(inp.habit); if(!h) throw new Error('Unknown habit.');

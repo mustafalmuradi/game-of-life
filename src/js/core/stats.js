@@ -15,7 +15,7 @@ export function recompute(){
   state.settings.habits.forEach(function(h){ hs[h.id] = {days:0, extras:0, run:0, best:0, xp:0, rest:0, light:0, age:0, held:0, heldBest:0}; });
   var multi = CURVES.overall.multi, multiBest = multi.map(function(){ return 0; }), earned = {}, msTotal = 0;
   var age = 0;
-  var restUsed = {}, weekDone = {}, lightUsed = {}, fullUsed = {};
+  var restUsed = {}, weekDone = {}, lightUsed = {}, fullUsed = {}, lifeUsed = {};
   for(var d = start; d <= today; d = addDays(d, 1)){
     var act = activeHabits(d), doc = state.days[d], wk = mondayOf(d);
     var done = 0, required = 0, extraXP = 0, extraHabits = 0, excused = [], overCap = [], baseXP = 0, lightXP = 0, lightDays = [], restDone = [], fullDays = [];
@@ -36,7 +36,11 @@ export function recompute(){
         var bx = h.id === 'sleep' ? lateXP(d) : null; if(bx === null) bx = BASE_XP;
         baseXP += bx;
         s.xp += bx + n*EXTRA_XP;
-      } else if(used < allow && (restMarked || (d !== today && !h.restManual)) && restDayOK(h, d)){ // restManual: only a declared rest counts (passes aren't spent by silent misses)
+      } else if(restMarked && doc.rest[h.id] === 'life' && (lifeUsed[rk] || 0) < (h.lifePerWeek || 0)){ // a declared Life happens pass: holds the streak and the sweep, pays 0 XP
+        lifeUsed[rk] = (lifeUsed[rk] || 0) + 1; s.rest++; excused.push(h.id);
+        s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
+        done++; required++; restDone.push(h.id);
+      } else if(used < allow && (!restMarked || doc.rest[h.id] !== 'life') && (restMarked || (d !== today && !h.restManual)) && restDayOK(h, d)){ // restManual: only a declared rest counts (passes aren't spent by silent misses)
         restUsed[rk] = used + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         if(restMarked){ done++; required++; restDone.push(h.id); }
@@ -68,7 +72,7 @@ export function recompute(){
   var heldNow = activeHabits(today).map(function(h){ return hs[h.id].held; }).sort(function(a, b){ return b - a; });
   var multiNow = multi.map(function(m){ return heldNow.filter(function(v){ return v >= m.d; }).length; });
   state.stats = {
-    start:start, age:age, byDate:byDate, total:total, restUsed:restUsed, lightUsed:lightUsed, weekDone:weekDone, rank:rankInfo(total, multiBest, multiNow, CURVES.overall, age),
+    start:start, age:age, byDate:byDate, total:total, restUsed:restUsed, lightUsed:lightUsed, lifeUsed:lifeUsed, weekDone:weekDone, rank:rankInfo(total, multiBest, multiNow, CURVES.overall, age),
     earned:earned, msTotal:msTotal, msNow:{pillars:heldNow[4] || 0, house:heldNow.filter(function(v){ return v >= 7; }).length, sweep:run, sweeps:sweepDays},
     sweepRun: run, sweepRunBeforeToday: todaySweep ? run-1 : run, bestRun:bestRun, sweepDays:sweepDays,
     baseChecks:baseChecks, maxExtraHabits:maxExtraHabits, habits:hs
