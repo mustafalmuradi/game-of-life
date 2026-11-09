@@ -1,7 +1,7 @@
 // Today tab: week strip, day card, habit list, and the habit mutations (toggle, rest, extras).
 import { BASE_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, hijri, mondayOf, parseKey, range7, reduceMotion, timeOf, todayKey, uid } from '../core/utils.js';
-import { activeHabits, capOf, habitById, lightXPOf, habitTarget, isActive, isEmptyDay, ladderStep, LATE, lateOf, lateUsed, lateXP, state, T, ui } from '../core/state.js';
+import { activeHabits, capOf, habitById, lightXPOf, habitTarget, isActive, isEmptyDay, isMedical, ladderStep, LATE, lateOf, lateUsed, lateXP, state, T, ui } from '../core/state.js';
 import { beltOf, habitCurve, msMeta, nextTrophy, rankInfo, rankTitle, rewardText, trophySVG } from '../core/xp.js';
 import { recompute } from '../core/stats.js';
 import { saveSettings, scheduleSave } from '../core/store.js';
@@ -250,9 +250,12 @@ function renderHabits(){
     var restToday = !hb.restOn || !hb.restOn.length || hb.restOn.indexOf(parseKey(d).getDay()) >= 0;
     var restLogged = rested && !!(bd && bd.restDone && bd.restDone.indexOf(hb.id) >= 0);
     var isLife = !!(doc && doc.rest && doc.rest[hb.id] === 'life');
+    var isMed = isMedical(doc, hb.id) && restLogged; // Medical Rest: set by Claude/Coach only, so the page shows it but has no button for it
+    if(isMed){ var mWhy = doc.m && doc.m.medical && doc.m.medical.why; restText += ' · Medical rest' + (mWhy ? ': ' + String(mWhy).slice(0, 80) : ''); }
     var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : isLife ? 'Life happens pass' : rw.undo;
     h += '<article class="habit' + (done || restLogged ? ' is-done' : '') + (rested && !restLogged ? ' is-rest' : '') + (ui.popSeg === hb.id && done ? ' just-done' : '') + '" style="--hc:var(--h-' + hb.color + ')">' +
-      (restLogged ? '<button class="check" type="button" data-act="rest" data-h="' + esc(hb.id) + '" aria-pressed="true" aria-label="' + esc('Undo ' + restKind + ': ' + hb.name) + '">' :
+      (isMed ? '<button class="check" type="button" aria-pressed="true" aria-label="' + esc('Medical rest, set by Coach: ' + hb.name) + '">' :
+      restLogged ? '<button class="check" type="button" data-act="rest" data-h="' + esc(hb.id) + '" aria-pressed="true" aria-label="' + esc('Undo ' + restKind + ': ' + hb.name) + '">' :
       '<button class="check" type="button" data-act="toggle" data-h="' + esc(hb.id) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? 'Undo ' : 'Mark done: ') + hb.name) + '">') + '<svg viewBox="0 0 24 24">' + ICON.check + '</svg></button>' +
       '<div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3>' +
       '<button class="hrank" type="button" data-act="open-rank" data-h="' + esc(hb.id) + '" aria-label="' + esc(hb.name + ' rank: ' + rankTitle(hr.level) + ', level ' + (hr.level+1)) + '">' + miniBelt(hr.level) + '<span>Lv ' + (hr.level+1) + '</span>' + (hr.capped ? '<em>Test</em>' : '') + '</button>' +
@@ -268,8 +271,8 @@ function renderHabits(){
     h += '</div><div class="habit-side">';
     if(rested){
       var isLight = !!(doc && doc.rest && doc.rest[hb.id] === 'light'), lightPaid = !!(bd && bd.light && bd.light.indexOf(hb.id) >= 0), fullPaid = !!(bd && bd.full && bd.full.indexOf(hb.id) >= 0);
-      h += isLife ? '<span class="rest-tag">Life happens \u00b7 0 XP</span>' : isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + lightXPOf(hb) : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.restManual ? ' · excused' : '') + '</span>';
-      if(restMarked && d === today) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
+      h += isMed ? '<span class="rest-tag">Medical rest \u00b7 0 XP</span>' : isLife ? '<span class="rest-tag">Life happens \u00b7 0 XP</span>' : isLight ? '<span class="rest-tag' + (lightPaid ? ' light' : '') + '">Light day \u00b7 ' + (lightPaid ? '+' + lightXPOf(hb) : '0 XP') + '</span>' : '<span class="rest-tag' + (fullPaid ? ' light' : '') + '">' + rw.tag + (fullPaid ? ' · +' + BASE_XP : hb.restFull && restMarked && d <= today ? ' · 0 XP' : hb.restManual ? ' · excused' : '') + '</span>';
+      if(restMarked && d === today && !isMed) h += '<button class="rest-btn" type="button" data-act="rest" data-h="' + esc(hb.id) + '">Undo</button>';
     } else if(!done){
       var lx = hb.id === 'sleep' ? lateXP(d) : null;
       h += '<span class="xp-hint">+' + (lx === null ? BASE_XP : lx) + '</span>';

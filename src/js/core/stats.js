@@ -1,5 +1,5 @@
 // recompute(): walks every day and rebuilds state.stats and state.liftStats. Call it after any data change. Plus habit30(), the 30-day hit rate.
-import { BASE_XP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from './config.js';
+import { BASE_XP, EXTRA_XP, LIGHT_XP, MEDICAL_WINDOW, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from './config.js';
 import { addDays, mondayOf, parseKey, todayKey } from './utils.js';
 import { activeHabits, capOf, hasHabitData, isActive, lateXP, lightXPOf, state } from './state.js';
 import { checkMilestones, CURVES, floorRank, habitCurve, rankInfo } from './xp.js';
@@ -12,13 +12,13 @@ export function recompute(){
   var start = keys.length ? keys[0] : today;
   var byDate = {}, total = 0, run = 0, bestRun = 0, sweepDays = 0, baseChecks = 0, maxExtraHabits = 0;
   var hs = {};
-  state.settings.habits.forEach(function(h){ hs[h.id] = {days:0, extras:0, run:0, best:0, xp:0, rest:0, light:0, age:0, held:0, heldBest:0}; });
+  state.settings.habits.forEach(function(h){ hs[h.id] = {days:0, extras:0, run:0, best:0, xp:0, rest:0, light:0, medical:0, age:0, held:0, heldBest:0}; });
   var multi = CURVES.overall.multi, multiBest = multi.map(function(){ return 0; }), earned = {}, msTotal = 0;
   var age = 0;
-  var restUsed = {}, weekDone = {}, lightUsed = {}, fullUsed = {}, lifeUsed = {};
+  var restUsed = {}, weekDone = {}, lightUsed = {}, fullUsed = {}, lifeUsed = {}, medUsed = {};
   for(var d = start; d <= today; d = addDays(d, 1)){
     var act = activeHabits(d), doc = state.days[d], wk = mondayOf(d);
-    var done = 0, required = 0, extraXP = 0, extraHabits = 0, excused = [], overCap = [], baseXP = 0, lightXP = 0, lightDays = [], restDone = [], fullDays = [];
+    var done = 0, required = 0, extraXP = 0, extraHabits = 0, excused = [], overCap = [], baseXP = 0, lightXP = 0, lightDays = [], restDone = [], fullDays = [], medDays = [];
     age++;
     act.forEach(function(h){
       var s = hs[h.id];
@@ -36,11 +36,16 @@ export function recompute(){
         var bx = h.id === 'sleep' ? lateXP(d) : null; if(bx === null) bx = BASE_XP;
         baseXP += bx;
         s.xp += bx + n*EXTRA_XP;
+      } else if(restMarked && doc.rest[h.id] === 'medical' && h.medicalPer30 && (medUsed[h.id] || []).filter(function(x){ return x > addDays(d, -MEDICAL_WINDOW); }).length < h.medicalPer30){
+        /* Medical Rest (Claude/Coach only): injury or illness. Holds the streak and the sweep, pays 0 XP, doesn't spend a weekly rest */
+        medUsed[h.id] = (medUsed[h.id] || []).concat([d]); s.medical++; excused.push(h.id); medDays.push(h.id);
+        s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
+        done++; required++; restDone.push(h.id);
       } else if(restMarked && doc.rest[h.id] === 'life' && (lifeUsed[rk] || 0) < (h.lifePerWeek || 0)){ // a declared Life happens pass: holds the streak and the sweep, pays 0 XP
         lifeUsed[rk] = (lifeUsed[rk] || 0) + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         done++; required++; restDone.push(h.id);
-      } else if(used < allow && (!restMarked || doc.rest[h.id] !== 'life') && (restMarked || (d !== today && !h.restManual)) && restDayOK(h, d)){ // restManual: only a declared rest counts (passes aren't spent by silent misses)
+      } else if(used < allow && (!restMarked || (doc.rest[h.id] !== 'life' && doc.rest[h.id] !== 'medical')) &&(restMarked || (d !== today && !h.restManual)) && restDayOK(h, d)){ // restManual: only a declared rest counts (passes aren't spent by silent misses)
         restUsed[rk] = used + 1; s.rest++; excused.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         if(restMarked){ done++; required++; restDone.push(h.id); }
@@ -65,14 +70,14 @@ export function recompute(){
     var xp = baseXP + lightXP + extraXP + sweepBonus + msXP;
     total += xp; baseChecks += done - restDone.length;
     if(extraHabits > maxExtraHabits) maxExtraHabits = extraHabits;
-    byDate[d] = {done:done, total:required, excused:excused, restDone:restDone, overCap:overCap, light:lightDays, full:fullDays.length ? fullDays : undefined, base:baseXP + lightXP, extra:extraXP, sweepBonus:sweepBonus, ms:msXP, bonus:extraXP+sweepBonus+msXP, xp:xp, sweep:sweep};
+    byDate[d] = {done:done, total:required, excused:excused, restDone:restDone, overCap:overCap, light:lightDays, full:fullDays.length ? fullDays : undefined, medical:medDays.length ? medDays : undefined, base:baseXP + lightXP, extra:extraXP, sweepBonus:sweepBonus, ms:msXP, bonus:extraXP+sweepBonus+msXP, xp:xp, sweep:sweep};
   }
   var todaySweep = byDate[today] && byDate[today].sweep;
   state.settings.habits.forEach(function(h){ var s = hs[h.id]; s.rank = floorRank(rankInfo(s.xp, s.best, s.run, habitCurve(h), s.age), h.levelFloor); });
   var heldNow = activeHabits(today).map(function(h){ return hs[h.id].held; }).sort(function(a, b){ return b - a; });
   var multiNow = multi.map(function(m){ return heldNow.filter(function(v){ return v >= m.d; }).length; });
   state.stats = {
-    start:start, age:age, byDate:byDate, total:total, restUsed:restUsed, lightUsed:lightUsed, lifeUsed:lifeUsed, weekDone:weekDone, rank:rankInfo(total, multiBest, multiNow, CURVES.overall, age),
+    start:start, age:age, byDate:byDate, total:total, restUsed:restUsed, lightUsed:lightUsed, lifeUsed:lifeUsed, medUsed:medUsed, weekDone:weekDone, rank:rankInfo(total, multiBest, multiNow, CURVES.overall, age),
     earned:earned, msTotal:msTotal, msNow:{pillars:heldNow[4] || 0, house:heldNow.filter(function(v){ return v >= 7; }).length, sweep:run, sweeps:sweepDays},
     sweepRun: run, sweepRunBeforeToday: todaySweep ? run-1 : run, bestRun:bestRun, sweepDays:sweepDays,
     baseChecks:baseChecks, maxExtraHabits:maxExtraHabits, habits:hs

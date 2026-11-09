@@ -6,7 +6,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node test/stale-cache.mjs --new && node test/rest-full.mjs && node test/hq-reorder.mjs && node test/harness.mjs --shots",
+    "test": "node test/stale-cache.mjs --new && node test/rest-full.mjs && node test/medical-rest.mjs && node test/medical-ui.mjs && node test/hq-reorder.mjs && node test/harness.mjs --shots",
     "test:record": "node test/harness.mjs --record --shots",
     "test:self": "node test/harness.mjs --old src --new src",
     "test:local": "node test/harness.mjs --old src --new src --noruntime",

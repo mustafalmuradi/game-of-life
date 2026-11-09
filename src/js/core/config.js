@@ -2,6 +2,7 @@
 
 /* ---------- scoring rules ---------- */
 export var BASE_XP = 20, EXTRA_XP = 10, EXTRA_CAP = 3, SWEEP_XP = 30, SWEEP_STEP = 5, SWEEP_MAX = 80, LIGHT_XP = 10;
+export var MEDICAL_WINDOW = 30; // Medical Rest (Nov 2026): a habit's medicalPer30 caps uses inside any rolling window of this many days
 export var LS_KEY = 'dojo-log-v1';
 export var COLOR_SLOTS = ['read','meditate','workout','money','sleep','x1','x2','x3'];
 export var BELTS = [
@@ -17,7 +18,7 @@ export var DEFAULT_SETTINGS = {
   habits: [
     {id:'read', name:'Read', target:'25 minutes', color:'read', since:'2000-01-01', pauses:[], presets:['Extra reading session','Quran','Notes and review']},
     {id:'meditate', name:'Meditate', target:'5 minutes', color:'meditate', since:'2000-01-01', pauses:[], ladder:[5,10,15,20,25], unit:'minutes', presets:['Extra sit','Dhikr','Evening wind-down']},
-    {id:'workout', name:'Train', target:'5 strength + 1 light a week \u00b7 1 full rest', color:'workout', since:'2000-01-01', pauses:[], restPerWeek:2, maxPerWeek:5, lightPerWeek:1, extraCap:1, presets:['Mobility and stretching','Easy walk']},
+    {id:'workout', name:'Train', target:'5 strength + 1 light a week \u00b7 1 full rest', color:'workout', since:'2000-01-01', pauses:[], restPerWeek:2, maxPerWeek:5, lightPerWeek:1, extraCap:1, medicalPer30:3, presets:['Mobility and stretching','Easy walk']},
     {id:'money', name:'Money-producing work', target:'One focused income block', color:'money', since:'2000-01-01', pauses:[], presets:['Extra call block','Outreach push','Deal or proposal work']},
     {id:'sleep', name:'Bed on time', target:'In bed by 9:00 PM', color:'sleep', since:'2000-01-01', pauses:[], restPerWeek:2, restFull:true, restManual:true, presets:['Screens off by 8:30','Phone out of the room','Up for Fajr, no snooze']}, // two "life happens" passes a week (restPerWeek), full points (restFull), spent only when declared (restManual)
     {id:'nicotine', name:'Nicotine-free', target:'Patch on, zero vaping', color:'x1', since:'2026-09-26', pauses:[], extraCap:0, presets:['Extra session']},

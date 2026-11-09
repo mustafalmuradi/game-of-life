@@ -1,7 +1,7 @@
 // Coach: rules, the tracker snapshot Claude sees, the tools it can call, the conversation, the chat UI.
 import { COLOR_SLOTS, DEFAULT_TARGETS, TASK_LANES } from '../core/config.js';
 import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, timeOf, todayKey, uid } from '../core/utils.js';
-import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, laneOf, LATE, lateOf, lateUsed, normalizeSettings, state, T } from '../core/state.js';
+import { activeHabits, capOf, clockMin, habitById, habitTarget, isActive, isMedical, laneOf, LATE, lateOf, lateUsed, medicalLeft, normalizeSettings, state, T } from '../core/state.js';
 import { rankTitle, rewardSlots, rewardText } from '../core/xp.js';
 import { BANDS, cleanBand, fmtW, isBandEntry, liftKey, LSTATUS, mooseRank, mooseStage, norm, setText, workingText } from '../core/strength.js';
 import { recompute } from '../core/stats.js';
@@ -93,7 +93,7 @@ function dayBrief(d){
   delete m.rawatibAuto;
   if(Object.keys(m).length) out.metrics = m;
   out.done = Object.keys(doc.done || {});
-  if(doc.rest && Object.keys(doc.rest).length){ out.rest = {}; Object.keys(doc.rest).forEach(function(h){ out.rest[h] = doc.rest[h] === 'light' || doc.rest[h] === 'life' ? doc.rest[h] : 'rest'; }); }
+  if(doc.rest && Object.keys(doc.rest).length){ out.rest = {}; Object.keys(doc.rest).forEach(function(h){ out.rest[h] = doc.rest[h] === 'light' || doc.rest[h] === 'life' || doc.rest[h] === 'medical' ? doc.rest[h] : 'rest'; }); }
   var ex = {}; Object.keys(doc.extras || {}).forEach(function(h){ ex[h] = doc.extras[h].map(function(x){ return x.note; }); });
   if(Object.keys(ex).length) out.extras = ex;
   out.open = act.filter(function(h){ return !doc.done[h.id] && !(doc.rest && doc.rest[h.id]); }).map(function(h){ return h.id; });
@@ -196,12 +196,13 @@ var COACH_TOOLS = [
    return {ok:true, date:date, wrote:parts, habitChanges:notes};
  }},
 {name:'set_habit', busy:'Updating habits',
- description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), life (a Life happens pass on a habit with lifePerWeek, e.g. Money: any day, holds the streak, 0 XP), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
+ description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), life (a Life happens pass on a habit with lifePerWeek, e.g. Money: any day, holds the streak, 0 XP), medical (Medical Rest, Train only: injury or illness, needs `why`; holds the streak and sweep, 0 XP, does not use a weekly rest, max medicalPer30 in any 30 days; see MEDICAL REST rules), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
  schema:{type:'object', properties:{
    date:{type:'string', description:'YYYY-MM-DD'},
    habit:{type:'string', description:'Habit id or name: read, meditate, workout (Train), money, sleep (Bed on time), nicotine, eat, sunnah.'},
-   status:{type:'string', enum:['done', 'undone', 'rest', 'light', 'life', 'extra']},
-   note:{type:'string', description:'For extra: what the extra session was.'}}, required:['date', 'habit', 'status']},
+   status:{type:'string', enum:['done', 'undone', 'rest', 'light', 'life', 'medical', 'extra']},
+   note:{type:'string', description:'For extra: what the extra session was.'},
+   why:{type:'string', description:'For medical: the injury or illness in his words (e.g. "quad tightness, limping, sharp pain bearing weight").'}}, required:['date', 'habit', 'status']},
  run:function(inp){
    var date = cDate(inp.date), h = findHabit(inp.habit), status = String(inp.status || '');
    if(!h) throw new Error('Unknown habit. Ids: ' + state.settings.habits.map(function(x){ return x.id; }).join(', '));
@@ -213,8 +214,17 @@ var COACH_TOOLS = [
      label = h.name + ' done';
    } else if(status === 'undone'){
      if(!(cur && (cur.done[h.id] || (cur.rest && cur.rest[h.id])))) return {ok:true, note:'Nothing to undo.'};
-     mutateDay(date, function(d){ delete d.done[h.id]; delete d.extras[h.id]; if(d.rest) delete d.rest[h.id]; }, {});
+     mutateDay(date, function(d){ delete d.done[h.id]; delete d.extras[h.id]; if(d.rest && d.rest[h.id] === 'medical' && d.m) delete d.m.medical; if(d.rest) delete d.rest[h.id]; }, {});
      label = h.name + ' unchecked';
+   } else if(status === 'medical'){
+     if(!h.medicalPer30) throw new Error(h.name + ' has no Medical Rest. It is for Train only.');
+     var why = String(inp.why || '').trim().slice(0, 160);
+     if(why.length < 5) throw new Error('Medical Rest needs a reason: the injury or illness in his words.');
+     if(date > todayKey()) throw new Error('Medical Rest can only be set for today or a past day.');
+     if(cur && cur.done[h.id]) throw new Error(h.name + ' is already done on ' + date + '. Uncheck it first if he did not train.');
+     if(!isMedical(cur, h.id) && medicalLeft(h, date) <= 0) throw new Error('Medical Rest is used up: ' + h.medicalPer30 + ' in any 30 days. Use a normal rest day, or he takes the miss.');
+     mutateDay(date, function(d){ d.rest = d.rest || {}; d.rest[h.id] = 'medical'; delete d.done[h.id]; delete d.extras[h.id]; d.m = d.m || {}; d.m.medical = {why:why, at:Date.now(), by:'coach'}; }, {});
+     label = h.name + ' Medical Rest: ' + why;
    } else if(status === 'life'){
      if(!h.lifePerWeek) throw new Error(h.name + ' has no Life happens pass.');
      mutateDay(date, function(d){ d.rest = d.rest || {}; d.rest[h.id] = 'life'; delete d.done[h.id]; delete d.extras[h.id]; }, {});
@@ -230,7 +240,7 @@ var COACH_TOOLS = [
      var note = String(inp.note || 'Extra session').slice(0, 60);
      mutateDay(date, function(d){ d.extras[h.id] = (d.extras[h.id] || []).concat([{id:uid(), note:note, at:Date.now()}]); }, {});
      label = h.name + ' extra: ' + note;
-   } else throw new Error('status must be done, undone, rest, light or extra.');
+   } else throw new Error('status must be done, undone, rest, light, life, medical or extra.');
    addAct(fmtShort(date) + ' · ' + label, function(){ restoreDays(snap); });
    var bd = state.stats.byDate[date];
    return {ok:true, date:date, habit:h.id, status:status, dayXP:bd ? bd.xp : 0, cleanSweep:bd ? bd.sweep : false};
@@ -700,7 +710,7 @@ function commitSettings(s2, label){
   state.settings = normalizeSettings(s2); recompute(); render(); saveSettings();
   addAct(label, function(){ state.settings = normalizeSettings(old); recompute(); render(); saveSettings(); });
 }
-function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined, restManual:h.restManual || undefined, restFullMax:h.restFullMax || undefined, lightFull:h.lightFull || undefined, lifePerWeek:h.lifePerWeek || undefined}; }
+function habitBrief(h){ var today = todayKey(); return {id:h.id, name:h.name, target:h.ladder ? habitTarget(h) : h.target, paused:!isActive(h, today) && h.since <= today, since:h.since, restPerWeek:h.restPerWeek || 0, maxPerWeek:h.maxPerWeek || 0, lightPerWeek:h.lightPerWeek || 0, extraCap:capOf(h), presets:h.presets, ladder:h.ladder || undefined, unit:h.ladder ? h.unit : undefined, restOn:h.restOn || undefined, restFull:h.restFull || undefined, restManual:h.restManual || undefined, restFullMax:h.restFullMax || undefined, lightFull:h.lightFull || undefined, lifePerWeek:h.lifePerWeek || undefined, medicalPer30:h.medicalPer30 || undefined, medicalLeftToday:h.medicalPer30 ? medicalLeft(h, today) : undefined}; }
 
 /* ----- notes ----- */
 function noteWrite(obj){
@@ -839,7 +849,7 @@ async function buildExport(withPhotos, onStep){
   mkeys = Object.keys(mkeys).sort();
   files.push({name:'days.csv', data:toCSV(['date'].concat(hab.map(function(h){ return h.name; }), ['extras'], mkeys), dayKeys.map(function(k){
     var d = state.days[k];
-    return [k].concat(hab.map(function(h){ return d.done[h.id] ? 1 : d.rest && d.rest[h.id] ? (d.rest[h.id] === 'light' || d.rest[h.id] === 'life' ? d.rest[h.id] : 'rest') : ''; }),
+    return [k].concat(hab.map(function(h){ return d.done[h.id] ? 1 : d.rest && d.rest[h.id] ? (d.rest[h.id] === 'light' || d.rest[h.id] === 'life' || d.rest[h.id] === 'medical' ? d.rest[h.id] : 'rest') : ''; }),
       [Object.keys(d.extras || {}).map(function(h){ var hb = habitById(h); return (hb ? hb.name : h) + ': ' + d.extras[h].map(function(x){ return x.note; }).join(' | '); }).join('; ')],
       mkeys.map(function(f){ var v = (d.m || {})[f]; return Array.isArray(v) && typeof v[0] !== 'object' ? v.join('+') : v; }));
   }))});
@@ -1069,8 +1079,8 @@ COACH_TOOLS.push(
 /* extend existing tools */
 (function(){
   var sh = findTool('set_habit'), base = sh.run;
-  sh.description = 'Check, uncheck or rest a habit on a date, log an extra, or remove one extra. Statuses: done, undone (also clears its extras), rest, light (Train only), extra (needs the habit done; note says what), remove_extra (note = the extra to remove). Returns the day XP and clean-sweep state.';
-  sh.schema.properties.status.enum = ['done', 'undone', 'rest', 'light', 'life', 'extra', 'remove_extra'];
+  sh.description = 'Check, uncheck or rest a habit on a date, log an extra, or remove one extra. Statuses: done, undone (also clears its extras), rest, light (Train only), life, medical (Train only, needs why; MEDICAL REST rules), extra (needs the habit done; note says what), remove_extra (note = the extra to remove). Returns the day XP and clean-sweep state.';
+  sh.schema.properties.status.enum = ['done', 'undone', 'rest', 'light', 'life', 'medical', 'extra', 'remove_extra'];
   sh.run = function(inp){
     if(inp.status !== 'remove_extra') return base(inp);
     var date = cDate(inp.date), h = findHabit(inp.habit); if(!h) throw new Error('Unknown habit.');
@@ -1388,9 +1398,21 @@ COACH_RULES += '\n\n' + [
     return s;
   };
 })();
+COACH_RULES += '\n\n' + [
+'MEDICAL REST (Train only, Nov 9 2026)',
+'- Only you (or Claude in his chats) can set it: set_habit workout medical with `why` in his words. The page has no button for it, on purpose.',
+'- Use it only for a real injury or illness that makes training unsafe: a limp, sharp pain, swelling, pain bearing weight, a fever or illness flag (skin temp, respiratory rate) with symptoms, or a doctor or PT telling him to rest. Ask what and where first if he has not said.',
+'- Never for tired, sore, busy, low recovery, bad sleep or not feeling it: those are a normal rest day, a light day or a miss. If it is borderline, say so and use a normal rest day.',
+'- What it does: holds the Train streak and the day sweep, pays 0 XP, does not use his weekly rest day, and stays out of the weekly full-rest count. Max medicalPer30 (3) in any 30 days (habits[].medicalLeftToday has what is left); after that he uses a normal rest or takes the miss.',
+'- Needed two or more days running, or with swelling, warmth, redness, numbness, or pain that is getting worse: tell him to get it seen (urgent care, doctor or PT) the same day. You are not a doctor.',
+'- If he trains after all, set_habit workout done replaces it. undone clears it and its reason.'
+].join('\n');
+
 export function openCoachWith(text){
   openCoach();
   var el = $('#ch-in'); el.value = text; coachGrow();
   setTimeout(function(){ try { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } catch(e){} }, 90);
 }
 
+/* test hook (test/medical-rest.mjs): run a Coach tool's guards without the chat UI */
+export function coachToolForTest(name){ return findTool(name); }

@@ -73,6 +73,7 @@ function whoopStrength(d){ var w = metricsOf(d).wo; return Array.isArray(w) && w
 function dayKind(d){
   var s = sessOf(d), doc = state.days[d], r = doc && doc.rest ? doc.rest.workout : null;
   if(s.some(isStrengthKey) || (doc && doc.done && doc.done.workout) || whoopStrength(d)) return 'strength';
+  if(r === 'medical') return 'medical'; // Medical Rest: injury/illness, kept out of the weekly rest count
   if(s.indexOf('rest') >= 0 || (r && r !== 'light')) return 'rest';
   if(s.indexOf('light') >= 0 || r === 'light' || s.indexOf('ripright') >= 0 || s.indexOf('cardio') >= 0) return 'light';
   return null;
@@ -91,7 +92,7 @@ function upperPress(name){ return /press|bench|dip|push-?up/i.test(name || '') &
 function pressingDay(d){ return sessOf(d).indexOf('chest_biceps') >= 0 || state.lifts.some(function(l){ return l.date === d && upperPress(l.exercise); }); }
 function strengthRun(d){ var n = 0; for(var i=1;i<=14;i++){ if(dayKind(addDays(d, -i)) === 'strength') n++; else break; } return n; }
 export function weekTally(mon){
-  var today = todayKey(), t = {strength:0, light:0, rest:0, rip:0, cardio:0, days:0};
+  var today = todayKey(), t = {strength:0, light:0, rest:0, medical:0, rip:0, cardio:0, days:0};
   range7(mon).forEach(function(d){
     if(d > today) return;
     t.days++;
@@ -405,7 +406,7 @@ function renderBody(){
   if(rd.flags.length) h += flagsHTML(rd.flags);
   var plan = [];
   if(nx) plan.push(nx.done ? 'Today: <b>' + esc(sessName(nx.k)) + '</b> · next up <b>' + esc(sessName(ROTATION[(ROTATION.indexOf(nx.k) + 1) % ROTATION.length])) + '</b>' : 'Next strength session: <b>' + esc(sessName(nx.k)) + '</b>');
-  plan.push('Strength <b>' + tally.strength + '/' + tg.strengthPerWeek + '</b> · light <b>' + tally.light + '/' + tg.lightDays + '</b> · full rest <b>' + tally.rest + '/' + tg.restDays + '</b> · RipRight <b>' + tally.rip + '/' + tg.ripMin + '–' + tg.ripMax + '</b>');
+  plan.push('Strength <b>' + tally.strength + '/' + tg.strengthPerWeek + '</b> · light <b>' + tally.light + '/' + tg.lightDays + '</b> · full rest <b>' + tally.rest + '/' + tg.restDays + '</b>' + (tally.medical ? ' · medical rest <b>' + tally.medical + '</b>' : '') + ' · RipRight <b>' + tally.rip + '/' + tg.ripMin + '–' + tg.ripMax + '</b>');
   if(nx && nx.k === 'legs' && !nx.done && tally.rip < tg.ripMax) plan.push('RipRight goes at the start of leg day, never after pressing.');
   h += '<p class="rplan">' + plan.join('<br>') + '</p></section>';
 
