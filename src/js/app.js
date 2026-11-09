@@ -4,7 +4,7 @@ import { $, addDays, clone, esc, fmt, fmtWd, mondayOf, reduceMotion, todayKey, u
 import { normalizeSettings, state } from './core/state.js';
 import { recompute } from './core/stats.js';
 import { connectCloud, flushUnsynced, loadLocal, saveSettings, sync, testLS } from './core/store.js';
-import { addExtra, removeExtra, toggleHabit, toggleRest } from './features/today.js';
+import { addExtra, hqReorderCancel, hqReorderDone, hqReorderOpen, removeExtra, toggleHabit, toggleRest } from './features/today.js';
 import { clearPromos, nextPromo, toast } from './core/effects.js';
 import { registerHud, render, SECTIONS, syncTabs } from './core/render.js';
 import { readiness } from './features/body.js';
@@ -35,6 +35,9 @@ function bind(){
       case 'rest': toggleRest(hid); break;
       case 'light': toggleRest(hid, 'light'); break;
       case 'life': toggleRest(hid, 'life'); break;
+      case 'hq-reorder': hqReorderOpen(); break;
+      case 'hq-reorder-done': hqReorderDone(); break;
+      case 'hq-reorder-cancel': hqReorderCancel(); break;
       case 'plan-late': openCoachWith('Late night tonight, in bed by 11:30 PM. Reason: '); break;
       case 'in-bed': logInBed(); break;
       case 'life-happens': lifeHappens(); break;

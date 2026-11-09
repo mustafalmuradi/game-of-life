@@ -220,3 +220,7 @@ loops, 3 meteors on long staggered cycles, two slow orbit rings behind the belt
 card. `render()` sets `data-sweep="1"` on `<html>` when today is a clean sweep,
 which turns the aurora, motes and rings gold. Everything ambient is off in calm
 mode and under `prefers-reduced-motion`.
+
+### Headquarters habit order (Nov 2026)
+
+`settings.hqOrder` is a list of habit ids, top to bottom, set from the **Reorder habits** button under the Headquarters habit list (drag handles, arrow keys on a focused handle, Done / Cancel). Only the Today list follows it (`hqSort` in `features/today.js`); progress, rank sheets and the Coach keep the habits array order. Habits missing from the list (new ones) go last. Tested by `test/hq-reorder.mjs` (mouse, touch, keyboard, cancel, done, reload).

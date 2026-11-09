@@ -4,7 +4,7 @@ import { $, addDays, clone, esc, fmt, fmtLong, fmtShort, hijri, mondayOf, parseK
 import { activeHabits, capOf, habitById, lightXPOf, habitTarget, isActive, isEmptyDay, ladderStep, LATE, lateOf, lateUsed, lateXP, state, T, ui } from '../core/state.js';
 import { beltOf, habitCurve, msMeta, nextTrophy, rankInfo, rankTitle, rewardText, trophySVG } from '../core/xp.js';
 import { recompute } from '../core/stats.js';
-import { scheduleSave } from '../core/store.js';
+import { saveSettings, scheduleSave } from '../core/store.js';
 import { burst, floatXP, queuePromos, toast } from '../core/effects.js';
 import { ICON, miniBelt, miniRing, scoreRing } from '../core/svg.js';
 import { registerTab, render, renderSync } from '../core/render.js';
@@ -153,9 +153,81 @@ function checkinRow(d){
     '<div class="ci-line"><span class="muted small">' + (bits.length ? esc(bits.join(' \u00b7 ')) : 'No check-in yet. Recovery, bedtime, food, session, nicotine.') + '</span>' +
     '<button class="pill-btn" type="button" data-act="open-checkin">' + (Object.keys(m).length ? 'Edit check-in' : 'Check-in') + '</button></div></div>';
 }
+/* ---------- Headquarters habit order ---------- */
+/* hqSort: the Today list in the saved order; habits missing from it (new ones) keep their place at the end */
+export function hqSort(list){
+  var ord = state.settings.hqOrder; if(!ord || !ord.length) return list;
+  var pos = {}; ord.forEach(function(id, i){ pos[id] = i; });
+  return list.map(function(h, i){ return {h:h, k:pos[h.id] !== undefined ? pos[h.id] : ord.length + i}; }).sort(function(a, b){ return a.k - b.k; }).map(function(x){ return x.h; });
+}
+var hqEdit = null, hqDrag = false; // hqEdit = the ids being arranged while Reorder mode is open
+export function hqReorderOpen(){ hqEdit = hqSort(activeHabits(state.selected)).map(function(h){ return h.id; }); renderHabits(); var el = $('#habits'); if(el && el.scrollIntoView) el.scrollIntoView({block:'nearest', behavior: reduceMotion ? 'auto' : 'smooth'}); }
+export function hqReorderCancel(){ hqEdit = null; hqDrag = false; renderHabits(); }
+export function hqReorderDone(){
+  if(!hqEdit) return;
+  var ids = hqEdit.slice(), inList = {}; ids.forEach(function(id){ inList[id] = 1; });
+  hqSort(state.settings.habits).forEach(function(h){ if(!inList[h.id]) ids.push(h.id); }); // paused habits keep their spot after the active ones
+  var before = JSON.stringify(state.settings.hqOrder || []);
+  hqEdit = null; hqDrag = false;
+  if(before !== JSON.stringify(ids)){ state.settings.hqOrder = ids; saveSettings(); toast('Habit order saved'); }
+  render();
+}
+function renderReorder(){
+  var by = {}; state.settings.habits.forEach(function(h){ by[h.id] = h; });
+  var h = '<div class="hq-ro-head"><div><b>Reorder habits</b><small>Drag the handle. Headquarters only.</small></div><span class="hq-ro-acts"><button class="rest-btn" type="button" data-act="hq-reorder-cancel">Cancel</button><button class="hq-ro-done" type="button" data-act="hq-reorder-done">Done</button></span></div><ol class="hq-ro" id="hq-ro">';
+  hqEdit.forEach(function(id){
+    var hb = by[id]; if(!hb) return;
+    h += '<li class="hq-ro-row" data-id="' + esc(id) + '" style="--hc:var(--h-' + hb.color + ')"><i class="hq-ro-dot" aria-hidden="true"></i><span class="hq-ro-name">' + esc(hb.name) + '</span>' +
+      '<button class="hq-ro-grip" type="button" aria-label="' + esc('Move ' + hb.name + '. Drag, or use the arrow keys') + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h.01M8 12h.01M8 18h.01M16 6h.01M16 12h.01M16 18h.01"/></svg></button></li>';
+  });
+  $('#habits').innerHTML = h + '</ol>';
+  bindReorder($('#hq-ro'));
+}
+function readOrder(ol){ hqEdit = Array.prototype.map.call(ol.querySelectorAll('.hq-ro-row'), function(li){ return li.getAttribute('data-id'); }); }
+function bindReorder(ol){
+  if(!ol) return;
+  ol.querySelectorAll('.hq-ro-grip').forEach(function(g){
+    g.addEventListener('keydown', function(e){ // keyboard: arrows move the row
+      var li = g.closest('.hq-ro-row');
+      if(e.key === 'ArrowUp' && li.previousElementSibling){ ol.insertBefore(li, li.previousElementSibling); }
+      else if(e.key === 'ArrowDown' && li.nextElementSibling){ ol.insertBefore(li.nextElementSibling, li); }
+      else return;
+      e.preventDefault(); readOrder(ol); g.focus();
+    });
+    g.addEventListener('pointerdown', function(e){
+      if(e.button !== undefined && e.button !== 0) return;
+      e.preventDefault();
+      var li = g.closest('.hq-ro-row'), startY = e.clientY, base = li.getBoundingClientRect().top;
+      hqDrag = true; li.classList.add('is-lifted'); ol.classList.add('is-dragging');
+      try { g.setPointerCapture(e.pointerId); } catch(x){}
+      if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){}
+      function move(ev){
+        if(ev.pointerId !== e.pointerId) return;
+        var y = ev.clientY;
+        if(y < 70) window.scrollBy(0, -12); else if(y > window.innerHeight - 70) window.scrollBy(0, 12); // edge auto-scroll for long lists
+        var sibs = Array.prototype.filter.call(ol.children, function(c){ return c !== li; }), target = null;
+        for(var i = 0; i < sibs.length; i++){ var r = sibs[i].getBoundingClientRect(); if(y < r.top + r.height / 2){ target = sibs[i]; break; } }
+        if(target !== li.nextElementSibling || (!target && li !== ol.lastElementChild)){ if(target) ol.insertBefore(li, target); else ol.appendChild(li); }
+        var now = li.getBoundingClientRect().top - (parseFloat(li.style.getPropertyValue('--dy')) || 0);
+        li.style.setProperty('--dy', (y - startY - (now - base)) + 'px');
+      }
+      function up(ev){
+        if(ev && ev.pointerId !== e.pointerId) return;
+        window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+        li.classList.remove('is-lifted'); ol.classList.remove('is-dragging'); li.style.removeProperty('--dy');
+        hqDrag = false; readOrder(ol);
+      }
+      // listen on window: moving the row in the DOM drops pointer capture, so events stop reaching the handle
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+    });
+  });
+}
+
 function renderHabits(){
+  if(hqDrag) return; // a drag is in progress: don't rebuild the list under the finger
+  if(hqEdit){ renderReorder(); return; }
   var d = state.selected, today = todayKey(), st = state.stats;
-  var act = activeHabits(d), doc = state.days[d];
+  var act = hqSort(activeHabits(d)), doc = state.days[d];
   var h = '';
   if(d > today){
     h = '<p class="nudge">Planning ahead: habits unlock on the day. Tasks below are open.</p>' + act.map(function(hb){ return '<article class="habit is-fut" style="--hc:var(--h-' + hb.color + ')"><span class="check" aria-hidden="true"></span><div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3></div><p class="target">' + esc(habitTarget(hb)) + '</p></div><div class="habit-side"></div></article>'; }).join('');
@@ -222,6 +294,7 @@ function renderHabits(){
     h += '</div></article>';
   });
   if(!act.length) h = '<p class="nudge">No active habits. Tap the sliders at the top to add or resume one.</p>';
+  if(act.length > 1) h += '<div class="hq-ro-foot"><button class="link-btn" type="button" data-act="hq-reorder">Reorder habits</button></div>';
   if(d === today){
     var y = addDays(today, -1), yd = state.days[y];
     var sleepH = habitById('sleep');

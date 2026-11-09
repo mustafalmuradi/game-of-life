@@ -52,6 +52,8 @@ export function normalizeSettings(s){
     });
   });
   if(!out.habits.length){ var dflt = clone(DEFAULT_SETTINGS); dflt.targets = out.targets; return normalizeSettings(dflt); }
+  /* Headquarters habit order (Nov 2026): habit ids, top to bottom. Only the Today list follows it; habits not in it go last */
+  if(s && Array.isArray(s.hqOrder) && s.hqOrder.length){ var seen = {}; out.hqOrder = s.hqOrder.map(String).filter(function(id){ if(seen[id]) return false; seen[id] = 1; return true; }); }
   out.taskTemplates = Array.isArray(s && s.taskTemplates) ? s.taskTemplates.map(normalizeTemplate).filter(Boolean) : [];
   out.rewards = {}; out.rewardsClaimed = {};
   if(s && s.rewards && typeof s.rewards === 'object') Object.keys(s.rewards).forEach(function(k){ var v = String(s.rewards[k] || '').trim().slice(0, 80); if(v) out.rewards[k] = v; });
