@@ -50,7 +50,7 @@ export function normalizeSettings(s){
       restManual: !!h.restManual,
       lifePerWeek: Math.max(0, Math.min(2, parseInt(h.lifePerWeek, 10) || 0)) || undefined, // extra declared-only "Life happens" passes, any day, 0 XP, on top of the rest days (Money, Nov 6 2026)
       /* Medical Rest (Nov 9 2026): injury/illness days set only by Claude or the Coach, never a page button. Holds the streak and the sweep,
-         pays 0 XP, doesn't spend a weekly rest; capped per rolling MEDICAL_WINDOW days. Train gets 3 unless the saved doc says otherwise */
+         pays 0 XP, doesn't spend a weekly rest; capped per calendar month (resets on the 1st, changed Nov 17 2026). Train gets 3 unless the saved doc says otherwise */
       medicalPer30: h.medicalPer30 === undefined || h.medicalPer30 === null ? (String(h.id) === 'workout' ? 3 : undefined) : (Math.max(0, Math.min(5, parseInt(h.medicalPer30, 10) || 0)) || undefined)
     });
   });
@@ -106,18 +106,14 @@ export function normalizeTemplate(t){
 }
 export function isEmptyTaskDoc(d){ return !d || (!d.items.length && !d.plannedAt && !d.closedAt); }
 export function hasHabitData(d){ return !!d && (Object.keys(d.done||{}).length > 0 || Object.keys(d.extras||{}).length > 0 || Object.keys(d.rest||{}).length > 0); }
-/* Medical Rest: days marked rest[hid] = 'medical' inside the rolling window. medicalLeft(h, d) = uses still open on date d,
-   checking every MEDICAL_WINDOW-day window that contains d (so a back-dated mark can't overfill a window either) */
+/* Medical Rest: days marked rest[hid] = 'medical'. Capped per calendar month (Nov 17 2026, was a rolling 30 days).
+   medicalLeft(h, d) = uses still open in d's month, not counting d itself */
 export function isMedical(doc, hid){ return !!(doc && doc.rest && doc.rest[hid] === 'medical'); }
 export function medicalLeft(h, d){
   var cap = (h && h.medicalPer30) || 0; if(!cap) return 0;
-  var worst = 0;
-  for(var s = addDays(d, -(MEDICAL_WINDOW - 1)); s <= d; s = addDays(s, 1)){
-    var n = 0;
-    for(var x = s, e = addDays(s, MEDICAL_WINDOW - 1); x <= e; x = addDays(x, 1)){ if(x !== d && isMedical(state.days[x], h.id)) n++; }
-    if(n > worst) worst = n;
-  }
-  return Math.max(0, cap - worst);
+  var mo = String(d).slice(0, 7), n = 0;
+  Object.keys(state.days).forEach(function(x){ if(x !== d && x.slice(0, 7) === mo && isMedical(state.days[x], h.id)) n++; });
+  return Math.max(0, cap - n);
 }
 export function isEmptyDay(d){ return !d || (!hasHabitData(d) && !Object.keys(d.m||{}).length); }
 export function ladderStep(h, level){ if(!h || !h.ladder || !h.ladder.length) return null; var b = beltOf(level || 0).b; return h.ladder[Math.min(b, h.ladder.length - 1)]; }

@@ -196,7 +196,7 @@ var COACH_TOOLS = [
    return {ok:true, date:date, wrote:parts, habitChanges:notes};
  }},
 {name:'set_habit', busy:'Updating habits',
- description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), life (a Life happens pass on a habit with lifePerWeek, e.g. Money: any day, holds the streak, 0 XP), medical (Medical Rest, Train only: injury or illness, needs `why`; holds the streak and sweep, 0 XP, does not use a weekly rest, max medicalPer30 in any 30 days; see MEDICAL REST rules), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
+ description:'Check, uncheck or rest a habit on a date, or log an extra session. Statuses: done, undone, rest (full rest day; for sleep this is a "life happens" pass, 2 a week, full points), light (Train only: light day), life (a Life happens pass on a habit with lifePerWeek, e.g. Money: any day, holds the streak, 0 XP), medical (Medical Rest, Train and Ice, on any habit with medicalPer30: injury or illness, needs `why`; holds the streak and sweep, 0 XP, does not use a weekly rest, max medicalPer30 per calendar month, resets on the 1st; see MEDICAL REST rules), extra (needs the habit done; `note` says what). Returns the day XP and whether the day is a clean sweep.',
  schema:{type:'object', properties:{
    date:{type:'string', description:'YYYY-MM-DD'},
    habit:{type:'string', description:'Habit id or name: read, meditate, workout (Train), money, sleep (Bed on time), nicotine, eat, sunnah.'},
@@ -217,12 +217,12 @@ var COACH_TOOLS = [
      mutateDay(date, function(d){ delete d.done[h.id]; delete d.extras[h.id]; if(d.rest && d.rest[h.id] === 'medical' && d.m) delete d.m.medical; if(d.rest) delete d.rest[h.id]; }, {});
      label = h.name + ' unchecked';
    } else if(status === 'medical'){
-     if(!h.medicalPer30) throw new Error(h.name + ' has no Medical Rest. It is for Train only.');
+     if(!h.medicalPer30) throw new Error(h.name + ' has no Medical Rest. It is for Train and Ice only.');
      var why = String(inp.why || '').trim().slice(0, 160);
      if(why.length < 5) throw new Error('Medical Rest needs a reason: the injury or illness in his words.');
      if(date > todayKey()) throw new Error('Medical Rest can only be set for today or a past day.');
      if(cur && cur.done[h.id]) throw new Error(h.name + ' is already done on ' + date + '. Uncheck it first if he did not train.');
-     if(!isMedical(cur, h.id) && medicalLeft(h, date) <= 0) throw new Error('Medical Rest is used up: ' + h.medicalPer30 + ' in any 30 days. Use a normal rest day, or he takes the miss.');
+     if(!isMedical(cur, h.id) && medicalLeft(h, date) <= 0) throw new Error('Medical Rest is used up: ' + h.medicalPer30 + ' this month (resets on the 1st). Use a normal rest day, or he takes the miss.');
      mutateDay(date, function(d){ d.rest = d.rest || {}; d.rest[h.id] = 'medical'; delete d.done[h.id]; delete d.extras[h.id]; d.m = d.m || {}; d.m.medical = {why:why, at:Date.now(), by:'coach'}; }, {});
      label = h.name + ' Medical Rest: ' + why;
    } else if(status === 'life'){
@@ -1079,7 +1079,7 @@ COACH_TOOLS.push(
 /* extend existing tools */
 (function(){
   var sh = findTool('set_habit'), base = sh.run;
-  sh.description = 'Check, uncheck or rest a habit on a date, log an extra, or remove one extra. Statuses: done, undone (also clears its extras), rest, light (Train only), life, medical (Train only, needs why; MEDICAL REST rules), extra (needs the habit done; note says what), remove_extra (note = the extra to remove). Returns the day XP and clean-sweep state.';
+  sh.description = 'Check, uncheck or rest a habit on a date, log an extra, or remove one extra. Statuses: done, undone (also clears its extras), rest, light (Train only), life, medical (Train and Ice, needs why; MEDICAL REST rules), extra (needs the habit done; note says what), remove_extra (note = the extra to remove). Returns the day XP and clean-sweep state.';
   sh.schema.properties.status.enum = ['done', 'undone', 'rest', 'light', 'life', 'medical', 'extra', 'remove_extra'];
   sh.run = function(inp){
     if(inp.status !== 'remove_extra') return base(inp);
@@ -1399,11 +1399,11 @@ COACH_RULES += '\n\n' + [
   };
 })();
 COACH_RULES += '\n\n' + [
-'MEDICAL REST (Train only, Nov 9 2026)',
+'MEDICAL REST (Train since Nov 9 2026; Ice since Nov 17 2026, each with its own 3 a month: the cold shower is skipped for the same injury or illness)',
 '- Only you (or Claude in his chats) can set it: set_habit workout medical with `why` in his words. The page has no button for it, on purpose.',
 '- Use it only for a real injury or illness that makes training unsafe: a limp, sharp pain, swelling, pain bearing weight, a fever or illness flag (skin temp, respiratory rate) with symptoms, or a doctor or PT telling him to rest. Ask what and where first if he has not said.',
 '- Never for tired, sore, busy, low recovery, bad sleep or not feeling it: those are a normal rest day, a light day or a miss. If it is borderline, say so and use a normal rest day.',
-'- What it does: holds the Train streak and the day sweep, pays 0 XP, does not use his weekly rest day, and stays out of the weekly full-rest count. Max medicalPer30 (3) in any 30 days (habits[].medicalLeftToday has what is left); after that he uses a normal rest or takes the miss.',
+'- What it does: holds the Train streak and the day sweep, pays 0 XP, does not use his weekly rest day, and stays out of the weekly full-rest count. Max medicalPer30 (3) per calendar month, resetting on the 1st (habits[].medicalLeftToday has what is left this month); after that he uses a normal rest or takes the miss.',
 '- Needed two or more days running, or with swelling, warmth, redness, numbness, or pain that is getting worse: tell him to get it seen (urgent care, doctor or PT) the same day. You are not a doctor.',
 '- If he trains after all, set_habit workout done replaces it. undone clears it and its reason.'
 ].join('\n');

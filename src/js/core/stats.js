@@ -36,8 +36,8 @@ export function recompute(){
         var bx = h.id === 'sleep' ? lateXP(d) : null; if(bx === null) bx = BASE_XP;
         baseXP += bx;
         s.xp += bx + n*EXTRA_XP;
-      } else if(restMarked && doc.rest[h.id] === 'medical' && h.medicalPer30 && (medUsed[h.id] || []).filter(function(x){ return x > addDays(d, -MEDICAL_WINDOW); }).length < h.medicalPer30){
-        /* Medical Rest (Claude/Coach only): injury or illness. Holds the streak and the sweep, pays 0 XP, doesn't spend a weekly rest */
+      } else if(restMarked && doc.rest[h.id] === 'medical' && h.medicalPer30 && (medUsed[h.id] || []).filter(function(x){ return x.slice(0, 7) === d.slice(0, 7); }).length < h.medicalPer30){
+        /* Medical Rest (Claude/Coach only): injury or illness. Holds the streak and the sweep, pays 0 XP, doesn't spend a weekly rest. Cap resets each calendar month */
         medUsed[h.id] = (medUsed[h.id] || []).concat([d]); s.medical++; excused.push(h.id); medDays.push(h.id);
         s.held++; if(s.held > s.heldBest) s.heldBest = s.held;
         done++; required++; restDone.push(h.id);

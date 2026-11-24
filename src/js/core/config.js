@@ -2,7 +2,7 @@
 
 /* ---------- scoring rules ---------- */
 export var BASE_XP = 20, EXTRA_XP = 10, EXTRA_CAP = 3, SWEEP_XP = 30, SWEEP_STEP = 5, SWEEP_MAX = 80, LIGHT_XP = 10;
-export var MEDICAL_WINDOW = 30; // Medical Rest (Nov 2026): a habit's medicalPer30 caps uses inside any rolling window of this many days
+export var MEDICAL_WINDOW = 30; // Unused since Nov 17 2026: Medical Rest (medicalPer30) now caps uses per calendar month, resetting on the 1st. Kept so old imports still resolve
 export var LS_KEY = 'dojo-log-v1';
 export var COLOR_SLOTS = ['read','meditate','workout','money','sleep','x1','x2','x3'];
 export var BELTS = [
