@@ -15,6 +15,7 @@
   --h-read:#E0159F; --h-meditate:#7C3AED; --h-workout:#FF5C2B; --h-money:#0FA968; --h-sleep:#0EA5E9; --h-x1:#F28C1C; --h-x2:#0CA6A6; --h-x3:#7FA60A;
   --on-hc:#FFFFFF;
   --z-green:#0FA968; --z-yellow:#E0A800; --z-red:#E53E3E;
+  --mc-red:#D42A2A; --mc-yellow:#A97C00; --mc-green:#0B8F57; --mc-on-gold:#2A1600; /* month calendar day numbers: WHOOP bands, darkened for contrast on light glass */
   --t-bronze:#D2782E; --t-silver:#7F8FA6; --t-gold:#F0A400; --t-platinum:#0EA5E9; --t-diamond:#5B6CFF;
   --pr:#E53E3E; --up:#0FA968; --dip:#F28C1C; --spark-fill:rgba(14,165,233,.16);
   --heat-0:#DCE6F7; --heat-1:#BFE3FF; --heat-2:#8CD2FF; --heat-3:#4DB8FF; --heat-4:#0EA5E9; --heat-5:#0369A1;
@@ -47,6 +48,7 @@
     --h-read:#FF5FD0; --h-meditate:#A88CFF; --h-workout:#FF7A50; --h-money:#2EE887; --h-sleep:#4FD8FF; --h-x1:#FFB042; --h-x2:#2EDCE2; --h-x3:#B4FF5C;
     --on-hc:#041018;
     --z-green:#2EE887; --z-yellow:#FFCB3D; --z-red:#FF6B6B;
+    --mc-red:#FF6B6B; --mc-yellow:#FFCB3D; --mc-green:#2EE887; --mc-on-gold:#2A1600;
     --t-bronze:#E8955A; --t-silver:#B9C4D6; --t-gold:#FFC93D; --t-platinum:#4FE0F2; --t-diamond:#8AA8FF;
     --pr:#FF6B6B; --up:#2EE887; --dip:#FFA64A; --spark-fill:rgba(34,227,255,.2);
     --heat-0:#121B3A; --heat-1:#163A5E; --heat-2:#145E86; --heat-3:#0E8BB8; --heat-4:#13BFE8; --heat-5:#6DEDFF;
@@ -74,6 +76,7 @@
   --h-read:#FF5FD0; --h-meditate:#A88CFF; --h-workout:#FF7A50; --h-money:#2EE887; --h-sleep:#4FD8FF; --h-x1:#FFB042; --h-x2:#2EDCE2; --h-x3:#B4FF5C;
   --on-hc:#041018;
   --z-green:#2EE887; --z-yellow:#FFCB3D; --z-red:#FF6B6B;
+  --mc-red:#FF6B6B; --mc-yellow:#FFCB3D; --mc-green:#2EE887; --mc-on-gold:#2A1600;
   --t-bronze:#E8955A; --t-silver:#B9C4D6; --t-gold:#FFC93D; --t-platinum:#4FE0F2; --t-diamond:#8AA8FF;
   --pr:#FF6B6B; --up:#2EE887; --dip:#FFA64A; --spark-fill:rgba(34,227,255,.2);
   --heat-0:#121B3A; --heat-1:#163A5E; --heat-2:#145E86; --heat-3:#0E8BB8; --heat-4:#13BFE8; --heat-5:#6DEDFF;

@@ -296,5 +296,9 @@ export const steps = [
   { name: 'visibility change flushes', run: async (page) => {
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
     await settle(page);
-  } }
+  } },
+  // month calendar on Progress (Nov 2026): page back a month, forward again, then a day jumps to it in Headquarters
+  { name: 'progress: calendar previous month', run: async (page) => { await tab(page, 'progress'); await click(page, '[data-act="mc-prev"]'); await settle(page); } },
+  { name: 'progress: calendar next month (back to this month)', run: async (page) => { await click(page, '[data-act="mc-next"]'); await settle(page); if (!(await page.locator('[data-act="mc-next"][disabled]').count())) throw new Error('next should be disabled on this month'); } },
+  { name: 'progress: calendar day opens it in Headquarters', run: async (page) => { await click(page, '.mc-d[data-act="mc-day"]'); await settle(page); } }
 ];

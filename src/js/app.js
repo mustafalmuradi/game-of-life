@@ -10,7 +10,7 @@ import { registerHud, render, SECTIONS, syncTabs } from './core/render.js';
 import { readiness } from './features/body.js';
 import { isOpen, taskDoc } from './features/tasks.js';
 import { pad } from './core/utils.js';
-import { claimReward, setReward, showTip } from './features/progress.js';
+import { claimReward, setReward, showTip, stepMonth } from './features/progress.js';
 import { addSetRow, deleteLift, onExerciseChange, openLiftSheet, saveLift, setLiftFilter, toggleLadder } from './features/lifts.js';
 import { applyCalories, bodyFilter, ciChip, openCheckin, saveBodyFilter, saveCheckin, stepBodyWeek } from './features/body.js';
 import { bDelete, bUnlink, BXP, clearSelection, openBuildSheet, saveBuildForm, selectNode, toggleBuildLadder, toggleShowAll } from './features/build.js';
@@ -95,6 +95,9 @@ function bind(){
         if(nw <= addDays(mondayOf(td), 28)){ state.weekOf = nw; state.selected = mondayOf(td) === nw ? td : nw > td ? nw : addDays(nw, 6); render(); }
         break;
       }
+      case 'mc-prev': stepMonth(-1); break;
+      case 'mc-next': stepMonth(1); break;
+      case 'mc-day':
       case 'open-day': { var dd = t.getAttribute('data-d'); state.selected = dd; state.weekOf = mondayOf(dd); state.tab = 'today'; render(); window.scrollTo({top:0, behavior: reduceMotion ? 'auto' : 'smooth'}); break; }
       case 'pause': { var p = draftHabit(hid); if(p){ var td2 = todayKey(); p.pauses = (p.pauses || []).filter(function(x){ return x.to; }); p.pauses.push({from:td2, to:null}); if(p.since > td2) p.since = td2; renderSettingsList(); } break; }
       case 'resume': { var q = draftHabit(hid); if(q){ var td3 = todayKey(); q.pauses = (q.pauses || []).map(function(x){ return x.to ? x : {from:x.from, to:td3}; }).filter(function(x){ return x.from < x.to; }); renderSettingsList(); } break; }

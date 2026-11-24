@@ -1,366 +1,366 @@
 {
- "recorded": "2026-11-09T14:25:55.172Z",
+ "recorded": "2026-11-24T10:56:15.925Z",
  "frozenClock": "2026-10-07T15:30:00-04:00",
  "steps": {
   "10": {
    "name": "make sure Read is done",
-   "sha": "bfaa4ad7aabc748f2ee95b559c45456455ad233feddccdfdda775c71865f96b2",
-   "bytes": 216107
+   "sha": "71261f27a98f3a33abe0337ab274baca39f4c02dc6f8b92f130851607f1be624",
+   "bytes": 219268
   },
   "11": {
    "name": "open extra sheet (Read)",
-   "sha": "de91369441a7f82ee01d818f1d30f3a91e12c70ea31a6de3d677802a909089f9",
-   "bytes": 216550
+   "sha": "ddbf29826046250210e69665fa8c72e90e59336b44b9eeceebed1419103cc44f",
+   "bytes": 219711
   },
   "12": {
    "name": "log preset extra",
-   "sha": "3b2d034670c3b78e18986d398b8b8c3c70bd56b07bbd0177939e742efbd2df6e",
-   "bytes": 217069
+   "sha": "ba1d97d2e98966f2c79212a6f0accc08324751a08da92344fd895749c0f43677",
+   "bytes": 220230
   },
   "13": {
    "name": "open extra sheet, type a note",
-   "sha": "f43a4afd28456eda188311b510a5863bb7eec71ef244ff23daa2722ef3b79a06",
-   "bytes": 217421
+   "sha": "5ec96cb655599d5fcb588ce1e7212217f60469ad427f05fa6a71f881b9b988c5",
+   "bytes": 220582
   },
   "14": {
    "name": "remove an extra",
-   "sha": "df5dbecb0710105d15e969f5e15a5763c21851129f0f7e819c5816cff338be45",
-   "bytes": 217061
+   "sha": "a6e0be5b93215cb66b92f22a9381b2063477a7490bfbcf713e68996a5f045f47",
+   "bytes": 220222
   },
   "15": {
    "name": "Train: rest day",
-   "sha": "8e503594b3582629bb3fedd423a93b690c01c601f0a8fd3d396ef764543a92a3",
-   "bytes": 217064
+   "sha": "fa6277f55be52df7e943ed44fbc49950da66f78fbb4ddaacabe2b0d0ea8cec80",
+   "bytes": 220225
   },
   "16": {
    "name": "Train: light day",
-   "sha": "5a45ec467ada1bb87c7d1784ab5fb0ba4ca5039f505ef1ffa504d5074f1b1cd8",
-   "bytes": 217075
+   "sha": "d8d0c2ec776588a00a0507b5aa6757bcb83c3a17e69aa9f2cadd8feb50e3f96b",
+   "bytes": 220236
   },
   "17": {
    "name": "Train: done",
-   "sha": "9ba0fe74d0abb7edcdd7793ca334437b60364d2af8d2eeb1df4a2f1a16e02bc4",
-   "bytes": 217269
+   "sha": "0ed9508dad02a24caa2283de1b2e0320ff9f6be366c1809135712624ace78086",
+   "bytes": 220430
   },
   "18": {
    "name": "toggle every remaining habit (clean sweep)",
-   "sha": "f156068ed2e28116ad9dbdfdda24c7dec15c04d94a69479547882478ccb77993",
-   "bytes": 217455
+   "sha": "c7b12ef8556053df8661020d281fcdb26cb834aed5c67bff9ed8d7ff8ba0baa5",
+   "bytes": 220616
   },
   "19": {
    "name": "open rank sheet (overall)",
-   "sha": "88bb08368677d8974b738fa4e6872d3242ecc641d32cefd29767038c96d56b80",
-   "bytes": 229586
+   "sha": "cd3623656c6e83b6cc8941f89f70f57e0a6e76d5817f9b344d6ee71078a7522d",
+   "bytes": 232747
   },
   "20": {
    "name": "close rank sheet",
-   "sha": "94ebf859d4957cd44fcc37b5947241073bf777c2a23f9e25364851a640bec609",
-   "bytes": 229596
+   "sha": "ac23ead78474c13da8db6faa27fe0c7939184fb3e5fdae4ddaced0840ff25bee",
+   "bytes": 232757
   },
   "21": {
    "name": "open rank sheet (habit)",
-   "sha": "c44519fb0b0b9bb7193890d10110287678ddb4cdfce2d4bbf8d3b6c870ae5fed",
-   "bytes": 221132
+   "sha": "413e65bbae45426c4ccadf28f1e28c2baf65449b49deb85a35ab217461a76cdc",
+   "bytes": 224293
   },
   "22": {
    "name": "week prev",
-   "sha": "e283e77df135819c67f58fc7246707798ab4a11993b7e34ac8c9ff820f1582dc",
-   "bytes": 218642
+   "sha": "438a432d7769ac64d52dea74b9c1aefcb9869fd2502707038a8a75bd157b68e8",
+   "bytes": 221803
   },
   "23": {
    "name": "pick a day",
-   "sha": "434c942852d94cf6a31a445ff25a910a5c301642404d62c4564817931759efaf",
-   "bytes": 218236
+   "sha": "c27cb1e3cb8ab8ec5cf6d4c911cd5013749066072bfab7bcbda1604572c7fbd7",
+   "bytes": 221397
   },
   "24": {
    "name": "toggle a habit on a past day",
-   "sha": "a81266d68a17d5f9c3bc47c576108481cd46e26e25b577ff82faf0676c3d63fc",
-   "bytes": 217919
+   "sha": "73e162f187b1bd67e9fbe1b54df86feb6d34be806ee347a387da6275734dbf4c",
+   "bytes": 221080
   },
   "25": {
    "name": "back to today",
-   "sha": "75cd8c6cd7ede514e6154c617d97b7d57492cad2986d74b00d9a265d035c248d",
-   "bytes": 221086
+   "sha": "db46e489c805e91a88e0db8a721b68d4ff6d6139c0731c01e77910970efecb84",
+   "bytes": 224247
   },
   "26": {
    "name": "week next is disabled on this week",
-   "sha": "75cd8c6cd7ede514e6154c617d97b7d57492cad2986d74b00d9a265d035c248d",
-   "bytes": 221086
+   "sha": "db46e489c805e91a88e0db8a721b68d4ff6d6139c0731c01e77910970efecb84",
+   "bytes": 224247
   },
   "27": {
    "name": "open settings",
-   "sha": "81984a1cf0e80435e11dab9fb82adf3c92e67990d283fd33bf3c7c50c411a36d",
-   "bytes": 228190
+   "sha": "a5441cad1e9d7c30fef70b49c428bf3e8ed451df3a15116106f631578843adda",
+   "bytes": 231351
   },
   "28": {
    "name": "theme: pick Dark, then back to Auto (follows the sun)",
-   "sha": "d55010a15ce66748663f985700dd01e87b6c99a8c18858c3b9292d90f93373fe",
-   "bytes": 228212
+   "sha": "b9d15df9c63a16534bab047e234d605c6adf3adec6d6800d63deefb6f4af29d0",
+   "bytes": 231373
   },
   "29": {
    "name": "rename a habit, add one, pause one",
-   "sha": "642fa987f77f9ba81daf75149077826158245c26c1f8b2a9d1472eace0201988",
-   "bytes": 229121
+   "sha": "4281f7e7e72b286ef5a03257109038115985de9dc8c139e49fbd97060fb74445",
+   "bytes": 232282
   },
   "30": {
    "name": "save habits",
-   "sha": "285a4a82d5fa36db15c55bcc2efe930f3385acab68eab0c2fcfd3f1f9c1c866b",
-   "bytes": 233840
+   "sha": "9a3325c757bc91addd3f7c25da967a93b82a47c254b26c989b24276d11d666a6",
+   "bytes": 237001
   },
   "31": {
    "name": "reopen settings, resume, cancel",
-   "sha": "182530c0bea8eb57967c831908c448605486f7f78ca95ffdb9dfbd390b90938d",
-   "bytes": 233793
+   "sha": "13b669e98a3c4bd9c6be84f1e96d71567917a250677e8f8ae3de4b8778371bd9",
+   "bytes": 236954
   },
   "32": {
    "name": "lifts: open sheet",
-   "sha": "9ee86ec899638ee49c4d08f2b7b263e6dac0d7f8f91a6a059c417d7caab00e5f",
-   "bytes": 236081
+   "sha": "6e02bb43592d43522ccece71e8de04d1720f436552609853b7b535418b3c9ce5",
+   "bytes": 239242
   },
   "33": {
    "name": "gym: start the rest timer, two seconds pass",
-   "sha": "679d8444822090ef25e85643469da50cf2117aa951b84125aa19bef5c0b8398a",
-   "bytes": 239249
+   "sha": "5388b183c3797b6fbdd4d1996ed14c5785f642a020b70e3064ea2dcb5a8c6ded",
+   "bytes": 242410
   },
   "34": {
    "name": "gym: switch to 3:00, pause, reset",
-   "sha": "e293e2c43b50673f6017d5179094a3e7de1ad4969c3c142306d44958cde236fa",
-   "bytes": 239249
+   "sha": "240304e349733e06cf6ccc39d78cf5a201cddc6d9702c101d07a1289521aa25a",
+   "bytes": 242410
   },
   "35": {
    "name": "gym: plate math for 230 lb",
-   "sha": "5ad843ac069e84cd47f6ba333517bdbd369d5af4785c5e69b5d81fee246b8c1f",
-   "bytes": 239336
+   "sha": "0b889f204d6c6d0331ca1500306ca5fea4886042dfd09048404e4f915a44093e",
+   "bytes": 242497
   },
   "36": {
    "name": "gym: rest runs out while the sheet is closed (pill, flash, toast)",
-   "sha": "9c07efc3036f8d62b8522eb0797ce42c02b2e022062d10cf492da8f4413c25e1",
-   "bytes": 239178
+   "sha": "b9a16aad068c2a788f355cdf2433671755edef4232a37c9437963d604aa6d664",
+   "bytes": 242339
   },
   "37": {
    "name": "gym: reopen the sheet",
-   "sha": "d260d87da04440b1b039d71079a4eff9dc2fcd79fde7bd276f52ae25048b6ef1",
-   "bytes": 239168
+   "sha": "7033f8a95fc76ed4473d309e0f7e8fc91dbb1b1ae4692fae1e2d54eaab92f935",
+   "bytes": 242329
   },
   "38": {
    "name": "lifts: choose a past exercise (prefill)",
-   "sha": "26ff47784c3395ce525f783e0b33b6168d3991d016f3282fe65a3d2aaa6cced5",
-   "bytes": 239226
+   "sha": "086f9d86192f023e6f21b276de67ac919fb20fc118957fd533cf3b202c3550fe",
+   "bytes": 242387
   },
   "39": {
    "name": "lifts: fill sets and save",
-   "sha": "d43a9f9d3ce4003b14b564c3804ca0718cc5b4dbbe06d6f4db7644842a0d48d6",
-   "bytes": 243244
+   "sha": "9a8cfb37c2076e67c8518645cc46d072aeb6ff81f73d4f5640ad8b2c77c2ec8d",
+   "bytes": 246405
   },
   "40": {
    "name": "lifts: celebrate timers fire",
-   "sha": "dd8bd4047f6b3f677025245549e193bf998c8738f6beb1e1403749b1807c50f1",
-   "bytes": 243248
+   "sha": "6ff174a9dc2dcb76165038ae8763b654919ddb9f615d3fe77ef88cb087c45c37",
+   "bytes": 246409
   },
   "41": {
    "name": "lifts: filter by location",
-   "sha": "c559eafac1f955119b3e993b8be2ebdbe4f5d264c1e4464dd9d1bf00591c0887",
-   "bytes": 216937
+   "sha": "2a04b856c8f51709ccebd36cf94121b99be27c4235408c3a3a68cb6c7600ee6b",
+   "bytes": 220098
   },
   "42": {
    "name": "lifts: filter All, toggle ladder",
-   "sha": "4b5145191c0dbcbdfc78e215203fd41dff895840bf690d603563af2e71c7d01a",
-   "bytes": 243743
+   "sha": "e6b7e5ef3605af327f4539fb418ac1093ca2ade3de6201c8ae02b18b4861f622",
+   "bytes": 246904
   },
   "43": {
    "name": "lifts: open lift progress",
-   "sha": "c5a57bbbfa08cbcb3620b25df700a6bce1a7c944a928533c574dd87406b6a5d9",
-   "bytes": 243751
+   "sha": "ceb16b120736781da07f558c3a982f3679f6789004a0dcfc9470767732af8f0c",
+   "bytes": 246912
   },
   "44": {
    "name": "lifts: arm delete",
-   "sha": "4934795363b82ac300aa2b72f5b20302dd67a947a98083e37deca6d4f2a3bfef",
-   "bytes": 243770
+   "sha": "c61d6a7f059f484376394e83f4e547f26d618951cca2f2275dc989250b67374f",
+   "bytes": 246931
   },
   "45": {
    "name": "lifts: arm expires",
-   "sha": "c5a57bbbfa08cbcb3620b25df700a6bce1a7c944a928533c574dd87406b6a5d9",
-   "bytes": 243751
+   "sha": "ceb16b120736781da07f558c3a982f3679f6789004a0dcfc9470767732af8f0c",
+   "bytes": 246912
   },
   "46": {
    "name": "lifts: delete for real",
-   "sha": "a4982971d597a2c4d3cc8e5fa8e2087a4a40fb7bcc1916e9c111c9c3fba8359f",
-   "bytes": 241042
+   "sha": "e128f77c27aaaafa004390ce5b1fccfc0829a678c567d0deb355205bfe70c86f",
+   "bytes": 244203
   },
   "47": {
    "name": "lifts: save with a validation error",
-   "sha": "2a9c1dc9a49124817d5e8c6b930424acbf5f077dad682b0132fd46d99b211ee2",
-   "bytes": 240424
+   "sha": "4f028cd44eac6d9f46aa4b7c460bc339b01df6f101df349883927bd91ccc4e0f",
+   "bytes": 243585
   },
   "48": {
    "name": "lifts: band set, light band, yesterday",
-   "sha": "66e54cf23c3a485274d12df9a9d37c1d1c840d80e3679ced4444ac8b55ca6e5b",
-   "bytes": 242820
+   "sha": "811b92871f97efe9d69b9fd8e679f2d227949446ef1187c92c3755be369d9c24",
+   "bytes": 245981
   },
   "49": {
    "name": "lifts: band set, thick band, today (prefill keeps the band)",
-   "sha": "f36b42d92316093534ecec785c00f5eeaed29998344ec1c03f7bf06e92605aef",
-   "bytes": 241762
+   "sha": "317aaee8118691642da00bfe99566cee834e9a4fd636816339593d940de28007",
+   "bytes": 244923
   },
   "50": {
    "name": "lifts: band progression panel open",
-   "sha": "98c1db45b0e10094f3e3e440161ae808ab9c3e04c9fa2eb9866c68f3edc545a1",
-   "bytes": 241778
+   "sha": "06db76f797b4a490682242f01b2c03d0005b866e8c8439e50d6e07142b5a88ed",
+   "bytes": 244939
   },
   "51": {
    "name": "today: band day shows Train as light",
-   "sha": "14f7601fde580f8cbf3b29349145bb8d62b8980a549e88e29332387d1db71423",
-   "bytes": 241776
+   "sha": "3961c83e86b238994302dc4cecbb69a4c53252894ee3c5afac09878f53affec7",
+   "bytes": 244937
   },
   "52": {
    "name": "body: open check-in",
-   "sha": "16afce258b3a84ec3e9d4156d219b69d7ecea0f4146a108949f2d0125731557e",
-   "bytes": 243761
+   "sha": "66e48b52286c2556b5a53ca25fbd932c25bd8b7db9591245f324929d66039597",
+   "bytes": 246922
   },
   "53": {
    "name": "body: fill and save check-in",
-   "sha": "22a3ea88322dac4447131134e5aec9d93e4a8f3d9d810933a3002c85138a3b06",
-   "bytes": 243796
+   "sha": "ae9a9546ab94ff8740970d2f7196e0b0484f3c835c6b0ba21aaa5e8a242ade9a",
+   "bytes": 246957
   },
   "54": {
    "name": "body: toggle filter",
-   "sha": "d69fd4e194298588a334c352753f4a81d4516dae51b1f44989e36c1d1af3057e",
-   "bytes": 244115
+   "sha": "42baa70f0149f1b3fd47009ba08b6a311078c15b8b0308434e182a61e8debaa0",
+   "bytes": 247276
   },
   "55": {
    "name": "body: previous week",
-   "sha": "4a6ab4f55da821a0cc827dc9a85219ccdcee6b8223033a0ae480660dcbcf38ea",
-   "bytes": 244112
+   "sha": "fdaea850c5e247e25b4c8b7c1d0df352af11b262de023ddb5bbe7c47714a6ada",
+   "bytes": 247273
   },
   "56": {
    "name": "body: next week",
-   "sha": "d69fd4e194298588a334c352753f4a81d4516dae51b1f44989e36c1d1af3057e",
-   "bytes": 244115
+   "sha": "42baa70f0149f1b3fd47009ba08b6a311078c15b8b0308434e182a61e8debaa0",
+   "bytes": 247276
   },
   "57": {
    "name": "body: apply calorie suggestion",
-   "sha": "d8a23ec971cc26deddf261ed8eb027012487fee4651166fe916dccf2abb407e6",
-   "bytes": 244149
+   "sha": "b1d997e94af311ffe4a89dc0e592cdff4b4d0ff6bcfc22d15efe064c3fac548d",
+   "bytes": 247310
   },
   "58": {
    "name": "progress: hover chart bar",
-   "sha": "47b1f2b341d09dfb52ce5bebc1b852c6c0015271cc12b2f020d15932d074a782",
-   "bytes": 244687
+   "sha": "ffe9faecaed21f5bf762938215b5e3070bff39caed51ef5ff453d9a14814b709",
+   "bytes": 247835
   },
   "59": {
    "name": "progress: click heatmap cell",
-   "sha": "cf1475fd7ff4588401937b5096f16bf0eb4c913551e89994b29939e9fc4fe19b",
-   "bytes": 244794
+   "sha": "5e6fcca40ce06666c820c47e9a30761eb47c60736f07e241187157b7322749ef",
+   "bytes": 247942
   },
   "60": {
    "name": "progress: set a reward",
-   "sha": "d1d808bc3c5bf01c1c0aa14854b329df2728f0355d1f18995e1b24e090ac7de9",
-   "bytes": 250347
+   "sha": "d91816942cdac3c86fd212d5f2d1ca21c36212b812c2b68c54d8c218de2dbd59",
+   "bytes": 253495
   },
   "61": {
    "name": "progress: open day from heatmap",
-   "sha": "a1c7b239ee7a4d9b72cd88102179ffb10cc62bd77c81d6e64454c01bafaa52d2",
-   "bytes": 247586
+   "sha": "dacc58009ef7e96d95cf02259e4afa9fa246f00fe0eb802a363319335d77f25a",
+   "bytes": 250734
   },
   "62": {
    "name": "build: select a node",
-   "sha": "4c52aeb3f7c5c68ee685a917b4f03f7bf15ba8805650b49bf8eac6e38bb3902f",
-   "bytes": 248085
+   "sha": "fe3b2416e3415307d4afdecbe11c2b86360269bbf78cb5ec719c13507f885f75",
+   "bytes": 251233
   },
   "63": {
    "name": "build: new ship from node",
-   "sha": "73c1b9aa813db54fb5fde302c49ed6e6f0677624c04a292860def2d3cad2aae0",
-   "bytes": 250359
+   "sha": "63f16985a43572d818562a42891d103edcf610d504482dd434503596e249b1eb",
+   "bytes": 253507
   },
   "64": {
    "name": "build: new node with a link",
-   "sha": "b67a7ecfadb7c2a4043856c98842eedca323b3aa16626addb178e6f952957617",
-   "bytes": 252508
+   "sha": "381580d4b36b5dd58f99379f87dec0606e6953b9d7876c6a3c8882a1b60a42e4",
+   "bytes": 255656
   },
   "65": {
    "name": "build: new skill",
-   "sha": "32ed9ff13b59c02de37aaad3a908d1ebf75d3bf1c358178b5c303a0b72e73754",
-   "bytes": 252048
+   "sha": "3cd9bc8c7ab4a886f55ad10f23f2fd3a8a972d914eb0a3d5b5d0dc4954090959",
+   "bytes": 255196
   },
   "66": {
    "name": "build: edit a ship, delete it",
-   "sha": "d76ff0026de10c0e4e74ac4b27af04c507a7686ed30799309b0cf309cf4be82f",
-   "bytes": 252044
+   "sha": "e863d13b227759d2e6328c6df30ffe1ca3749781854ef219430055705b761236",
+   "bytes": 255192
   },
   "67": {
    "name": "build: unlink, show all, ladder",
-   "sha": "87b75e603eb7df126e988163bdb01b0927f19d69e53a8818df0f4c252bb1a097",
-   "bytes": 253624
+   "sha": "1e01b998b001e8bbbcab04da975528c4b467eea1e976ea9ea3669b1fe1068ad9",
+   "bytes": 256772
   },
   "68": {
    "name": "build: clear selection",
-   "sha": "4843cf3c85953daf18db2b2c1675cc2e62a440b666002aaa4d98eb2e8eb2e504",
-   "bytes": 253073
+   "sha": "04cc67a85ad478c8c0ba43dcffdb15ab4d884a52ebbaeef9419e7a9594f3dd50",
+   "bytes": 256221
   },
   "69": {
    "name": "coach: open",
-   "sha": "1077b71ef4a3a9848986b97404528e860f8f7deb5a0702c2300f4b44d965d894",
-   "bytes": 253063
+   "sha": "1ba7756a3d731fca3d19a262f5a21ab70388b97eaff10953004b479d480855ef",
+   "bytes": 256211
   },
   "70": {
    "name": "coach: send a message (scripted tool call)",
-   "sha": "8d6e0bea5d925ddb148b57d83a653a1612493c229b975a6fbe19578542800a99",
-   "bytes": 256392
+   "sha": "bcb384b5c69264fed40f17896e91f72c8daa52a89647a66aad8a82bd0b9a4f62",
+   "bytes": 259540
   },
   "71": {
    "name": "coach: undo the change",
-   "sha": "91a20f30461987c9d0526f76fd44d7dc9154c06346662b354eb59867c28d4be0",
-   "bytes": 256276
+   "sha": "28f98fd8fdae1eedf137904551bd69387c47fc3b118d6cea2dd52a00272242fe",
+   "bytes": 259424
   },
   "72": {
    "name": "coach: send another (plain answer)",
-   "sha": "56aa284c1251f1851f7bd60fa9c5b0c656fe3cabec3f8ebf45cd3f76d9fe1acf",
-   "bytes": 258037
+   "sha": "cfdfcac7e12a714977df799216afcc1b4aebfc271801cab9838040a8c1624f98",
+   "bytes": 261185
   },
   "73": {
    "name": "coach: new chat, close",
-   "sha": "08084ee3045f54530d6e996326eaa291fbca0eeefc80eb8235cf4a7a95954a70",
-   "bytes": 257281
+   "sha": "b3d318d6573d391df73d58647d63f199bd68d2f4984f260e74497623acf7e020",
+   "bytes": 260429
   },
   "74": {
    "name": "cloud write fails once, then retries",
-   "sha": "9d6d73dc2c6ef96efdc84b8204ce01967c923bdb0fb9356e0e4e74f42128a867",
-   "bytes": 261106
+   "sha": "e6a3a709708ee2ef3b4557c506093f6a433a66a7dfc8e98aaf2932c7ad3e30b9",
+   "bytes": 264254
   },
   "75": {
    "name": "midnight rollover",
-   "sha": "f28a349e9df45eaa5f122e2acfe1e2dccc101ceafdb3be2a051c2fdff2b35220",
-   "bytes": 261251
+   "sha": "a417570ce1e4b796765590b23d336805a3b458f2d55f8f298774fccae1500ed8",
+   "bytes": 264399
   },
   "76": {
    "name": "wind-down: card shows past bedtime after midnight",
-   "sha": "08429efcf1906c1c3445f35a28558c7d93ae6d4d8b84388ab76159452650bf49",
-   "bytes": 269173
+   "sha": "d5bad79190f3993ebce25df76f6873f207087b28702d1df89a4b688a00bcf8b4",
+   "bytes": 272321
   },
   "77": {
    "name": "wind-down: life happens pass (Bed on time keeps its points)",
-   "sha": "0dc8dc25a36e7da8ede3ff3438d5f13dfda0736f05b2b3be401371045bba0b15",
-   "bytes": 269337
+   "sha": "b4dbc84efc21bc63a5b6f06130b7f4404b44ab676d354cdb48a8df6150881015",
+   "bytes": 272485
   },
   "78": {
    "name": "wind-down: undo the pass, then take it again",
-   "sha": "0dc8dc25a36e7da8ede3ff3438d5f13dfda0736f05b2b3be401371045bba0b15",
-   "bytes": 269337
+   "sha": "b4dbc84efc21bc63a5b6f06130b7f4404b44ab676d354cdb48a8df6150881015",
+   "bytes": 272485
   },
   "79": {
    "name": "wind-down: in bed now logs the bedtime (late, but the pass holds the points)",
-   "sha": "8a2d61ba1547f6503cc26d349b4277231ea41339562b8110dee22eb4b0ae2462",
-   "bytes": 268657
+   "sha": "ce9aa6b3792dbfaeeff7a14dcb96ceb7cc8284c88eb50734627ddc3c8dc81482",
+   "bytes": 271805
   },
   "80": {
    "name": "wind-down: undo brings the card back",
-   "sha": "8b12618839efd2759471e048e4463b40d0b22e2cb6a36cc45596e27fd574d4da",
-   "bytes": 269200
+   "sha": "7c883e3717c3167a85652b059148c64f81d926da944587356c439ba71e03abcd",
+   "bytes": 272348
   },
   "81": {
    "name": "wind-down: in bed now, for real",
-   "sha": "8a2d61ba1547f6503cc26d349b4277231ea41339562b8110dee22eb4b0ae2462",
-   "bytes": 268657
+   "sha": "ce9aa6b3792dbfaeeff7a14dcb96ceb7cc8284c88eb50734627ddc3c8dc81482",
+   "bytes": 271805
   },
   "82": {
    "name": "reload: cache round-trip",
@@ -457,6 +457,21 @@
    "sha": "844073fd35b98dab0ce9eefe199d0eb530418dbf95b50c3cbd8edb8c0ea229b3",
    "bytes": 97105
   },
+  "101": {
+   "name": "progress: calendar previous month",
+   "sha": "70ea92c25b62943953af68c8fa32e589e527e6928b4efe2da6703809a1c79cb1",
+   "bytes": 170358
+  },
+  "102": {
+   "name": "progress: calendar next month (back to this month)",
+   "sha": "e7e0cbcafa107d53b4c48250a04b654b62895408234addbe2c797ef6fac7082d",
+   "bytes": 168152
+  },
+  "103": {
+   "name": "progress: calendar day opens it in Headquarters",
+   "sha": "7d4a21673e4e706882d2d878a6eae61d7204623dca1bbdac6d2e2278d2966f8f",
+   "bytes": 164458
+  },
   "01": {
    "name": "load (cloud connected, or local mode with --noruntime)",
    "sha": "894e27f7a0e8bc5981236885949f2a0b43d9bc1581431b24f363731ffde9d903",
@@ -474,48 +489,48 @@
   },
   "04": {
    "name": "tab: progress",
-   "sha": "f919773ee9fcf056a179352bc7b51295e1ae8d701c02fb5f741b7bedd9482fda",
-   "bytes": 205255
+   "sha": "2e1f4906390c679ebb78f777ee7d307af8f2c59f2fda139d543c6993a51d6197",
+   "bytes": 208416
   },
   "05": {
    "name": "tab: build",
-   "sha": "ac0bb96291d1576b0923608fad9925057b073b259a0361c124de25386a0d9e97",
-   "bytes": 216450
+   "sha": "3b4a00225ff3a39c95d42a6ad8658c4e6f54605c850deb9c5081e4521b5517a6",
+   "bytes": 219611
   },
   "06": {
    "name": "tab: today",
-   "sha": "02b0be114a67fb64c5ab2c9576f3a0461e80452c599228d528f2e7390c120b2c",
-   "bytes": 216450
+   "sha": "21636671045f74072d0c9b1b9e0fb54942131e5937ec7646703163efdd172039",
+   "bytes": 219611
   },
   "07": {
    "name": "calendar: the 3 PM event is live, Maghrib is next (fake connector)",
-   "sha": "02b0be114a67fb64c5ab2c9576f3a0461e80452c599228d528f2e7390c120b2c",
-   "bytes": 216450
+   "sha": "21636671045f74072d0c9b1b9e0fb54942131e5937ec7646703163efdd172039",
+   "bytes": 219611
   },
   "08": {
    "name": "toggle Read",
-   "sha": "3d77a7a8065249c94136a0c8d0de077b6c3d206bd8e4216f688b59f2d1a52a44",
-   "bytes": 215907
+   "sha": "c2c4f744b4071e45d9b6c7800455ac8d5afca27d4051c48e06cd7a6bc86aef29",
+   "bytes": 219068
   },
   "09": {
    "name": "toggle Read back",
-   "sha": "bfaa4ad7aabc748f2ee95b559c45456455ad233feddccdfdda775c71865f96b2",
-   "bytes": 216107
+   "sha": "71261f27a98f3a33abe0337ab274baca39f4c02dc6f8b92f130851607f1be624",
+   "bytes": 219268
   }
  },
  "console": "58f3b8602c3272be7c7fda05e05918d1de33265522d179e9c8438fe97762e56c",
  "shots": {
-  "light-today": "7d034101ecbf602ef0e5bfa5a5572385e8efa13afd03144f6b3cdd02101a8fcd",
-  "light-tasks": "81e3d6d07b1e0275f92359d3864bcc0ec47301568285010c2b6025a53bd44493",
-  "light-lifts": "16faea6f891fb0448d84ee5a4f981741b4830eaf43e1a132b758c39b73881b8a",
-  "light-body": "62cc284b51228fb322d9669f26655d44d9600455aec7ba90ae38289027279f0a",
-  "light-progress": "70c880dd8eedd070cdf6f6721f4824342ac4867efe2617ecf91bec38820241e5",
-  "light-build": "456beed326e4d939097d8a7d4aa8745cf325476d8e46bba9e35c7885da1f41ed",
-  "dark-today": "c0efe8a4c4f08639005380e566cc0a1ac83eb2e8588aa15069071b64da843080",
-  "dark-tasks": "568f4b38bfeb7b7302124e2f774abf405d130117ef3657793d4f45a87fd8ae52",
-  "dark-lifts": "8e5c277f70e431a5b49f57765c23585f0321d20d6cd40072d009c266f724c8c1",
-  "dark-body": "bc8de078011269f194a851c141a4951cc85ff8f910975bf3dff0dacf62f4e5b2",
-  "dark-progress": "f949b65748725d64a71136ac503c1a1c8611e8d5bbf8231ae1f2eedf4d1084ae",
-  "dark-build": "cf105f6ae7e85946024dbbb2f6ad23fb50f5bd2fe8a37fad3028759640987f41"
+  "light-today": "4609aa70cac7b7514ee87b1a602f3ec6bd4301c07127f209e4c2ff88f5f1bcdf",
+  "light-tasks": "21007cb7cf7378fab07b59232f673c52d2a238866225aed5a97c4ceee6138a47",
+  "light-lifts": "d08c43c065a14a114e7328ab95437c2eda9b44f713e8cad88055b8948f42baff",
+  "light-body": "8f22fbbf4b6f3074f762775dede4f07f8c0cf49b4b53fc606ad0466597155fce",
+  "light-progress": "2ba93e91ffa84569251681605c8aff30ed91edbed96aaa07c22b3df67923e587",
+  "light-build": "44cbb74b98b07f6507a2e4a292610b40bdf23fad96efec7447a2dc8ca03c60eb",
+  "dark-today": "bc78e34d741dbee0bf967d9e2c65f31442e5aac590e6019a3e706ae4717ee77c",
+  "dark-tasks": "597c89e3dabc98b9e3364aba52496841a5c4aebc466f10ee6c0a82a0594d949a",
+  "dark-lifts": "ca6ccaa08acfeb0a0252f50eccd5f9b9433667da41d115333e4f999a8f8fbfb2",
+  "dark-body": "8ef079b4340cf1c567157d259b6665226cce1b2b1ae5d4467d4db2d20c8b746d",
+  "dark-progress": "3809490d2e37548e1a793fafb1f3c1b1fd65ca7719360581a75aa31a0d92ffff",
+  "dark-build": "9018f87e0ba035def94a805f36d248bfb0c35f7174db5a7f2b9512e9f048c0eb"
  }
 }
