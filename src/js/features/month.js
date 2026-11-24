@@ -1,7 +1,7 @@
 // Month view on Headquarters (Nov 24, 2026): tapping the week strip (its title or any day) expands it in place into a
-// WHOOP-style month. Every day's number is colored by habits done %, on WHOOP's recovery bands: red under 34%, yellow
-// 34-66%, green over 66%, gold disc = clean sweep (logged rests and passes count as done, same as the sweep).
-// Monday-first, so each row is one tracker week. The arrows page from the first logged month to the month of the
+// WHOOP-style month. Every day's number is colored by habits missed (Mustafa's rule): green = clean sweep, yellow = 1-3
+// missed, red = 4+ missed. Logged rests and passes count as done, same as the sweep. Today stays neutral until it is
+// earned (a clean sweep) or over. Monday-first, so each row is one tracker week. The arrows page from the first logged month to the month of the
 // furthest plannable day (the week arrows' reach); a day selects it and folds back to its week; the title folds back.
 import { addDays, esc, fmtWd, mondayOf, pad, todayKey } from '../core/utils.js';
 import { state } from '../core/state.js';
@@ -9,11 +9,11 @@ import { ICON } from '../core/svg.js';
 
 export var month = {open:false, shown:null}; // shown: the 'YYYY-MM' on screen while open
 
+/* green = clean sweep, yellow = 1-3 habits missed, red = 4+ missed ('' = no habits that day) */
 export function dayBand(b){
   if(!b || !b.total) return '';
-  if(b.sweep) return 'sweep';
-  var pct = b.done / b.total * 100;
-  return pct < 34 ? 'red' : pct <= 66 ? 'yellow' : 'green';
+  if(b.sweep) return 'green';
+  return b.total - b.done <= 3 ? 'yellow' : 'red';
 }
 function monthOf(d){ return d.slice(0, 7); }
 function addMonths(mk, n){ var y = +mk.slice(0, 4), m = +mk.slice(5, 7) - 1 + n; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + '-' + pad(m + 1); }
@@ -53,8 +53,9 @@ export function monthHTML(){
     var bd = st.byDate[d], band = dayBand(bd);
     if(!band){ cells += '<span class="' + cls + ' is-off"' + cur + '>' + day + '</span>'; continue; } // no active habits that day
     if(bd.sweep) sweeps++;
-    cells += '<button type="button" class="' + cls + ' b-' + band + '" data-act="mv-day" data-d="' + d + '"' + cur +
-      ' aria-label="' + esc(fmtWd(d) + ': ' + bd.done + ' of ' + bd.total + ' habits, ' + Math.round(bd.done / bd.total * 100) + '%' + (bd.sweep ? ', clean sweep' : '')) + '">' + day + '</button>';
+    var miss = bd.total - bd.done, live = d === today && !bd.sweep; // today stays neutral until it's earned or over
+    cells += '<button type="button" class="' + cls + (live ? '' : ' b-' + band) + '" data-act="mv-day" data-d="' + d + '"' + cur +
+      ' aria-label="' + esc(fmtWd(d) + ': ' + (bd.sweep ? 'clean sweep' : live ? bd.done + ' of ' + bd.total + ' habits so far' : miss + (miss === 1 ? ' habit' : ' habits') + ' missed')) + '">' + day + '</button>';
   }
   var label = new Date(y, m, 1).toLocaleDateString('en-US', {month:'long', year:'numeric'});
   return '<div class="week-head">' +
@@ -63,5 +64,5 @@ export function monthHTML(){
       '<span>' + (mk > monthOf(today) ? 'plan ahead' : sweeps === 1 ? '1 sweep' : sweeps + ' sweeps') + '</span><svg class="wchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>' +
     '<button class="arrow" type="button" data-act="mv-next" aria-label="Next month"' + (mk >= b.last ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.right + '</svg></button></div>' +
     '<div class="mc-grid"><span class="mc-wd">Mon</span><span class="mc-wd">Tue</span><span class="mc-wd">Wed</span><span class="mc-wd">Thu</span><span class="mc-wd">Fri</span><span class="mc-wd">Sat</span><span class="mc-wd">Sun</span>' + cells + '</div>' +
-    '<div class="mc-legend"><span><i class="b-red"></i>&lt;34%</span><span><i class="b-yellow"></i>34–66%</span><span><i class="b-green"></i>&gt;66%</span><span class="mc-sw">Clean sweep</span></div>';
+    '<div class="mc-legend"><span><i class="b-green"></i>Clean sweep</span><span><i class="b-yellow"></i>Missed 1–3</span><span><i class="b-red"></i>Missed 4+</span></div>';
 }

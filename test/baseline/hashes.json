@@ -1,5 +1,5 @@
 {
- "recorded": "2026-11-24T11:05:25.703Z",
+ "recorded": "2026-11-24T11:44:48.433Z",
  "frozenClock": "2026-10-07T15:30:00-04:00",
  "steps": {
   "10": {
@@ -459,18 +459,18 @@
   },
   "101": {
    "name": "month view: tap the week to open it",
-   "sha": "c9b39c13fc5441edf35c302f8799ca7745cb6772c34231d54406be2c178896d2",
-   "bytes": 99307
+   "sha": "c98fda54798c954939b269a6b724a14eadd021000cb61f45ef3aaa5b4344ee76",
+   "bytes": 99251
   },
   "102": {
    "name": "month view: previous month",
-   "sha": "fdd3af1cbeb63bfc5a6bd404a60e56b8c1621ec613233f402e0ddf4ad5836936",
-   "bytes": 99374
+   "sha": "0f617d5782dbcee0d8d6a9e0451d5a95e70af2007824526d643d7a70dba6769e",
+   "bytes": 99078
   },
   "103": {
    "name": "month view: next month",
-   "sha": "c9b39c13fc5441edf35c302f8799ca7745cb6772c34231d54406be2c178896d2",
-   "bytes": 99307
+   "sha": "c98fda54798c954939b269a6b724a14eadd021000cb61f45ef3aaa5b4344ee76",
+   "bytes": 99251
   },
   "104": {
    "name": "month view: tap a day jumps to it and folds back",
@@ -532,15 +532,15 @@
  "shots": {
   "light-today": "0613836f348322241ebe2005f388f7dfc34e28747cbada4a1acfce788115b7cb",
   "light-tasks": "24864f702ffa62f6ff7913765724109f3996f7fe7b33321e86db1b34ea2da77f",
-  "light-lifts": "1451735722db1283576b91ce21ccff05e316842d5fd65e5d457ef9d2c68cc454",
-  "light-body": "799bc492550d0ac5dbdf52d2f5a2aaf123689f618ef5ae22626dc714bb0af9ed",
+  "light-lifts": "d08c43c065a14a114e7328ab95437c2eda9b44f713e8cad88055b8948f42baff",
+  "light-body": "4812d0d9da753dd77c2e7350227a42d75778d7121cde2ab15332ee48b3c30437",
   "light-progress": "a9e6628957754b52bf9f6830498215653f680d4cc0779c176ccbdafc0f21ddb5",
   "light-build": "44cbb74b98b07f6507a2e4a292610b40bdf23fad96efec7447a2dc8ca03c60eb",
   "dark-today": "b1a16beed6f93a364fbfc9bd04112dede71869cb77f85d7cd55ecd94542d8ac6",
-  "dark-tasks": "139ed9c08a1f3a1cb33085d32c731d1467e44c072d2e0045f99df462102b0837",
-  "dark-lifts": "d45ea0e5e9e2f80f2883dc19b619d0c2546248d07566da2c1eb94d37522ceb84",
-  "dark-body": "8ef079b4340cf1c567157d259b6665226cce1b2b1ae5d4467d4db2d20c8b746d",
+  "dark-tasks": "597c89e3dabc98b9e3364aba52496841a5c4aebc466f10ee6c0a82a0594d949a",
+  "dark-lifts": "ca6ccaa08acfeb0a0252f50eccd5f9b9433667da41d115333e4f999a8f8fbfb2",
+  "dark-body": "7a6a0a814d19f1b4181a9ef8236c6250d7da70f850f1a567c87a24ecf68bfb64",
   "dark-progress": "3f380762c4d5037b9fe8e9eb2a8f50c1f255e32e6379ae70a471ddaef9946b48",
-  "dark-build": "045b19ea011b6085f96efe609d4f97c2d174708d9b61ce6b77a3b78cb5371e40"
+  "dark-build": "a7a04b9aec584633e364c6be911703a478752a0193296464c4dcbb5394780a4d"
  }
 }
