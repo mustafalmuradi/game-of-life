@@ -7,6 +7,7 @@ import { recompute } from '../core/stats.js';
 import { saveSettings, scheduleSave } from '../core/store.js';
 import { burst, floatXP, queuePromos, toast } from '../core/effects.js';
 import { ICON, miniBelt, miniRing, scoreRing } from '../core/svg.js';
+import { month, monthHTML } from './month.js';
 import { registerTab, render, renderSync } from '../core/render.js';
 import { FLAG_ICON, fmtClock, metricsOf, readiness, sessName, sessOf, TAGS, tagsOf, tmin } from './body.js';
 import { ensureToday, renderTasksCard } from './tasks.js';
@@ -97,23 +98,26 @@ export function removeExtra(hid, xid){
 }
 
 function renderWeek(){
+  var wk = $('#week');
+  wk.classList.toggle('is-month', month.open);
+  if(month.open){ wk.innerHTML = monthHTML(); return; } // the strip expanded into the month (month.js)
   var today = todayKey(), mon = state.weekOf, days = range7(mon), st = state.stats;
   var isThis = mon === mondayOf(today);
   var wxp = days.reduce(function(a, d){ return a + ((st.byDate[d] && st.byDate[d].xp) || 0); }, 0);
-  var L = ['M','T','W','T','F','S','S'];
+  var L = ['M','T','W','T','F','S','S'], title = isThis ? 'This week' : fmtShort(days[0]) + ' – ' + fmtShort(days[6]);
+  /* tapping anywhere on the week (the title or any day) opens the month; the arrows still page week by week */
   var h = '<div class="week-head">' +
     '<button class="arrow" type="button" data-act="week-prev" aria-label="Previous week"><svg viewBox="0 0 24 24">' + ICON.left + '</svg></button>' +
-    '<p class="t">' + (isThis ? 'This week' : fmtShort(days[0]) + ' – ' + fmtShort(days[6])) + '<span>' + fmt(wxp) + ' XP</span></p>' +
+    '<button class="t week-title" type="button" data-act="month-open" aria-expanded="false" aria-label="' + esc(title + ', ' + fmt(wxp) + ' XP. Open the month view') + '">' + esc(title) + '<span>' + fmt(wxp) + ' XP</span><svg class="wchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>' +
     '<button class="arrow" type="button" data-act="week-next" aria-label="Next week"' + (mon >= addDays(mondayOf(today), 28) ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.right + '</svg></button></div>';
-  h += '<div class="week-grid">';
+  h += '<button type="button" class="week-grid" data-act="month-open" aria-expanded="false" aria-label="Open the month view">';
   days.forEach(function(d, i){
     var fut = d > today, stat = st.byDate[d];
     var tk = fut && state.tasks[d] ? state.tasks[d].items.filter(function(x){ return !x.rolledTo && !x.droppedAt; }).length : 0;
-    var lbl = fmtLong(d) + (stat ? ', ' + stat.done + ' of ' + stat.total + ' done' : fut && tk ? ', ' + tk + ' planned' : '');
-    h += '<button type="button" class="wday' + (d === state.selected ? ' is-sel' : '') + (d === today ? ' is-today' : '') + (fut ? ' is-fut' : '') + '" data-act="pick-day" data-d="' + d + '"' + (d === today ? ' aria-current="date"' : '') + ' aria-label="' + esc(lbl) + '">' +
-      '<span class="wl">' + L[i] + '</span>' + miniRing(fut ? null : stat, parseKey(d).getDate()) + (fut && tk ? '<span class="wplan">' + tk + '</span>' : '') + '</button>';
+    h += '<span class="wday' + (d === state.selected ? ' is-sel' : '') + (d === today ? ' is-today' : '') + (fut ? ' is-fut' : '') + '" data-d="' + d + '">' +
+      '<span class="wl">' + L[i] + '</span>' + miniRing(fut ? null : stat, parseKey(d).getDate()) + (fut && tk ? '<span class="wplan">' + tk + '</span>' : '') + '</span>';
   });
-  $('#week').innerHTML = h + '</div>';
+  wk.innerHTML = h + '</button>';
 }
 function renderDay(){
   var d = state.selected, today = todayKey(), st = state.stats;

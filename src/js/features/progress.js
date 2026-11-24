@@ -1,6 +1,6 @@
-// Progress tab: charts, month calendar, heatmap, badges, trophy room, rewards.
+// Progress tab: charts, heatmap, badges, trophy room, rewards.
 import { BASE_XP, EXTRA_CAP, EXTRA_XP, LIGHT_XP, SWEEP_MAX, SWEEP_STEP, SWEEP_XP } from '../core/config.js';
-import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, pad, parseKey, range7, todayKey } from '../core/utils.js';
+import { $, addDays, clone, esc, fmt, fmtShort, fmtWd, mondayOf, parseKey, range7, todayKey } from '../core/utils.js';
 import { activeHabits, habitById, lightXPOf, normalizeSettings, state } from '../core/state.js';
 import { CURVES, HABIT_MS, habitCurve, MILESTONES, unpaidPasses, rewardSlots, rewardText, ROMAN, tierColor, trophySVG } from '../core/xp.js';
 import { saveSettings } from '../core/store.js';
@@ -48,50 +48,6 @@ function barChart(days){
     s += '<rect data-i="' + i + '" data-d="' + d + '" x="' + (pl + i*bw).toFixed(2) + '" y="' + pt + '" width="' + bw.toFixed(2) + '" height="' + ph + '" fill="transparent" style="cursor:pointer"/>';
   });
   return s + '</svg>';
-}
-/* ---------- month calendar (Nov 24, 2026): WHOOP-style, every day colored by habits done %, on WHOOP's recovery bands ----------
-   red under 34%, yellow 34-66%, green over 66%, gold = clean sweep. Rest days and passes count as done (same as the sweep).
-   Monday-first so each row is one tracker week (passes reset Monday). Pages back to the first logged day; a day jumps to it. */
-var mcMonth = null; // 'YYYY-MM' on screen; null = this month
-function monthOf(d){ return d.slice(0, 7); }
-function addMonths(mk, n){ var y = +mk.slice(0, 4), m = +mk.slice(5, 7) - 1 + n; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + '-' + pad(m + 1); }
-export function dayBand(b){
-  if(!b || !b.total) return '';
-  if(b.sweep) return 'sweep';
-  var pct = b.done / b.total * 100;
-  return pct < 34 ? 'red' : pct <= 66 ? 'yellow' : 'green';
-}
-function mcBounds(){ var today = todayKey(); return {first:monthOf(state.stats.start || today), last:monthOf(today)}; }
-function mcShown(){ var bd = mcBounds(), mk = mcMonth || bd.last; return mk < bd.first ? bd.first : mk > bd.last ? bd.last : mk; }
-export function stepMonth(n){
-  var bd = mcBounds(), next = addMonths(mcShown(), n);
-  if(next < bd.first || next > bd.last) return;
-  mcMonth = next === bd.last ? null : next;
-  render();
-}
-export function monthCalendarHTML(){
-  var st = state.stats, today = todayKey(), bd = mcBounds(), mk = mcShown();
-  var y = +mk.slice(0, 4), m = +mk.slice(5, 7) - 1, days = new Date(y, m + 1, 0).getDate();
-  var lead = (new Date(y, m, 1).getDay() + 6) % 7; // Monday-first
-  var cells = '', sweeps = 0, sum = 0, n = 0;
-  for(var i = 0; i < lead; i++) cells += '<span class="mc-d mc-pad" aria-hidden="true"></span>';
-  for(var day = 1; day <= days; day++){
-    var d = mk + '-' + pad(day), b = st.byDate[d], band = d < st.start || d > today ? '' : dayBand(b), isToday = d === today;
-    if(!band){ cells += '<span class="mc-d is-off' + (isToday ? ' is-today' : '') + '">' + day + '</span>'; continue; }
-    var pct = Math.round(b.done / b.total * 100);
-    if(b.sweep) sweeps++;
-    if(d < today || b.sweep){ sum += b.done / b.total; n++; } // today counts once it's swept; a half-done today doesn't drag the average
-    cells += '<button type="button" class="mc-d b-' + band + (isToday ? ' is-today' : '') + '" data-act="mc-day" data-d="' + d + '"' + (isToday ? ' aria-current="date"' : '') +
-      ' aria-label="' + esc(fmtWd(d) + ': ' + b.done + ' of ' + b.total + ' habits, ' + pct + '%' + (b.sweep ? ', clean sweep' : '')) + '">' + day + '</button>';
-  }
-  var label = new Date(y, m, 1).toLocaleDateString('en-US', {month:'long', year:'numeric'});
-  var sum1 = (sweeps === 1 ? '1 sweep' : sweeps + ' sweeps') + (n ? ' · ' + Math.round(sum / n * 100) + '% avg' : '');
-  return '<section class="card panel mc"><div class="panel-head"><h3>Calendar</h3><span class="muted" style="font-size:12px">' + sum1 + '</span></div>' +
-    '<div class="mc-nav"><button class="arrow" type="button" data-act="mc-prev" aria-label="Previous month"' + (mk <= bd.first ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.left + '</svg></button>' +
-    '<p class="mc-month">' + esc(label) + '</p>' +
-    '<button class="arrow" type="button" data-act="mc-next" aria-label="Next month"' + (mk >= bd.last ? ' disabled' : '') + '><svg viewBox="0 0 24 24">' + ICON.right + '</svg></button></div>' +
-    '<div class="mc-grid"><span class="mc-wd">Mon</span><span class="mc-wd">Tue</span><span class="mc-wd">Wed</span><span class="mc-wd">Thu</span><span class="mc-wd">Fri</span><span class="mc-wd">Sat</span><span class="mc-wd">Sun</span>' + cells + '</div>' +
-    '<div class="mc-legend"><span><i class="b-red"></i>&lt;34%</span><span><i class="b-yellow"></i>34–66%</span><span><i class="b-green"></i>&gt;66%</span><span class="mc-sw">Clean sweep</span></div></section>';
 }
 function heatmap(){
   var st = state.stats, today = todayKey(), weeks = 12;
@@ -187,8 +143,6 @@ function renderProgress(){
 
   h += '<section class="card panel"><div class="panel-head"><h3>Daily XP</h3><div class="legend"><span><i style="background:var(--accent)"></i>Base</span><span><i style="background:var(--gold)"></i>Bonus</span></div></div>' +
     '<div class="chart-wrap" id="chart">' + barChart(last14) + '<div class="tip" id="tip" hidden></div></div></section>';
-
-  h += monthCalendarHTML();
 
   h += '<section class="card panel"><div class="panel-head"><h3>Consistency</h3><span class="muted" style="font-size:12px">Last 12 weeks</span></div>' +
     '<div class="heat-wrap" id="heat">' + heatmap() + '</div>' +

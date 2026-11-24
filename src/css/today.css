@@ -22,6 +22,39 @@
 .wday:disabled{opacity:.38;cursor:default}
 .wday svg{width:38px;height:38px;display:block;transition:transform .25s var(--spring)}
 .wday:active:not(:disabled) svg{transform:scale(.88)}
+/* the whole week is one tap target that opens the month (Nov 24 2026); the arrows still page weeks */
+button.week-grid{width:100%;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:inherit;cursor:pointer;border-radius:16px}
+button.week-grid:focus-visible,button.week-title:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button.week-title{border:0;background:none;color:inherit;font:inherit;font-weight:800;font-size:14px;padding:8px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:0;cursor:pointer;min-width:0;transition:background .2s}
+button.week-title:hover{background:var(--surface)}
+.wchev{width:14px;height:14px;margin-left:6px;flex:none;stroke:var(--muted);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* month view: the strip expanded in place (WHOOP-style). Day numbers colored by habits done %, gold disc = clean sweep, ring = today */
+.week.is-month{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:12px 12px 14px;gap:10px;animation:mvIn .28s var(--spring)}
+@keyframes mvIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.week.is-month{animation:none}}
+:root[data-motion="calm"] .week.is-month{animation:none}
+.mc-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px 2px;justify-items:center;align-items:center}
+.mc-wd{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-bottom:2px}
+.mc-d{position:relative;width:100%;max-width:44px;aspect-ratio:1;border:0;border-radius:50%;background:none;padding:0;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1;font-variant-numeric:tabular-nums;color:var(--mc-c,var(--ink));transition:transform .18s var(--spring),background-color .18s}
+button.mc-d{cursor:pointer}
+button.mc-d:hover{background:var(--surface-2);transform:translateY(-1px)}
+button.mc-d:active{transform:scale(.92)}
+button.mc-d:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mc-d.is-off{color:var(--muted);opacity:.45}
+.mc-d.is-fut{color:var(--accent-ink);opacity:.75;font-weight:700}
+.mc-d.has-plan::after{content:"";position:absolute;bottom:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent)}
+.mc-d.b-red{--mc-c:var(--mc-red)} .mc-d.b-yellow{--mc-c:var(--mc-yellow)} .mc-d.b-green{--mc-c:var(--mc-green)}
+.mc-d.b-sweep,.mc-d.b-sweep:hover{background:var(--gold);color:var(--mc-on-gold)}
+.mc-d.is-sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.mc-d.is-today{box-shadow:inset 0 0 0 2px var(--ink)}
+.mc-d.b-sweep.is-sel{box-shadow:0 0 0 2px var(--surface-2),0 0 0 4px var(--accent)}
+.mc-d.b-sweep.is-today{box-shadow:0 0 0 2px var(--surface-2),0 0 0 4px var(--ink)}
+.mc-legend{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:4px 12px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.mc-legend span{display:inline-flex;align-items:center;gap:5px}
+.mc-legend i{width:9px;height:9px;border-radius:50%;display:block}
+.mc-legend .b-red{background:var(--mc-red)} .mc-legend .b-yellow{background:var(--mc-yellow)} .mc-legend .b-green{background:var(--mc-green)}
+.mc-legend .mc-sw{background:var(--gold);color:var(--mc-on-gold);border-radius:999px;padding:2px 9px}
 
 /* day card */
 .day-card{padding:18px;display:flex;flex-direction:column;gap:14px}

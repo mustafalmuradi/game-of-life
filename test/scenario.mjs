@@ -76,7 +76,13 @@ export const steps = [
   { name: 'close rank sheet', run: async (page) => escape(page) },
   { name: 'open rank sheet (habit)', run: async (page) => { await click(page, '[data-act="open-rank"][data-h="meditate"]'); await settle(page); await escape(page); } },
   { name: 'week prev', run: async (page) => { await click(page, '[data-act="week-prev"]'); await settle(page); } },
-  { name: 'pick a day', run: async (page) => { await click(page, '[data-act="pick-day"]:not([disabled])'); await settle(page); } },
+  { name: 'pick a day', run: async (page) => {
+    // the week strip opens the month view (Nov 2026); pick the shown week's Monday from it, paging back a month if needed
+    const d = await page.locator('#week .wday').first().getAttribute('data-d');
+    await click(page, '#week button.week-grid'); await settle(page);
+    if (!(await page.locator('[data-act="mv-day"][data-d="' + d + '"]').count())) { await click(page, '[data-act="mv-prev"]'); await settle(page); }
+    await click(page, '[data-act="mv-day"][data-d="' + d + '"]'); await settle(page);
+  } },
   { name: 'toggle a habit on a past day', run: async (page) => { await click(page, '[data-act="toggle"]'); await settle(page); await escape(page); } },
   { name: 'back to today', run: async (page) => { await click(page, '[data-act="go-today"]'); await settle(page); } },
   { name: 'week next is disabled on this week', run: async (page) => { await click(page, '[data-act="week-prev"]'); await settle(page); await click(page, '[data-act="week-next"]'); await settle(page); } },
@@ -297,8 +303,10 @@ export const steps = [
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
     await settle(page);
   } },
-  // month calendar on Progress (Nov 2026): page back a month, forward again, then a day jumps to it in Headquarters
-  { name: 'progress: calendar previous month', run: async (page) => { await tab(page, 'progress'); await click(page, '[data-act="mc-prev"]'); await settle(page); } },
-  { name: 'progress: calendar next month (back to this month)', run: async (page) => { await click(page, '[data-act="mc-next"]'); await settle(page); if (!(await page.locator('[data-act="mc-next"][disabled]').count())) throw new Error('next should be disabled on this month'); } },
-  { name: 'progress: calendar day opens it in Headquarters', run: async (page) => { await click(page, '.mc-d[data-act="mc-day"]'); await settle(page); } }
+  // month view on Headquarters (Nov 2026): the week strip expands into the month, the arrows page months, a day folds it back
+  { name: 'month view: tap the week to open it', run: async (page) => { await tab(page, 'today'); await click(page, '#week button.week-grid'); await settle(page); if (!(await page.locator('#week.is-month .mc-grid').count())) throw new Error('month view did not open'); } },
+  { name: 'month view: previous month', run: async (page) => { await click(page, '[data-act="mv-prev"]'); await settle(page); } },
+  { name: 'month view: next month', run: async (page) => { await click(page, '[data-act="mv-next"]'); await settle(page); } },
+  { name: 'month view: tap a day jumps to it and folds back', run: async (page) => { await click(page, '.mc-d[data-act="mv-day"]'); await settle(page); if (await page.locator('#week.is-month').count()) throw new Error('month view should fold back'); } },
+  { name: 'month view: open from the title, close from the title', run: async (page) => { await click(page, '#week .week-title[data-act="month-open"]'); await settle(page); await click(page, '#week [data-act="month-close"]'); await settle(page); if (await page.locator('#week.is-month').count()) throw new Error('title should close the month view'); } }
 ];
