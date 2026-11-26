@@ -12,7 +12,7 @@ and write the tracker through tools.
 | `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root, `img/` the art. |
 | `art/` | How the art was made: the manifest of every picture (prompt, Higgsfield job, settings), the generation and build scripts, and `gallery.html`, a page showing every emblem in every state. Not published with the app. |
 | `docs/` | `ASSETS.md` (the art: what ships, how the page uses it, how to add more) and `APP-RELEASE.md` (what has to change before this ships as an app). `CHANGELOG.md` sits at the root. |
-| `test/` | The golden-master regression harness (see below), plus `salah.mjs` (prayer-time engine against reference values) and `stale-cache.mjs`. |
+| `test/` | The golden-master regression harness (see below), plus `salah.mjs` (prayer-time engine against reference values), `stale-cache.mjs`, and one file per feature that needs its own walk (`theme-flip.mjs`, `header-fit.mjs`, `hq-reorder.mjs` and the others in `npm test`). |
 | `tools/` | `publish-prep.py` builds `dist/` for the artifact (`npm run dist`). The split scripts (`split-*.py`, `check-cascade.py`, `reassemble-js.py`) are the one-off migration from `legacy/` and are kept for the record. |
 
 The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
@@ -39,6 +39,8 @@ npm run test:self     # src vs src side by side: must be all identical (proves t
 npm run test:local    # the same without a Claude runtime (local mode)
 npm run test:legacy   # legacy vs src side by side, for the features both have
 node test/salah.mjs   # the prayer-time engine against reference values
+node test/theme-flip.mjs   # the header light/dark button (part of npm test)
+node test/header-fit.mjs   # the header at every width, real fonts (part of npm test; see "Header fit")
 ```
 
 The app is served locally and driven through a 105-step scenario with a seeded
@@ -238,6 +240,56 @@ written to `<html data-theme>`, which the stylesheets already honour
 (`data-theme="light"` beats a dark system setting and vice versa; System removes
 the attribute). The harness switches the pref to System before its light/dark
 screenshots so the emulated colour scheme is what gets shot.
+
+### The light/dark button in the header (Nov 26 2026)
+
+`#btn-theme`, between Coach and settings, on every screen. One tap shows the
+other look at once. It is a flip, not a setting:
+
+- The flip is stored as `{mode, until, edge}` under `localStorage`
+  `gol-theme-flip`. `until` is the next time the sun crosses the horizon: today's
+  sunrise, today's Maghrib, or tomorrow's sunrise (`nextSunEdge()`, same engine
+  and location). The standing setting (`gol-theme`) is not touched.
+- It ends at `until` (the 30 s ticker checks, and so does the app when it comes
+  back to the foreground), when the button is tapped again, or when a Theme chip
+  is picked. Then the standing setting decides again: with Auto that is the sun,
+  with Light, Dark or System that setting comes back.
+- While it is on, `<html data-theme-flip>` holds the flipped look: the button
+  keeps an accent edge, and the Theme row in Settings says until when
+  ("Dark for now, until Maghrib, 6:29 PM. Then Auto · sun again.").
+- The icon shows where a tap goes: a moon on a light page, a sun on a dark one.
+  The `aria-label` says the same ("Switch to dark mode").
+- If the browser refuses to save, the flip holds in memory for the visit. A
+  stored value that is not a flip (or ends more than 36 hours away) is ignored
+  and removed.
+
+`test/theme-flip.mjs` walks all of it on a frozen clock that the test moves.
+
+### Header fit
+
+The name, Coach, the light/dark button and settings share one line from 280 px
+up. `css/fx.css` ("header fit") sets the name's size from the viewport width
+with `clamp()`: on a phone, 22 px from 416 px up, 19.2 px at 390 px, 17.4 px at
+375 px. At 460 px and below the gaps tighten; at 371 px and below the Coach
+label goes and the name grows back into the room; the "Mustafa" pill shows from
+561 px. The viewport width counts a scrollbar that stays on screen, which a
+desktop browser may have and a phone never does, so where the pointer is a mouse
+the rule leaves 17 px for one (`--sb`) and the name comes out about 2 px smaller
+in a narrow window. The numbers in that block come from measuring Orbitron 800,
+so a change to a button, a gap or the font changes them.
+
+`test/header-fit.mjs` sweeps every width up to 600 px with the real fonts, as a
+phone (from 280 px) and as a desktop browser with its scrollbar on screen (from
+300 px), and fails if the name wraps, anything overlaps, or a button changes
+size. It needs the fonts: they load from Google Fonts as in the live app, or
+from a stylesheet named in `GOL_FONT_CSS` when there is no network. Without
+them it prints SKIPPED and checks nothing.
+
+The main harness cannot see a fit problem. It blocks the network, so it lays
+text out in a fallback font that is narrower than Orbitron, and it is a desktop
+browser, so its screenshots show the name at the desktop size. Before this
+change the name wrapped onto two lines at 323 px and below, from 351 to 376 px
+(a 375 px iPhone) and from 441 to 471 px, and no test noticed.
 
 ## Ambient layer
 
