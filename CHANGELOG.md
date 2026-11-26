@@ -58,8 +58,13 @@ once. Guide: `README.md`, "The light/dark button in the header".
 
 ### Known
 
+- Published Nov 26 2026 (artifact version `1795733088-c2d9`, five files: `index.html`, `css/coach.css`,
+  `css/fx.css`, `js/app.js`, `js/features/theme.js`). The live page starts with `<!doctype html>`. Checked on the
+  live page with real data in desktop Chrome: one tap turned the dark page light ("Light until sunrise, 6:57 AM"),
+  a second tap turned it back ("Back to Auto · sun").
 - The page switches look in one step, with no fade. Only the button's icon animates (not with reduced motion).
-- Checked in desktop Chrome with a phone-sized touch screen. The button has not been tried on an iPhone yet.
+- Before publishing it was checked in desktop Chrome with a phone-sized touch screen. The button has not been
+  tried on an iPhone yet.
 - The main harness lays text out in a fallback font because it blocks the network, so it cannot see text that
   does not fit. `test/header-fit.mjs` covers the header; the rest of the app has no such check.
 - `test/header-fit.mjs` needs the real fonts (Google Fonts, or a stylesheet named in `GOL_FONT_CSS`). Without
