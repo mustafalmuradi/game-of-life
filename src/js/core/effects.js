@@ -3,6 +3,7 @@ import { $, cssVar, esc, reduceMotion } from './utils.js';
 import { state } from './state.js';
 import { beltOf, rankSub, rankTitle, trophySVG } from './xp.js';
 import { beltSVG } from './svg.js';
+import { emblem, trophyArt } from './art.js';
 
 /* ---------- effects ---------- */
 export function floatXP(anchor, text){
@@ -62,8 +63,9 @@ export function nextPromo(){
   var it = promoQueue.shift(), el = $('#promo');
   if(!it){ el.hidden = true; return; }
   if(it.trophy){
+    var art = emblem(trophyArt(it.k), 'solid', {lg:true, pop:true});
     el.innerHTML = '<div class="promo" role="dialog" aria-modal="true" aria-labelledby="promo-t">' +
-      '<p class="eyebrow">' + esc(it.title) + ' · Trophy unlocked</p>' + trophySVG(it.i, true, 'promo-cup') +
+      '<p class="eyebrow">' + esc(it.title) + ' · Trophy unlocked</p>' + (art ? '<div class="promo-art has-art">' + art + trophySVG(it.i, true, 'promo-cup') + '</div>' : trophySVG(it.i, true, 'promo-cup')) +
       '<h2 id="promo-t">' + esc(it.name) + '</h2>' +
       '<p class="muted">' + esc(it.desc) + ' · <b>+' + it.xp + ' XP</b></p>' +
       (it.note ? '<p class="promo-note">' + esc(it.note) + '</p>' : '') +

@@ -7,6 +7,7 @@ import { recompute } from '../core/stats.js';
 import { saveSettings, scheduleSave } from '../core/store.js';
 import { burst, floatXP, queuePromos, toast } from '../core/effects.js';
 import { ICON, miniBelt, miniRing, scoreRing } from '../core/svg.js';
+import { emblem, habitArt, trophyArt } from '../core/art.js';
 import { month, monthHTML } from './month.js';
 import { registerTab, render, renderSync } from '../core/render.js';
 import { FLAG_ICON, fmtClock, metricsOf, readiness, sessName, sessOf, TAGS, tagsOf, tmin } from './body.js';
@@ -54,7 +55,7 @@ export function mutateDay(date, fn, opts){
     if(eb[k] || ea[k].d !== date) return;
     var mm = msMeta(k); if(!mm) return;
     var rt2 = mm.reward ? rewardText(k) : '';
-    promos.push({trophy:true, title:mm.family, name:mm.name, desc:mm.desc, xp:mm.xp, i:mm.i, note: mm.reward ? (rt2 ? 'Reward unlocked: ' + rt2 + '. Go claim it.' : 'Reward unlocked. Name it in the Trophy Room.') : ''});
+    promos.push({trophy:true, k:k, title:mm.family, name:mm.name, desc:mm.desc, xp:mm.xp, i:mm.i, note: mm.reward ? (rt2 ? 'Reward unlocked: ' + rt2 + '. Go claim it.' : 'Reward unlocked. Name it in the Trophy Room.') : ''});
   });
   if(promos.length) setTimeout(function(){ queuePromos(promos); }, reduceMotion ? 0 : 700);
 }
@@ -132,7 +133,8 @@ function renderDay(){
   } else sweepHtml = '<span class="sweep">' + (d > today ? 'Planned day' : 'No clean sweep') + '</span>';
   var streakLine = st.sweepRun > 0 ? '<p class="score-line">Sweep streak <b>' + st.sweepRun + (st.sweepRun === 1 ? ' day' : ' days') + '</b></p>' : '';
   var nt = d === today ? nextTrophy() : null;
-  if(nt) streakLine += '<p class="score-line trophy-line">' + trophySVG(nt.i, true) + 'Next: <b>' + esc(nt.name) + '</b> · ' + nt.cur + '/' + nt.v + ' ' + esc(nt.unit) + ' · +' + nt.xp + '</p>';
+  var ntArt = nt ? emblem(trophyArt(nt.k), 'glass') : '';
+  if(nt) streakLine += '<p class="score-line trophy-line' + (ntArt ? ' has-art' : '') + '">' + ntArt + trophySVG(nt.i, true) + 'Next: <b>' + esc(nt.name) + '</b> · ' + nt.cur + '/' + nt.v + ' ' + esc(nt.unit) + ' · +' + nt.xp + '</p>';
   $('#day').innerHTML =
     '<div class="day-head"><div><h2>' + esc(d === today ? 'Today · ' + fmtLong(d) : fmtLong(d)) + '</h2><p class="hijri">' + esc(hijri(d)) + '</p></div>' +
     (d !== today ? '<button class="pill-btn" type="button" data-act="go-today">Back to today</button>' : '') + '</div>' +
@@ -234,7 +236,7 @@ function renderHabits(){
   var act = hqSort(activeHabits(d)), doc = state.days[d];
   var h = '';
   if(d > today){
-    h = '<p class="nudge">Planning ahead: habits unlock on the day. Tasks below are open.</p>' + act.map(function(hb){ return '<article class="habit is-fut" style="--hc:var(--h-' + hb.color + ')"><span class="check" aria-hidden="true"></span><div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3></div><p class="target">' + esc(habitTarget(hb)) + '</p></div><div class="habit-side"></div></article>'; }).join('');
+    h = '<p class="nudge">Planning ahead: habits unlock on the day. Tasks below are open.</p>' + act.map(function(hb){ var fa = emblem(habitArt(hb), 'glass'); return '<article class="habit is-fut" style="--hc:var(--h-' + hb.color + ')"><span class="check' + (fa ? ' has-art' : '') + '" aria-hidden="true">' + fa + '</span><div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3></div><p class="target">' + esc(habitTarget(hb)) + '</p></div><div class="habit-side"></div></article>'; }).join('');
     $('#habits').innerHTML = h; return;
   }
   act.forEach(function(hb){
@@ -257,10 +259,11 @@ function renderHabits(){
     var isMed = isMedical(doc, hb.id) && restLogged; // Medical Rest: set by Claude/Coach only, so the page shows it but has no button for it
     if(isMed){ var mWhy = doc.m && doc.m.medical && doc.m.medical.why; restText += ' · Medical rest' + (mWhy ? ': ' + String(mWhy).slice(0, 80) : ''); }
     var restKind = doc && doc.rest && doc.rest[hb.id] === 'light' ? 'light day' : isLife ? 'Life happens pass' : rw.undo;
+    var art = emblem(habitArt(hb), done ? 'solid' : 'glass', {pop: done && ui.popSeg === hb.id, key: 'h:' + hb.id}), ck = 'check' + (art ? ' has-art' : '');
     h += '<article class="habit' + (done || restLogged ? ' is-done' : '') + (rested && !restLogged ? ' is-rest' : '') + (ui.popSeg === hb.id && done ? ' just-done' : '') + '" style="--hc:var(--h-' + hb.color + ')">' +
-      (isMed ? '<button class="check" type="button" aria-pressed="true" aria-label="' + esc('Medical rest, set by Coach: ' + hb.name) + '">' :
-      restLogged ? '<button class="check" type="button" data-act="rest" data-h="' + esc(hb.id) + '" aria-pressed="true" aria-label="' + esc('Undo ' + restKind + ': ' + hb.name) + '">' :
-      '<button class="check" type="button" data-act="toggle" data-h="' + esc(hb.id) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? 'Undo ' : 'Mark done: ') + hb.name) + '">') + '<svg viewBox="0 0 24 24">' + ICON.check + '</svg></button>' +
+      (isMed ? '<button class="' + ck + '" type="button" aria-pressed="true" aria-label="' + esc('Medical rest, set by Coach: ' + hb.name) + '">' :
+      restLogged ? '<button class="' + ck + '" type="button" data-act="rest" data-h="' + esc(hb.id) + '" aria-pressed="true" aria-label="' + esc('Undo ' + restKind + ': ' + hb.name) + '">' :
+      '<button class="' + ck + '" type="button" data-act="toggle" data-h="' + esc(hb.id) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? 'Undo ' : 'Mark done: ') + hb.name) + '">') + art + '<svg viewBox="0 0 24 24">' + ICON.check + '</svg></button>' +
       '<div class="habit-main"><div class="habit-top"><h3>' + esc(hb.name) + '</h3>' +
       '<button class="hrank" type="button" data-act="open-rank" data-h="' + esc(hb.id) + '" aria-label="' + esc(hb.name + ' rank: ' + rankTitle(hr.level) + ', level ' + (hr.level+1)) + '">' + miniBelt(hr.level) + '<span>Lv ' + (hr.level+1) + '</span>' + (hr.capped ? '<em>Test</em>' : '') + '</button>' +
       (streak > 0 ? '<span class="streak" title="Current streak"><svg viewBox="0 0 24 24">' + ICON.flame + '</svg>' + streak + 'd</span>' : '') + '</div>' +

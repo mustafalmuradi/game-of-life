@@ -4,7 +4,7 @@
 src/index.html is a complete document (it runs standalone and in the harness).
 The Artifact tool wraps the page in its own skeleton at publish time, so the
 published copy carries only the content: from <title> to the module script tag.
-Everything else is copied as is.
+Everything else (css, js, tools and the img art) is copied as is.
 """
 import os, shutil, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,7 +15,7 @@ assert html.startswith(SKELETON), 'src/index.html no longer starts with the publ
 assert html.rstrip().endswith('</body></html>'), 'src/index.html no longer ends with </body></html>'
 content = html[len(SKELETON):].rstrip()[:-len('</body></html>')].rstrip() + '\n'
 shutil.rmtree(DIST, ignore_errors=True)
-for sub in ('css', 'js', 'tools'):
+for sub in ('css', 'js', 'tools', 'img'):
     shutil.copytree(os.path.join(SRC, sub), os.path.join(DIST, sub))
 open(os.path.join(DIST, 'index.html'), 'w', encoding='utf-8').write(content)
 files = sorted(os.path.relpath(os.path.join(d, f), DIST) for d, _, fs in os.walk(DIST) for f in fs)
