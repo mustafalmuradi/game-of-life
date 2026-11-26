@@ -3,6 +3,15 @@
 What changed in the app, newest first. Started Nov 26 2026; for anything earlier, read `git log` and the dated
 sections of `README.md`.
 
+## 2026-11-26 · Wind-down card moves under the habits
+
+### Changed
+
+- On Today the wind-down card ("In bed now") sits right under the habits and above the Tasks card. It was the
+  first card on the screen. Order now: week strip, day score, Salah, calendar, habits, wind-down, Tasks.
+- Only the card's place in `src/index.html` changed. When it shows, what it says and what its buttons do are the
+  same.
+
 ## 2026-11-26 · Light/dark button in the header
 
 A sun/moon button in the top bar, between Coach and settings, on every screen. One tap shows the other look at

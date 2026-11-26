@@ -182,7 +182,8 @@ dates against the adhan library's values (within a minute).
 ## Wind-down (Today, Isha → bed)
 
 `features/winddown.js`. From Isha, or an hour before the bed target if that is
-earlier, until the night's bedtime is logged, the first card on Today counts
+earlier, until the night's bedtime is logged, a card on Today, right under the
+habits (it was the first card until Nov 26 2026), counts
 down to the target for the night (`targets.bed`, `friBed`, `satBed`, or a
 planned late night), turns red past it, marks the screens-off checkpoint 30
 minutes before, and shows the next Fajr and the sleep still available. "In bed
