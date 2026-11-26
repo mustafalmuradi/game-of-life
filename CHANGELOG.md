@@ -45,11 +45,15 @@ object (earned), and the page moves between the two. Guide: `docs/ASSETS.md`.
 
 ### Known
 
-- Published Nov 26 2026 (artifact version `1795729222-0379`) and checked on the live page with real data: the
+- Published Nov 26 2026 (artifact version `1795729657-6630`) and checked on the live page with real data: the
   belt, the power form, habit emblems, lift equipment and the Salah sky all load.
 - The first publish of the page went out as `dist/index.html` through a tool that does not add the page skeleton,
   so for about a minute the live page had no doctype, viewport or base styles. Republished from `src/index.html`.
   The rule is now in `README.md` ("Rules for changes", rule 5).
+- Test gap: the harness takes its Today screenshot on a day picked from the month view, which has no next-trophy
+  line and no Salah sky. The next-trophy emblem made that line 5 px taller and the harness could not see it; it was
+  found by measuring the page with and without the pictures and fixed the same day (commit 825c32e, whose message
+  gives the wrong reason for the miss). Today's own Today screen still needs a screenshot in the harness.
 - The motion was checked in desktop Chrome (60 fps). It has not been checked on a phone yet.
 - The Lifts tab still uses Dragon Ball names for forms and tiers. The new art does not depend on them.
   See `docs/APP-RELEASE.md`.
