@@ -1,0 +1,439 @@
+{
+ "b0": [
+  {
+   "index": 0,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: an open hardcover book with its pages fanned slightly, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and hot pink (#FF5FD0) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 1,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a smooth sphere resting at the centre of three concentric flat rings, like a still drop in calm water. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and soft violet (#A88CFF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 2,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a neat stack of three thick blank coins with a bold upward arrow rising behind them. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and emerald green (#2EE887) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 3,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a crescent moon resting on a small soft cloud. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and sky blue (#4FD8FF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 4,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a rounded heraldic shield with one flowing breath-of-air swirl embossed on its face. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and amber (#FFB042) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 5,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a deep round bowl with a fork and a spoon standing crossed behind it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and teal (#2EDCE2) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 6,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a prayer rug laid flat in a three-quarter view, woven with a simple pointed-arch design and short tassels at both ends, with no writing on it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and lime green (#B4FF5C) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 7,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a loop of round prayer beads with one larger bead and a short tassel, laid in a soft teardrop loop. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and soft violet (#A88CFF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 8,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a single ice cube with rounded corners and a small six-point frost crystal floating above it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and icy teal (#2EDCE2) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 9,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 10,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 11,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "b1": [
+  {
+   "index": 12,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a classic two-handled trophy cup on a short stem and a square base, with a small flame rising from the bowl. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 13,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a bold check mark standing upright on a small round pedestal. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 14,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a radiant eight-point starburst with a round core. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and warm gold (#FFC53D) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 15,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: two bold chevron arrows stacked one above the other, both pointing up. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and warm gold (#FFC53D) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 16,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a bedside lamp with its shade tilted down and a small crescent moon beside it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and sky blue (#4FD8FF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 17,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a stack of three thick closed books with a ribbon bookmark hanging out. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and hot pink (#FF5FD0) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 18,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a round cloud raining thick blank coins. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and emerald green (#2EE887) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 19,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a desk calendar block with a blank page and a five-point star rising from its top. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 20,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and ember orange (#FF7A50) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 40% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 21,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a looped resistance band with two grip handles, laid in a loose figure-eight. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 22,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a triceps rope cable attachment: a short thick rope bent into an upside-down U, with a rubber ball stopper on each end and a metal ring at the top. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 23,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a kettlebell with a thick handle. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "b2": [
+  {
+   "index": 24,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: an ab roller wheel with a straight handle through its centre. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 25,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a pair of gymnastic rings hanging from two short straps. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 26,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a close-grip V-shaped row handle for a cable machine: two parallel grips joined to a single eyelet. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 27,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a round weight plate with a centre hole and three grip cut-outs, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 28,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a compact gym weight stack: a column of flat rectangular plates between two guide rods, with a selector pin in one plate. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 29,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: an adjustable gym bench set to an incline, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 30,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a single D-shaped cable handle with a short strap and a snap hook. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 31,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: an EZ curl bar with a zig-zag shaft and one small plate on each end. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 32,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Subject: a straight barbell with two plates on each end, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "keys": [
+  "habit-read:g",
+  "habit-meditate:g",
+  "habit-money:g",
+  "habit-sleep:g",
+  "habit-nicotine:g",
+  "habit-eat:g",
+  "habit-sunnah:g",
+  "habit-dhikr:g",
+  "habit-ice:g",
+  "trophy-house-3:g",
+  "trophy-sweep-3:g",
+  "trophy-sweeps-3:g",
+  "trophy-streak-3:g",
+  "badge-firstrep:g",
+  "badge-cleansweep:g",
+  "badge-doubleup:g",
+  "badge-lightsout:g",
+  "badge-deepreader:g",
+  "badge-rainmaker:g",
+  "badge-yearone:g",
+  "power-1:g",
+  "lift-band:g",
+  "lift-rope:g",
+  "lift-kettlebell:g",
+  "lift-abwheel:g",
+  "lift-rings:g",
+  "lift-row:g",
+  "lift-plate:g",
+  "lift-machine:g",
+  "lift-bench:g",
+  "lift-cable:g",
+  "lift-curlbar:g",
+  "lift-barbell:g"
+ ]
+}

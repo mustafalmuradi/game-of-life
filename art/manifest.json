@@ -1,0 +1,1507 @@
+{
+ "model": "gpt_image_2_6",
+ "higgsfield_project": "Game Of Life",
+ "settings": {
+  "aspect_ratio": "1:1",
+  "quality": "high",
+  "resolution": "1k",
+  "background": "transparent",
+  "output_format": "png"
+ },
+ "sky_settings": {
+  "aspect_ratio": "3:2",
+  "quality": "high",
+  "resolution": "1k",
+  "output_format": "png"
+ },
+ "credits_per_image": 1.25,
+ "emblems": {
+  "habit-read": {
+   "family": "habit",
+   "subject": "an open hardcover book with its pages fanned slightly, in a three-quarter view",
+   "files": [
+    "habit-read.g.webp",
+    "habit-read.s.webp"
+   ],
+   "glass": {
+    "job": "881eb622-7636-4a5f-a758-d3297a9152af",
+    "file": "hf_20261126_204158_881eb622-7636-4a5f-a758-d3297a9152af.png",
+    "round": "g1",
+    "prompt": "Subject: an open hardcover book with its pages fanned slightly, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and hot pink (#FF5FD0) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "d3b4d7cc-4f4e-42cb-8449-612e38b1d60f",
+    "file": "hf_20261126_204508_d3b4d7cc-4f4e-42cb-8449-612e38b1d60f.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A real hardcover book with cream paper pages, a deep rose-pink cloth cover and bright brushed steel (light silver, never dark) corner caps. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "881eb622-7636-4a5f-a758-d3297a9152af"
+   }
+  },
+  "habit-meditate": {
+   "family": "habit",
+   "subject": "a smooth sphere resting at the centre of three concentric flat rings, like a still drop in calm water",
+   "files": [
+    "habit-meditate.g.webp",
+    "habit-meditate.s.webp"
+   ],
+   "glass": {
+    "job": "bea47315-2fb8-460f-a800-10812b3db8f5",
+    "file": "hf_20261126_204157_bea47315-2fb8-460f-a800-10812b3db8f5.png",
+    "round": "g1",
+    "prompt": "Subject: a smooth sphere resting at the centre of three concentric flat rings, like a still drop in calm water. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and soft violet (#A88CFF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "b90cb5e1-45fa-4761-a529-5e1ce437a90b",
+    "file": "hf_20261126_204509_b90cb5e1-45fa-4761-a529-5e1ce437a90b.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Polished rings of bright brushed steel (light silver, never dark) around a glossy violet glass-enamel sphere. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "bea47315-2fb8-460f-a800-10812b3db8f5"
+   }
+  },
+  "habit-workout": {
+   "family": "habit",
+   "subject": "a single hexagonal-head dumbbell in a three-quarter view",
+   "files": [
+    "habit-workout.g.webp",
+    "habit-workout.s.webp"
+   ],
+   "glass": {
+    "job": "acb14cc4-b10e-4d84-8f92-9471505f65bd",
+    "file": "hf_20261126_200144_acb14cc4-b10e-4d84-8f92-9471505f65bd.png",
+    "round": "samples",
+    "prompt": "Subject: a single hexagonal-head dumbbell in a three-quarter view, with a warm orange (#FF7A50) accent. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object filling about 80% of the frame, isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "604d7266-f7c1-4f5c-a75b-10f98e99cafa",
+    "file": "hf_20261126_204507_604d7266-f7c1-4f5c-a75b-10f98e99cafa.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A dumbbell of bright brushed steel (light silver, never dark) with polished beveled edges, warm orange (#FF7A50) enamel panels where the reference has orange panels, and a knurled steel grip. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "acb14cc4-b10e-4d84-8f92-9471505f65bd"
+   }
+  },
+  "habit-money": {
+   "family": "habit",
+   "subject": "a neat stack of three thick blank coins with a bold upward arrow rising behind them",
+   "files": [
+    "habit-money.g.webp",
+    "habit-money.s.webp"
+   ],
+   "glass": {
+    "job": "faf9f5f6-fa74-4c48-8c7c-01d7cc9c4d7e",
+    "file": "hf_20261126_204157_faf9f5f6-fa74-4c48-8c7c-01d7cc9c4d7e.png",
+    "round": "g1",
+    "prompt": "Subject: a neat stack of three thick blank coins with a bold upward arrow rising behind them. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and emerald green (#2EE887) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "94f23519-bf3f-4f5f-b164-9979fba05ad8",
+    "file": "hf_20261126_204510_94f23519-bf3f-4f5f-b164-9979fba05ad8.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Bright polished gold coins with plain blank faces and a glossy emerald-green enamel arrow. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "faf9f5f6-fa74-4c48-8c7c-01d7cc9c4d7e"
+   }
+  },
+  "habit-sleep": {
+   "family": "habit",
+   "subject": "a crescent moon resting on a small soft cloud",
+   "files": [
+    "habit-sleep.g.webp",
+    "habit-sleep.s.webp"
+   ],
+   "glass": {
+    "job": "3dfc84e9-eaf4-4f06-96c0-c47c86b648af",
+    "file": "hf_20261126_204157_3dfc84e9-eaf4-4f06-96c0-c47c86b648af.png",
+    "round": "g1",
+    "prompt": "Subject: a crescent moon resting on a small soft cloud. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and sky blue (#4FD8FF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "ff5bf00d-e4d2-404f-9353-f3d29c5cba20",
+    "file": "hf_20261126_204510_ff5bf00d-e4d2-404f-9353-f3d29c5cba20.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A bright pearl-white ceramic crescent moon with a soft blue sheen, resting on a matte white cloud. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3dfc84e9-eaf4-4f06-96c0-c47c86b648af"
+   }
+  },
+  "habit-nicotine": {
+   "family": "habit",
+   "subject": "a rounded heraldic shield with one flowing breath-of-air swirl embossed on its face",
+   "files": [
+    "habit-nicotine.g.webp",
+    "habit-nicotine.s.webp"
+   ],
+   "glass": {
+    "job": "3693ad85-6793-46a8-84b2-339e515c1c60",
+    "file": "hf_20261126_204200_3693ad85-6793-46a8-84b2-339e515c1c60.png",
+    "round": "g1",
+    "prompt": "Subject: a rounded heraldic shield with one flowing breath-of-air swirl embossed on its face. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and amber (#FFB042) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "120189b1-7a69-4f96-a262-14ecabdeb6d0",
+    "file": "hf_20261126_204509_120189b1-7a69-4f96-a262-14ecabdeb6d0.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A shield of bright brushed steel (light silver, never dark) with an amber-gold enamel face and a raised polished swirl. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3693ad85-6793-46a8-84b2-339e515c1c60"
+   }
+  },
+  "habit-eat": {
+   "family": "habit",
+   "subject": "a deep round bowl with a fork and a spoon standing crossed behind it",
+   "files": [
+    "habit-eat.g.webp",
+    "habit-eat.s.webp"
+   ],
+   "glass": {
+    "job": "2abc18bf-702e-4e7b-9268-4486e217e720",
+    "file": "hf_20261126_204159_2abc18bf-702e-4e7b-9268-4486e217e720.png",
+    "round": "g1",
+    "prompt": "Subject: a deep round bowl with a fork and a spoon standing crossed behind it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and teal (#2EDCE2) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "d0a2c127-87f1-4f5e-9b1f-e9aad466fdf1",
+    "file": "hf_20261126_204507_d0a2c127-87f1-4f5e-9b1f-e9aad466fdf1.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A glossy white ceramic bowl with a teal enamel band, and a fork and spoon of bright polished steel. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "2abc18bf-702e-4e7b-9268-4486e217e720"
+   }
+  },
+  "habit-sunnah": {
+   "family": "habit",
+   "subject": "a prayer rug laid flat in a three-quarter view, woven with a simple pointed-arch design and short tassels at both ends, with no writing on it",
+   "files": [
+    "habit-sunnah.g.webp",
+    "habit-sunnah.s.webp"
+   ],
+   "glass": {
+    "job": "7b8211aa-ae8a-4c6c-b685-f18fa39ad565",
+    "file": "hf_20261126_204159_7b8211aa-ae8a-4c6c-b685-f18fa39ad565.png",
+    "round": "g1",
+    "prompt": "Subject: a prayer rug laid flat in a three-quarter view, woven with a simple pointed-arch design and short tassels at both ends, with no writing on it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and lime green (#B4FF5C) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "248843e6-e6e9-4b94-a251-fc15ef63278d",
+    "file": "hf_20261126_204508_248843e6-e6e9-4b94-a251-fc15ef63278d.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A real woven prayer rug in deep emerald green with cream and gold thread and cream tassels, no writing on it. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7b8211aa-ae8a-4c6c-b685-f18fa39ad565"
+   }
+  },
+  "habit-dhikr": {
+   "family": "habit",
+   "subject": "a loop of round prayer beads with one larger bead and a short tassel, laid in a soft teardrop loop",
+   "files": [
+    "habit-dhikr.g.webp",
+    "habit-dhikr.s.webp"
+   ],
+   "glass": {
+    "job": "3e8343eb-788d-4eeb-b839-bb8e5be18e67",
+    "file": "hf_20261126_204158_3e8343eb-788d-4eeb-b839-bb8e5be18e67.png",
+    "round": "g1",
+    "prompt": "Subject: a loop of round prayer beads with one larger bead and a short tassel, laid in a soft teardrop loop. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and soft violet (#A88CFF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "b99dc525-017f-4ab5-9ce1-0a20041b71a3",
+    "file": "hf_20261126_204508_b99dc525-017f-4ab5-9ce1-0a20041b71a3.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Polished amethyst-violet stone beads on a cord, with one larger bright gold bead and a cream tassel. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3e8343eb-788d-4eeb-b839-bb8e5be18e67"
+   }
+  },
+  "habit-ice": {
+   "family": "habit",
+   "subject": "a single ice cube with rounded corners and a small six-point frost crystal floating above it",
+   "files": [
+    "habit-ice.g.webp",
+    "habit-ice.s.webp"
+   ],
+   "glass": {
+    "job": "d2592f54-51f2-4d73-805a-4d9f1ffa38eb",
+    "file": "hf_20261126_204159_d2592f54-51f2-4d73-805a-4d9f1ffa38eb.png",
+    "round": "g1",
+    "prompt": "Subject: a single ice cube with rounded corners and a small six-point frost crystal floating above it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and icy teal (#2EDCE2) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "f7035683-b22f-47d9-ac71-47c4f7beb7f0",
+    "file": "hf_20261126_204507_f7035683-b22f-47d9-ac71-47c4f7beb7f0.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A solid block of real clear ice with frosted white edges and crisp refractions, with a bright white frost crystal above it. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d2592f54-51f2-4d73-805a-4d9f1ffa38eb"
+   }
+  },
+  "belt-0": {
+   "family": "belt",
+   "subject": "a martial-arts cloth belt tied in a classic flat knot, royal blue (#2356C0), with the two ends hanging down symmetrically and a short black rank bar near the tip of one end",
+   "files": [
+    "belt-0.g.webp",
+    "belt-0.g.lg.webp",
+    "belt-0.s.webp",
+    "belt-0.s.lg.webp"
+   ],
+   "glass": {
+    "job": "110df739-ba35-44ce-bfed-a8970a96a2e0",
+    "file": "hf_20261126_204220_110df739-ba35-44ce-bfed-a8970a96a2e0.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes pearl white (#F4F4F0), a milky white glass. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+   },
+   "solid": {
+    "job": "46b8713e-b9e2-4935-889a-d7f83e741a72",
+    "file": "hf_20261126_204509_46b8713e-b9e2-4935-889a-d7f83e741a72.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. An opaque pearl-white woven cotton martial-arts belt tied in the same flat knot, with visible rows of stitching and a solid black rank bar in the same place. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "110df739-ba35-44ce-bfed-a8970a96a2e0"
+   }
+  },
+  "belt-1": {
+   "family": "belt",
+   "subject": "a martial-arts cloth belt tied in a classic flat knot, royal blue (#2356C0), with the two ends hanging down symmetrically and a short black rank bar near the tip of one end",
+   "files": [
+    "belt-1.g.webp",
+    "belt-1.g.lg.webp",
+    "belt-1.s.webp",
+    "belt-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "3e65e380-89cf-47e8-98d8-e45a18e442d4",
+    "file": "hf_20261126_200141_3e65e380-89cf-47e8-98d8-e45a18e442d4.png",
+    "round": "samples",
+    "prompt": "Subject: a martial-arts cloth belt tied in a classic flat knot, royal blue (#2356C0), with the two ends hanging down symmetrically and a short black rank bar near the tip of one end. Style: futuristic holographic game-UI emblem. The object is rendered as translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object filling about 80% of the frame, isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "1aca0bee-f68b-48c7-8281-c60b06754779",
+    "file": "hf_20261126_201934_1aca0bee-f68b-48c7-8281-c60b06754779.png",
+    "round": "samples",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. An opaque royal-blue (#2356C0) woven cotton martial-arts belt tied in the same flat knot, with visible rows of stitching and a solid black rank bar in the same place. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no logos, no people."
+   }
+  },
+  "belt-2": {
+   "family": "belt",
+   "subject": "a martial-arts cloth belt tied in a classic flat knot, royal blue (#2356C0), with the two ends hanging down symmetrically and a short black rank bar near the tip of one end",
+   "files": [
+    "belt-2.g.webp",
+    "belt-2.g.lg.webp",
+    "belt-2.s.webp",
+    "belt-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "9f40251b-3c68-4cb2-8fee-b99a9ecb7d69",
+    "file": "hf_20261126_204222_9f40251b-3c68-4cb2-8fee-b99a9ecb7d69.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes royal purple (#6B3FB0). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+   },
+   "solid": {
+    "job": "1ec61d78-5d57-472a-a030-cb2cd8e79cc5",
+    "file": "hf_20261126_204507_1ec61d78-5d57-472a-a030-cb2cd8e79cc5.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. An opaque royal-purple (#6B3FB0) woven cotton martial-arts belt tied in the same flat knot, with visible rows of stitching and a solid black rank bar in the same place. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "9f40251b-3c68-4cb2-8fee-b99a9ecb7d69"
+   }
+  },
+  "belt-3": {
+   "family": "belt",
+   "subject": "a martial-arts cloth belt tied in a classic flat knot, royal blue (#2356C0), with the two ends hanging down symmetrically and a short black rank bar near the tip of one end",
+   "files": [
+    "belt-3.g.webp",
+    "belt-3.g.lg.webp",
+    "belt-3.s.webp",
+    "belt-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "03e0da2b-293a-4ace-b8b6-f39a064c888a",
+    "file": "hf_20261126_204446_03e0da2b-293a-4ace-b8b6-f39a064c888a.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes deep chocolate brown (#6E4526): a dark smoked brown glass with warm amber edge highlights, clearly brown and not orange. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+   },
+   "solid": {
+    "job": "e7c819fa-7e85-471b-b423-98bf017d6d76",
+    "file": "hf_20261126_204841_e7c819fa-7e85-471b-b423-98bf017d6d76.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. An opaque chocolate-brown (#6E4526) woven cotton martial-arts belt tied in the same flat knot, with visible rows of stitching and a solid black rank bar in the same place. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "03e0da2b-293a-4ace-b8b6-f39a064c888a"
+   }
+  },
+  "belt-4": {
+   "family": "belt",
+   "subject": "a martial-arts cloth belt tied in a classic flat knot, royal blue (#2356C0), with the two ends hanging down symmetrically and a short black rank bar near the tip of one end",
+   "files": [
+    "belt-4.g.webp",
+    "belt-4.g.lg.webp",
+    "belt-4.s.webp",
+    "belt-4.s.lg.webp"
+   ],
+   "glass": {
+    "job": "c7ba8d14-b1aa-491b-a736-a19737f4b0ee",
+    "file": "hf_20261126_204222_c7ba8d14-b1aa-491b-a736-a19737f4b0ee.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes black (#141417), a smoked dark glass with bright edge lines, and make the rank bar red (#B3261E). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+   },
+   "solid": {
+    "job": "2b46298d-e208-4363-8c71-cbb94eefbc59",
+    "file": "hf_20261126_204517_2b46298d-e208-4363-8c71-cbb94eefbc59.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. An opaque black (#141417) woven cotton martial-arts belt tied in the same flat knot, with visible rows of stitching and a solid red (#B3261E) rank bar in the same place, its stitching bright white and its edges caught by a strong cyan and magenta rim light so the outline stays bright against a dark background. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "c7ba8d14-b1aa-491b-a736-a19737f4b0ee"
+   }
+  },
+  "trophy-pillars-1": {
+   "family": "trophy",
+   "subject": "a trophy emblem of five classical columns standing in a row on a stepped base, topped by a flat lintel",
+   "files": [
+    "trophy-pillars-1.g.webp",
+    "trophy-pillars-1.g.lg.webp",
+    "trophy-pillars-1.s.webp",
+    "trophy-pillars-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "999a4743-d61a-4840-a8df-7e68d94a2ab4",
+    "file": "hf_20261126_204222_999a4743-d61a-4840-a8df-7e68d94a2ab4.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+   },
+   "solid": {
+    "job": "cc8a5a3c-e2c0-4e26-b44f-c03df03ee1b6",
+    "file": "hf_20261126_204520_cc8a5a3c-e2c0-4e26-b44f-c03df03ee1b6.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "999a4743-d61a-4840-a8df-7e68d94a2ab4"
+   }
+  },
+  "trophy-pillars-2": {
+   "family": "trophy",
+   "subject": "a trophy emblem of five classical columns standing in a row on a stepped base, topped by a flat lintel",
+   "files": [
+    "trophy-pillars-2.g.webp",
+    "trophy-pillars-2.g.lg.webp",
+    "trophy-pillars-2.s.webp",
+    "trophy-pillars-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "7aa81da1-2c0e-4ff4-8b26-2de18334e950",
+    "file": "hf_20261126_204221_7aa81da1-2c0e-4ff4-8b26-2de18334e950.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+   },
+   "solid": {
+    "job": "ca84321c-be92-490c-a0e9-837672769bcb",
+    "file": "hf_20261126_204518_ca84321c-be92-490c-a0e9-837672769bcb.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7aa81da1-2c0e-4ff4-8b26-2de18334e950"
+   }
+  },
+  "trophy-pillars-3": {
+   "family": "trophy",
+   "subject": "a trophy emblem of five classical columns standing in a row on a stepped base, topped by a flat lintel",
+   "files": [
+    "trophy-pillars-3.g.webp",
+    "trophy-pillars-3.g.lg.webp",
+    "trophy-pillars-3.s.webp",
+    "trophy-pillars-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "bd9e03b8-87e9-4899-b466-13c5ff554384",
+    "file": "hf_20261126_200144_bd9e03b8-87e9-4899-b466-13c5ff554384.png",
+    "round": "samples",
+    "prompt": "Subject: a trophy emblem of five classical columns standing in a row on a stepped base, topped by a flat lintel, gold tier with golden light. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object filling about 80% of the frame, isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "8b5e481a-b89a-424c-838d-8221162e6a8d",
+    "file": "hf_20261126_201934_8b5e481a-b89a-424c-838d-8221162e6a8d.png",
+    "round": "samples",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same five-column emblem cast in opaque polished gold with a dark gunmetal band on the base, crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no logos, no people."
+   }
+  },
+  "trophy-pillars-4": {
+   "family": "trophy",
+   "subject": "a trophy emblem of five classical columns standing in a row on a stepped base, topped by a flat lintel",
+   "files": [
+    "trophy-pillars-4.g.webp",
+    "trophy-pillars-4.g.lg.webp",
+    "trophy-pillars-4.s.webp",
+    "trophy-pillars-4.s.lg.webp"
+   ],
+   "glass": {
+    "job": "7ccb41d3-8f9c-48f7-abe7-cc3575886322",
+    "file": "hf_20261126_204221_7ccb41d3-8f9c-48f7-abe7-cc3575886322.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+   },
+   "solid": {
+    "job": "157a5663-5f97-43f3-8860-9568ecc3ed81",
+    "file": "hf_20261126_204521_157a5663-5f97-43f3-8860-9568ecc3ed81.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7ccb41d3-8f9c-48f7-abe7-cc3575886322"
+   }
+  },
+  "trophy-pillars-5": {
+   "family": "trophy",
+   "subject": "a trophy emblem of five classical columns standing in a row on a stepped base, topped by a flat lintel",
+   "files": [
+    "trophy-pillars-5.g.webp",
+    "trophy-pillars-5.g.lg.webp",
+    "trophy-pillars-5.s.webp",
+    "trophy-pillars-5.s.lg.webp"
+   ],
+   "glass": {
+    "job": "eba5ba16-2ef9-4198-ad46-d290d5686c0c",
+    "file": "hf_20261126_204223_eba5ba16-2ef9-4198-ad46-d290d5686c0c.png",
+    "round": "e1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+   },
+   "solid": {
+    "job": "4f0f9789-1c84-4331-b744-eaf400d52dc4",
+    "file": "hf_20261126_204519_4f0f9789-1c84-4331-b744-eaf400d52dc4.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "eba5ba16-2ef9-4198-ad46-d290d5686c0c"
+   }
+  },
+  "trophy-house-1": {
+   "family": "trophy",
+   "subject": "a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base",
+   "files": [
+    "trophy-house-1.g.webp",
+    "trophy-house-1.g.lg.webp",
+    "trophy-house-1.s.webp",
+    "trophy-house-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "a4678813-719f-487e-97b2-e8c5824ff407",
+    "file": "hf_20261126_204450_a4678813-719f-487e-97b2-e8c5824ff407.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+   },
+   "solid": {
+    "job": "52a12166-8452-44f2-9f88-ee742c007595",
+    "file": "hf_20261126_204843_52a12166-8452-44f2-9f88-ee742c007595.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "a4678813-719f-487e-97b2-e8c5824ff407"
+   }
+  },
+  "trophy-house-2": {
+   "family": "trophy",
+   "subject": "a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base",
+   "files": [
+    "trophy-house-2.g.webp",
+    "trophy-house-2.g.lg.webp",
+    "trophy-house-2.s.webp",
+    "trophy-house-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "11b30317-e9c6-4c98-812e-ac69143b253e",
+    "file": "hf_20261126_204448_11b30317-e9c6-4c98-812e-ac69143b253e.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+   },
+   "solid": {
+    "job": "58d74c71-e78f-42de-afe8-986f8bc42145",
+    "file": "hf_20261126_204843_58d74c71-e78f-42de-afe8-986f8bc42145.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "11b30317-e9c6-4c98-812e-ac69143b253e"
+   }
+  },
+  "trophy-house-3": {
+   "family": "trophy",
+   "subject": "a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base",
+   "files": [
+    "trophy-house-3.g.webp",
+    "trophy-house-3.g.lg.webp",
+    "trophy-house-3.s.webp",
+    "trophy-house-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "fc3bbc26-9fd5-4c76-9449-009494d5c049",
+    "file": "hf_20261126_204159_fc3bbc26-9fd5-4c76-9449-009494d5c049.png",
+    "round": "g1",
+    "prompt": "Subject: a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "6a99ccf3-eda8-4e30-93f8-3b4c680dbbdc",
+    "file": "hf_20261126_204518_6a99ccf3-eda8-4e30-93f8-3b4c680dbbdc.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished gold, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+   }
+  },
+  "trophy-house-4": {
+   "family": "trophy",
+   "subject": "a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base",
+   "files": [
+    "trophy-house-4.g.webp",
+    "trophy-house-4.g.lg.webp",
+    "trophy-house-4.s.webp",
+    "trophy-house-4.s.lg.webp"
+   ],
+   "glass": {
+    "job": "af02fbae-0eda-450a-9af6-3e966dcdb6ec",
+    "file": "hf_20261126_204452_af02fbae-0eda-450a-9af6-3e966dcdb6ec.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+   },
+   "solid": {
+    "job": "330b8f9c-ba5d-46da-8d6f-10aa5774cf77",
+    "file": "hf_20261126_204844_330b8f9c-ba5d-46da-8d6f-10aa5774cf77.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "af02fbae-0eda-450a-9af6-3e966dcdb6ec"
+   }
+  },
+  "trophy-house-5": {
+   "family": "trophy",
+   "subject": "a small house emblem with a pitched roof and a chimney, every window and its open door glowing with light, standing on a low stepped base",
+   "files": [
+    "trophy-house-5.g.webp",
+    "trophy-house-5.g.lg.webp",
+    "trophy-house-5.s.webp",
+    "trophy-house-5.s.lg.webp"
+   ],
+   "glass": {
+    "job": "8a46bc61-b832-4696-9586-acc9b5d21523",
+    "file": "hf_20261126_204450_8a46bc61-b832-4696-9586-acc9b5d21523.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+   },
+   "solid": {
+    "job": "c951ad40-d8f3-4480-80c1-4cc66353d89c",
+    "file": "hf_20261126_204843_c951ad40-d8f3-4480-80c1-4cc66353d89c.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "8a46bc61-b832-4696-9586-acc9b5d21523"
+   }
+  },
+  "trophy-sweep-1": {
+   "family": "trophy",
+   "subject": "a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks",
+   "files": [
+    "trophy-sweep-1.g.webp",
+    "trophy-sweep-1.g.lg.webp",
+    "trophy-sweep-1.s.webp",
+    "trophy-sweep-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "fccfadea-96fb-4832-881d-df69455df727",
+    "file": "hf_20261126_204444_fccfadea-96fb-4832-881d-df69455df727.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d20c6814-b900-4057-bf22-c757b58cbd00"
+   },
+   "solid": {
+    "job": "3eaf437c-c753-4de5-b1c6-eb3e2decbd63",
+    "file": "hf_20261126_204841_3eaf437c-c753-4de5-b1c6-eb3e2decbd63.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fccfadea-96fb-4832-881d-df69455df727"
+   }
+  },
+  "trophy-sweep-2": {
+   "family": "trophy",
+   "subject": "a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks",
+   "files": [
+    "trophy-sweep-2.g.webp",
+    "trophy-sweep-2.g.lg.webp",
+    "trophy-sweep-2.s.webp",
+    "trophy-sweep-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "fedd4353-b907-4bb9-84ed-5e5ee41d5b20",
+    "file": "hf_20261126_204449_fedd4353-b907-4bb9-84ed-5e5ee41d5b20.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d20c6814-b900-4057-bf22-c757b58cbd00"
+   },
+   "solid": {
+    "job": "d4d862fd-5fa6-46f8-93ff-90c0bd1889f7",
+    "file": "hf_20261126_204843_d4d862fd-5fa6-46f8-93ff-90c0bd1889f7.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "fedd4353-b907-4bb9-84ed-5e5ee41d5b20"
+   }
+  },
+  "trophy-sweep-3": {
+   "family": "trophy",
+   "subject": "a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks",
+   "files": [
+    "trophy-sweep-3.g.webp",
+    "trophy-sweep-3.g.lg.webp",
+    "trophy-sweep-3.s.webp",
+    "trophy-sweep-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "d20c6814-b900-4057-bf22-c757b58cbd00",
+    "file": "hf_20261126_204158_d20c6814-b900-4057-bf22-c757b58cbd00.png",
+    "round": "g1",
+    "prompt": "Subject: a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "e7aa0cbd-91c3-4503-834e-b9dc05a325fc",
+    "file": "hf_20261126_204519_e7aa0cbd-91c3-4503-834e-b9dc05a325fc.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished gold, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d20c6814-b900-4057-bf22-c757b58cbd00"
+   }
+  },
+  "trophy-sweep-4": {
+   "family": "trophy",
+   "subject": "a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks",
+   "files": [
+    "trophy-sweep-4.g.webp",
+    "trophy-sweep-4.g.lg.webp",
+    "trophy-sweep-4.s.webp",
+    "trophy-sweep-4.s.lg.webp"
+   ],
+   "glass": {
+    "job": "37a1e3e4-8351-4fc6-8482-a656a43c32aa",
+    "file": "hf_20261126_204449_37a1e3e4-8351-4fc6-8482-a656a43c32aa.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d20c6814-b900-4057-bf22-c757b58cbd00"
+   },
+   "solid": {
+    "job": "6d44262b-4712-40d9-bd34-52a59a8113c5",
+    "file": "hf_20261126_204841_6d44262b-4712-40d9-bd34-52a59a8113c5.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "37a1e3e4-8351-4fc6-8482-a656a43c32aa"
+   }
+  },
+  "trophy-sweep-5": {
+   "family": "trophy",
+   "subject": "a five-point star racing up and to the right, trailing a long tapered comet tail made of three streaks",
+   "files": [
+    "trophy-sweep-5.g.webp",
+    "trophy-sweep-5.g.lg.webp",
+    "trophy-sweep-5.s.webp",
+    "trophy-sweep-5.s.lg.webp"
+   ],
+   "glass": {
+    "job": "2079607e-5e8c-4d64-a8ba-a5465f46ea2c",
+    "file": "hf_20261126_204449_2079607e-5e8c-4d64-a8ba-a5465f46ea2c.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d20c6814-b900-4057-bf22-c757b58cbd00"
+   },
+   "solid": {
+    "job": "1d679a3c-d5b2-4a27-9c73-849a052ee32d",
+    "file": "hf_20261126_204840_1d679a3c-d5b2-4a27-9c73-849a052ee32d.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "2079607e-5e8c-4d64-a8ba-a5465f46ea2c"
+   }
+  },
+  "trophy-sweeps-1": {
+   "family": "trophy",
+   "subject": "a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below",
+   "files": [
+    "trophy-sweeps-1.g.webp",
+    "trophy-sweeps-1.g.lg.webp",
+    "trophy-sweeps-1.s.webp",
+    "trophy-sweeps-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "889dea36-2a60-42ff-8b7e-e2b46afb761f",
+    "file": "hf_20261126_204450_889dea36-2a60-42ff-8b7e-e2b46afb761f.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+   },
+   "solid": {
+    "job": "04255fd7-dfd7-4e07-bed7-c65a4ae620a7",
+    "file": "hf_20261126_204844_04255fd7-dfd7-4e07-bed7-c65a4ae620a7.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "889dea36-2a60-42ff-8b7e-e2b46afb761f"
+   }
+  },
+  "trophy-sweeps-2": {
+   "family": "trophy",
+   "subject": "a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below",
+   "files": [
+    "trophy-sweeps-2.g.webp",
+    "trophy-sweeps-2.g.lg.webp",
+    "trophy-sweeps-2.s.webp",
+    "trophy-sweeps-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "a067e27c-071d-4411-805a-fc6f9043c72c",
+    "file": "hf_20261126_204447_a067e27c-071d-4411-805a-fc6f9043c72c.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+   },
+   "solid": {
+    "job": "a41e86de-5921-4421-b1e0-57d434fdfa80",
+    "file": "hf_20261126_204841_a41e86de-5921-4421-b1e0-57d434fdfa80.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "a067e27c-071d-4411-805a-fc6f9043c72c"
+   }
+  },
+  "trophy-sweeps-3": {
+   "family": "trophy",
+   "subject": "a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below",
+   "files": [
+    "trophy-sweeps-3.g.webp",
+    "trophy-sweeps-3.g.lg.webp",
+    "trophy-sweeps-3.s.webp",
+    "trophy-sweeps-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6",
+    "file": "hf_20261126_204158_555c6353-e44d-45a2-a8a2-aa7d0e32dbe6.png",
+    "round": "g1",
+    "prompt": "Subject: a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "d9fde099-5e4b-4aec-89b2-8aabafdb16fd",
+    "file": "hf_20261126_204519_d9fde099-5e4b-4aec-89b2-8aabafdb16fd.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished gold, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+   }
+  },
+  "trophy-sweeps-4": {
+   "family": "trophy",
+   "subject": "a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below",
+   "files": [
+    "trophy-sweeps-4.g.webp",
+    "trophy-sweeps-4.g.lg.webp",
+    "trophy-sweeps-4.s.webp",
+    "trophy-sweeps-4.s.lg.webp"
+   ],
+   "glass": {
+    "job": "7d6ea5ef-c4d8-4d2b-a5c7-2d023ebe9f07",
+    "file": "hf_20261126_204444_7d6ea5ef-c4d8-4d2b-a5c7-2d023ebe9f07.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+   },
+   "solid": {
+    "job": "0fe4117f-302b-41e2-af5c-9ade6b529a12",
+    "file": "hf_20261126_204845_0fe4117f-302b-41e2-af5c-9ade6b529a12.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7d6ea5ef-c4d8-4d2b-a5c7-2d023ebe9f07"
+   }
+  },
+  "trophy-sweeps-5": {
+   "family": "trophy",
+   "subject": "a round medal framed by a laurel wreath, with a raised five-point star in its centre and two short ribbon tails below",
+   "files": [
+    "trophy-sweeps-5.g.webp",
+    "trophy-sweeps-5.g.lg.webp",
+    "trophy-sweeps-5.s.webp",
+    "trophy-sweeps-5.s.lg.webp"
+   ],
+   "glass": {
+    "job": "c9260009-6b85-4162-82c9-0e97a84c9d15",
+    "file": "hf_20261126_204457_c9260009-6b85-4162-82c9-0e97a84c9d15.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+   },
+   "solid": {
+    "job": "c368d343-dd20-4c15-9bb0-8afd125b529c",
+    "file": "hf_20261126_204854_c368d343-dd20-4c15-9bb0-8afd125b529c.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "c9260009-6b85-4162-82c9-0e97a84c9d15"
+   }
+  },
+  "trophy-streak-1": {
+   "family": "trophy",
+   "subject": "a classic two-handled trophy cup on a short stem and a square base, with a small flame rising from the bowl",
+   "files": [
+    "trophy-streak-1.g.webp",
+    "trophy-streak-1.g.lg.webp",
+    "trophy-streak-1.s.webp",
+    "trophy-streak-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "9f5cb8d7-3166-4cf9-bdc6-4c8bae9fb8df",
+    "file": "hf_20261126_204459_9f5cb8d7-3166-4cf9-bdc6-4c8bae9fb8df.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "9570597d-9a28-41b2-9508-34e659ed4a7d"
+   },
+   "solid": {
+    "job": "de415759-4b89-425e-b5f8-f0ecbc1708a2",
+    "file": "hf_20261126_204856_de415759-4b89-425e-b5f8-f0ecbc1708a2.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "9f5cb8d7-3166-4cf9-bdc6-4c8bae9fb8df"
+   }
+  },
+  "trophy-streak-2": {
+   "family": "trophy",
+   "subject": "a classic two-handled trophy cup on a short stem and a square base, with a small flame rising from the bowl",
+   "files": [
+    "trophy-streak-2.g.webp",
+    "trophy-streak-2.g.lg.webp",
+    "trophy-streak-2.s.webp",
+    "trophy-streak-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "95d4f162-7a0a-4376-808b-5444fbc67a13",
+    "file": "hf_20261126_204457_95d4f162-7a0a-4376-808b-5444fbc67a13.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "9570597d-9a28-41b2-9508-34e659ed4a7d"
+   },
+   "solid": {
+    "job": "98dc1368-c1c5-455a-bd57-5296240265b2",
+    "file": "hf_20261126_204853_98dc1368-c1c5-455a-bd57-5296240265b2.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "95d4f162-7a0a-4376-808b-5444fbc67a13"
+   }
+  },
+  "trophy-streak-3": {
+   "family": "trophy",
+   "subject": "a classic two-handled trophy cup on a short stem and a square base, with a small flame rising from the bowl",
+   "files": [
+    "trophy-streak-3.g.webp",
+    "trophy-streak-3.g.lg.webp",
+    "trophy-streak-3.s.webp",
+    "trophy-streak-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "9570597d-9a28-41b2-9508-34e659ed4a7d",
+    "file": "hf_20261126_204206_9570597d-9a28-41b2-9508-34e659ed4a7d.png",
+    "round": "g1",
+    "prompt": "Subject: a classic two-handled trophy cup on a short stem and a square base, with a small flame rising from the bowl. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: warm gold (#FFC53D) as the main light, electric cyan (#22E3FF) and magenta (#FF3DDC) as edge accents. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "436364aa-6670-49db-8513-1db731ae3b70",
+    "file": "hf_20261126_204519_436364aa-6670-49db-8513-1db731ae3b70.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished gold, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "9570597d-9a28-41b2-9508-34e659ed4a7d"
+   }
+  },
+  "badge-firstrep": {
+   "family": "badge",
+   "subject": "a bold check mark standing upright on a small round pedestal",
+   "files": [
+    "badge-firstrep.g.webp",
+    "badge-firstrep.s.webp"
+   ],
+   "glass": {
+    "job": "f01c43e0-79b9-4b02-a001-f96450ace5ed",
+    "file": "hf_20261126_204205_f01c43e0-79b9-4b02-a001-f96450ace5ed.png",
+    "round": "g1",
+    "prompt": "Subject: a bold check mark standing upright on a small round pedestal. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "3a1dc1c1-14f2-486e-950d-f14d6746788a",
+    "file": "hf_20261126_204520_3a1dc1c1-14f2-486e-950d-f14d6746788a.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A check mark of bright brushed steel (light silver, never dark) with cyan enamel inlay on a steel pedestal. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "f01c43e0-79b9-4b02-a001-f96450ace5ed"
+   }
+  },
+  "badge-cleansweep": {
+   "family": "badge",
+   "subject": "a radiant eight-point starburst with a round core",
+   "files": [
+    "badge-cleansweep.g.webp",
+    "badge-cleansweep.s.webp"
+   ],
+   "glass": {
+    "job": "812d58aa-7b57-43e8-ab58-9ec06e197252",
+    "file": "hf_20261126_204207_812d58aa-7b57-43e8-ab58-9ec06e197252.png",
+    "round": "g1",
+    "prompt": "Subject: a radiant eight-point starburst with a round core. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and warm gold (#FFC53D) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "db670336-3624-45e1-9593-95ded593a3e7",
+    "file": "hf_20261126_204517_db670336-3624-45e1-9593-95ded593a3e7.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A polished gold starburst with a bright faceted core. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "812d58aa-7b57-43e8-ab58-9ec06e197252"
+   }
+  },
+  "badge-doubleup": {
+   "family": "badge",
+   "subject": "two bold chevron arrows stacked one above the other, both pointing up",
+   "files": [
+    "badge-doubleup.g.webp",
+    "badge-doubleup.s.webp"
+   ],
+   "glass": {
+    "job": "7fa7f0ad-e2fc-40b2-9329-845ca6245874",
+    "file": "hf_20261126_204208_7fa7f0ad-e2fc-40b2-9329-845ca6245874.png",
+    "round": "g1",
+    "prompt": "Subject: two bold chevron arrows stacked one above the other, both pointing up. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and warm gold (#FFC53D) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "b5f9e28f-ff4c-443e-9d18-13e6cb4d923c",
+    "file": "hf_20261126_204522_b5f9e28f-ff4c-443e-9d18-13e6cb4d923c.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Polished gold chevrons with beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7fa7f0ad-e2fc-40b2-9329-845ca6245874"
+   }
+  },
+  "badge-lightsout": {
+   "family": "badge",
+   "subject": "a bedside lamp with its shade tilted down and a small crescent moon beside it",
+   "files": [
+    "badge-lightsout.g.webp",
+    "badge-lightsout.s.webp"
+   ],
+   "glass": {
+    "job": "1d0e93bb-36be-4a54-9751-c2fe991e6990",
+    "file": "hf_20261126_204209_1d0e93bb-36be-4a54-9751-c2fe991e6990.png",
+    "round": "g1",
+    "prompt": "Subject: a bedside lamp with its shade tilted down and a small crescent moon beside it. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and sky blue (#4FD8FF) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "d8af9d7d-48b4-4394-b9c3-526ebee214ca",
+    "file": "hf_20261126_204530_d8af9d7d-48b4-4394-b9c3-526ebee214ca.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A matte navy-blue lamp with a bright brass stem and a pearl-white moon. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "1d0e93bb-36be-4a54-9751-c2fe991e6990"
+   }
+  },
+  "badge-deepreader": {
+   "family": "badge",
+   "subject": "a stack of three thick closed books with a ribbon bookmark hanging out",
+   "files": [
+    "badge-deepreader.g.webp",
+    "badge-deepreader.s.webp"
+   ],
+   "glass": {
+    "job": "17703d8d-6c0e-4b37-a2b2-98d99da16b85",
+    "file": "hf_20261126_204206_17703d8d-6c0e-4b37-a2b2-98d99da16b85.png",
+    "round": "g1",
+    "prompt": "Subject: a stack of three thick closed books with a ribbon bookmark hanging out. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and hot pink (#FF5FD0) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "60c6c7e8-1555-4402-8a48-0279b975c890",
+    "file": "hf_20261126_204530_60c6c7e8-1555-4402-8a48-0279b975c890.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Three real hardcover books in rose, cream and plum cloth with a gold ribbon. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "17703d8d-6c0e-4b37-a2b2-98d99da16b85"
+   }
+  },
+  "badge-rainmaker": {
+   "family": "badge",
+   "subject": "a round cloud raining thick blank coins",
+   "files": [
+    "badge-rainmaker.g.webp",
+    "badge-rainmaker.s.webp"
+   ],
+   "glass": {
+    "job": "d7ca60b2-ce91-404c-a789-5c642e39d8bc",
+    "file": "hf_20261126_204206_d7ca60b2-ce91-404c-a789-5c642e39d8bc.png",
+    "round": "g1",
+    "prompt": "Subject: a round cloud raining thick blank coins. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and emerald green (#2EE887) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "8fb02240-e60f-4abf-8c60-d2a69ad5c4ea",
+    "file": "hf_20261126_204531_8fb02240-e60f-4abf-8c60-d2a69ad5c4ea.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A pearl-white cloud with bright polished gold coins with plain blank faces. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d7ca60b2-ce91-404c-a789-5c642e39d8bc"
+   }
+  },
+  "badge-yearone": {
+   "family": "badge",
+   "subject": "a desk calendar block with a blank page and a five-point star rising from its top",
+   "files": [
+    "badge-yearone.g.webp",
+    "badge-yearone.s.webp"
+   ],
+   "glass": {
+    "job": "65f7ffb6-f521-424f-a422-f0c098dd6373",
+    "file": "hf_20261126_204206_65f7ffb6-f521-424f-a422-f0c098dd6373.png",
+    "round": "g1",
+    "prompt": "Subject: a desk calendar block with a blank page and a five-point star rising from its top. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "2ed48c25-10f4-451a-a8f1-fa4464e89fc8",
+    "file": "hf_20261126_204529_2ed48c25-10f4-451a-a8f1-fa4464e89fc8.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A calendar block of bright brushed steel (light silver, never dark) with a plain white blank page and a polished gold star. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "65f7ffb6-f521-424f-a422-f0c098dd6373"
+   }
+  },
+  "power-1": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-1.g.webp",
+    "power-1.g.lg.webp",
+    "power-1.s.webp",
+    "power-1.s.lg.webp"
+   ],
+   "glass": {
+    "job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8",
+    "file": "hf_20261126_204205_d5d33b6f-c918-49b9-9174-8e5a58ca50c8.png",
+    "round": "g1",
+    "prompt": "Subject: an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow, and ember orange (#FF7A50) for its own colour. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 40% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Clean bold silhouette that stays readable as a small app icon."
+   },
+   "solid": {
+    "job": "97426723-72d7-4c52-9963-19c1ca9a4888",
+    "file": "hf_20261126_204530_97426723-72d7-4c52-9963-19c1ca9a4888.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal is now a solid cut ember-orange gemstone with polished facets, and every ring, base and shard is bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   }
+  },
+  "power-2": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-2.g.webp",
+    "power-2.g.lg.webp",
+    "power-2.s.webp",
+    "power-2.s.lg.webp"
+   ],
+   "glass": {
+    "job": "7f1f5ca3-7b90-493b-91e4-6cf2447cf20a",
+    "file": "hf_20261126_204459_7f1f5ca3-7b90-493b-91e4-6cf2447cf20a.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but two small crystal shards now orbit it, one on each side, all kept inside the frame with a clear margin, and the glass colour becomes hot magenta (#FF3DDC). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   },
+   "solid": {
+    "job": "a461ec39-52dc-46f9-ae64-230f3662f26d",
+    "file": "hf_20261126_204851_a461ec39-52dc-46f9-ae64-230f3662f26d.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut magenta gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7f1f5ca3-7b90-493b-91e4-6cf2447cf20a"
+   }
+  },
+  "power-3": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-3.g.webp",
+    "power-3.g.lg.webp",
+    "power-3.s.webp",
+    "power-3.s.lg.webp"
+   ],
+   "glass": {
+    "job": "3325d2de-96bb-4c3f-a2b0-f7f61e741284",
+    "file": "hf_20261126_204458_3325d2de-96bb-4c3f-a2b0-f7f61e741284.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but four small crystal shards now float around it and one thin ring orbits it at a tilt, all kept inside the frame with a clear margin, and the glass colour becomes violet (#9D7BFF). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   },
+   "solid": {
+    "job": "6b173b41-81be-4fcc-8ddb-f9f036d00c02",
+    "file": "hf_20261126_204855_6b173b41-81be-4fcc-8ddb-f9f036d00c02.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut violet gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "3325d2de-96bb-4c3f-a2b0-f7f61e741284"
+   }
+  },
+  "power-4": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-4.g.webp",
+    "power-4.g.lg.webp",
+    "power-4.s.webp",
+    "power-4.s.lg.webp"
+   ],
+   "glass": {
+    "job": "0ea8d96a-d3d3-4e46-9beb-7ba456fcb3af",
+    "file": "hf_20261126_204458_0ea8d96a-d3d3-4e46-9beb-7ba456fcb3af.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but six crystal shards now float around it and two thin rings cross around it, all kept inside the frame with a clear margin, and the glass colour becomes electric cyan (#22E3FF). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   },
+   "solid": {
+    "job": "af6a0c23-b61b-4c19-94c1-e89fcaff77b1",
+    "file": "hf_20261126_204850_af6a0c23-b61b-4c19-94c1-e89fcaff77b1.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut cyan gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "0ea8d96a-d3d3-4e46-9beb-7ba456fcb3af"
+   }
+  },
+  "power-5": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-5.g.webp",
+    "power-5.g.lg.webp",
+    "power-5.s.webp",
+    "power-5.s.lg.webp"
+   ],
+   "glass": {
+    "job": "13e5dab1-a80b-4048-ae77-79294ca93ed2",
+    "file": "hf_20261126_204501_13e5dab1-a80b-4048-ae77-79294ca93ed2.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but eight crystal shards now form a crown around it, two thin rings cross around it and small arcs of energy jump between the shards, all kept inside the frame with a clear margin, and the glass colour becomes lime green (#B4FF5C). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   },
+   "solid": {
+    "job": "dfc0ded9-f813-4f2d-9dc4-eb70db19b2bd",
+    "file": "hf_20261126_204853_dfc0ded9-f813-4f2d-9dc4-eb70db19b2bd.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut lime-green gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "13e5dab1-a80b-4048-ae77-79294ca93ed2"
+   }
+  },
+  "power-6": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-6.g.webp",
+    "power-6.g.lg.webp",
+    "power-6.s.webp",
+    "power-6.s.lg.webp"
+   ],
+   "glass": {
+    "job": "c4f67e59-c48c-41d7-b71a-1a4302be0448",
+    "file": "hf_20261126_204459_c4f67e59-c48c-41d7-b71a-1a4302be0448.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but it has grown two layered wings of long crystal shards, three thin rings orbit it and arcs of energy jump between the shards, all kept inside the frame with a clear margin, and the glass colour becomes warm gold (#FFC53D). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   },
+   "solid": {
+    "job": "05325eb7-c4aa-4177-a394-b37b187caad2",
+    "file": "hf_20261126_204850_05325eb7-c4aa-4177-a394-b37b187caad2.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut gold gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "c4f67e59-c48c-41d7-b71a-1a4302be0448"
+   }
+  },
+  "power-7": {
+   "family": "power",
+   "subject": "an upright faceted energy crystal, hexagonal and pointed at both ends, hovering just above a small flat ring base",
+   "files": [
+    "power-7.g.webp",
+    "power-7.g.lg.webp",
+    "power-7.s.webp",
+    "power-7.s.lg.webp"
+   ],
+   "glass": {
+    "job": "daa335fb-d2a3-41c7-8dd9-3c7d1d6cf5ae",
+    "file": "hf_20261126_204457_daa335fb-d2a3-41c7-8dd9-3c7d1d6cf5ae.png",
+    "round": "e2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but it has become a radiant many-pointed star crystal with long shard wings, three thin rings and a bright halo of light behind it, all kept inside the frame with a clear margin, and the glass colour becomes white with a full-spectrum prismatic sheen. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+   },
+   "solid": {
+    "job": "a5e236f4-7b4f-4a62-ac75-81474ca1e6cd",
+    "file": "hf_20261126_204856_a5e236f4-7b4f-4a62-ac75-81474ca1e6cd.png",
+    "round": "s2",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut white diamond gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "daa335fb-d2a3-41c7-8dd9-3c7d1d6cf5ae"
+   }
+  },
+  "lift-band": {
+   "family": "lift",
+   "subject": "a looped resistance band with two grip handles, laid in a loose figure-eight",
+   "files": [
+    "lift-band.g.webp",
+    "lift-band.s.webp"
+   ],
+   "glass": {
+    "job": "b83a03f6-1c73-4505-8ec3-3c34e2d705ba",
+    "file": "hf_20261126_204205_b83a03f6-1c73-4505-8ec3-3c34e2d705ba.png",
+    "round": "g1",
+    "prompt": "Subject: a looped resistance band with two grip handles, laid in a loose figure-eight. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "26d8c4a2-5e81-4385-b778-a94b74faa063",
+    "file": "hf_20261126_204528_26d8c4a2-5e81-4385-b778-a94b74faa063.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A matte bright-red rubber band with black foam handles and bright steel clips. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "b83a03f6-1c73-4505-8ec3-3c34e2d705ba"
+   }
+  },
+  "lift-rope": {
+   "family": "lift",
+   "subject": "a triceps rope cable attachment: a short thick rope bent into an upside-down U, with a rubber ball stopper on each end and a metal ring at the top",
+   "files": [
+    "lift-rope.g.webp",
+    "lift-rope.s.webp"
+   ],
+   "glass": {
+    "job": "79254c51-1bec-451b-b13f-397cc3932faf",
+    "file": "hf_20261126_204207_79254c51-1bec-451b-b13f-397cc3932faf.png",
+    "round": "g1",
+    "prompt": "Subject: a triceps rope cable attachment: a short thick rope bent into an upside-down U, with a rubber ball stopper on each end and a metal ring at the top. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "e47c62b7-d984-4e69-8899-86e8026b947b",
+    "file": "hf_20261126_204531_e47c62b7-d984-4e69-8899-86e8026b947b.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A real black braided rope with black rubber ends and a bright steel ring. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "79254c51-1bec-451b-b13f-397cc3932faf"
+   }
+  },
+  "lift-kettlebell": {
+   "family": "lift",
+   "subject": "a kettlebell with a thick handle",
+   "files": [
+    "lift-kettlebell.g.webp",
+    "lift-kettlebell.s.webp"
+   ],
+   "glass": {
+    "job": "79b52f06-59c0-49a6-868f-ec3fc545fcac",
+    "file": "hf_20261126_204206_79b52f06-59c0-49a6-868f-ec3fc545fcac.png",
+    "round": "g1",
+    "prompt": "Subject: a kettlebell with a thick handle. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "4aee800a-7ce1-4e23-abab-abc180426425",
+    "file": "hf_20261126_204528_4aee800a-7ce1-4e23-abab-abc180426425.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A kettlebell of bright brushed steel (light silver, never dark) with a cyan enamel band. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "79b52f06-59c0-49a6-868f-ec3fc545fcac"
+   }
+  },
+  "lift-abwheel": {
+   "family": "lift",
+   "subject": "an ab roller wheel with a straight handle through its centre",
+   "files": [
+    "lift-abwheel.g.webp",
+    "lift-abwheel.s.webp"
+   ],
+   "glass": {
+    "job": "f13e9b6f-7716-4e96-9b6f-5d2d278af666",
+    "file": "hf_20261126_204213_f13e9b6f-7716-4e96-9b6f-5d2d278af666.png",
+    "round": "g1",
+    "prompt": "Subject: an ab roller wheel with a straight handle through its centre. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "fd427799-437d-4cd0-9533-8722c59669db",
+    "file": "hf_20261126_204528_fd427799-437d-4cd0-9533-8722c59669db.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A black rubber wheel with a bright orange hub and steel handles with black grips. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "f13e9b6f-7716-4e96-9b6f-5d2d278af666"
+   }
+  },
+  "lift-rings": {
+   "family": "lift",
+   "subject": "a pair of gymnastic rings hanging from two short straps",
+   "files": [
+    "lift-rings.g.webp",
+    "lift-rings.s.webp"
+   ],
+   "glass": {
+    "job": "e335e5d0-17e6-457b-a26c-700f920bfd46",
+    "file": "hf_20261126_204214_e335e5d0-17e6-457b-a26c-700f920bfd46.png",
+    "round": "g1",
+    "prompt": "Subject: a pair of gymnastic rings hanging from two short straps. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "28ce4b6f-51a2-4c42-8efc-423d3c1ca8e6",
+    "file": "hf_20261126_204530_28ce4b6f-51a2-4c42-8efc-423d3c1ca8e6.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Light birch-wood rings with black nylon straps and bright steel buckles. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "e335e5d0-17e6-457b-a26c-700f920bfd46"
+   }
+  },
+  "lift-row": {
+   "family": "lift",
+   "subject": "a close-grip V-shaped row handle for a cable machine: two parallel grips joined to a single eyelet",
+   "files": [
+    "lift-row.g.webp",
+    "lift-row.s.webp"
+   ],
+   "glass": {
+    "job": "95dea438-4c8d-40c9-8016-887e0cf57240",
+    "file": "hf_20261126_204216_95dea438-4c8d-40c9-8016-887e0cf57240.png",
+    "round": "g1",
+    "prompt": "Subject: a close-grip V-shaped row handle for a cable machine: two parallel grips joined to a single eyelet. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "d5c4ee15-abfd-4b59-881e-834f2bfb95a3",
+    "file": "hf_20261126_204528_d5c4ee15-abfd-4b59-881e-834f2bfb95a3.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A bright chromed steel V-handle with black rubber grips. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "95dea438-4c8d-40c9-8016-887e0cf57240"
+   }
+  },
+  "lift-plate": {
+   "family": "lift",
+   "subject": "a round weight plate with a centre hole and three grip cut-outs, in a three-quarter view",
+   "files": [
+    "lift-plate.g.webp",
+    "lift-plate.s.webp"
+   ],
+   "glass": {
+    "job": "8681396d-7039-4324-ac24-91398cb016f6",
+    "file": "hf_20261126_204214_8681396d-7039-4324-ac24-91398cb016f6.png",
+    "round": "g1",
+    "prompt": "Subject: a round weight plate with a centre hole and three grip cut-outs, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "010c6e62-67c1-4857-981a-656504905683",
+    "file": "hf_20261126_204529_010c6e62-67c1-4857-981a-656504905683.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A weight plate of bright brushed steel (light silver, never dark) with a cyan enamel ring. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "8681396d-7039-4324-ac24-91398cb016f6"
+   }
+  },
+  "lift-machine": {
+   "family": "lift",
+   "subject": "a compact gym weight stack: a column of flat rectangular plates between two guide rods, with a selector pin in one plate",
+   "files": [
+    "lift-machine.g.webp",
+    "lift-machine.s.webp"
+   ],
+   "glass": {
+    "job": "ed8b7d98-c023-4ec9-b018-ebe85aba6636",
+    "file": "hf_20261126_204214_ed8b7d98-c023-4ec9-b018-ebe85aba6636.png",
+    "round": "g1",
+    "prompt": "Subject: a compact gym weight stack: a column of flat rectangular plates between two guide rods, with a selector pin in one plate. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "dedd14ab-aa4a-4b9b-82c7-d95e38c52348",
+    "file": "hf_20261126_204536_dedd14ab-aa4a-4b9b-82c7-d95e38c52348.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. Plates and rods of bright brushed steel (light silver, never dark) with a bright red selector pin. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "ed8b7d98-c023-4ec9-b018-ebe85aba6636"
+   }
+  },
+  "lift-bench": {
+   "family": "lift",
+   "subject": "an adjustable gym bench set to an incline, in a three-quarter view",
+   "files": [
+    "lift-bench.g.webp",
+    "lift-bench.s.webp"
+   ],
+   "glass": {
+    "job": "15142e42-6d2e-455f-bdb4-4b9b26053eda",
+    "file": "hf_20261126_204215_15142e42-6d2e-455f-bdb4-4b9b26053eda.png",
+    "round": "g1",
+    "prompt": "Subject: an adjustable gym bench set to an incline, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "4e958353-69ca-4b9b-8520-eca90e284e75",
+    "file": "hf_20261126_204537_4e958353-69ca-4b9b-8520-eca90e284e75.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A bench with black padded upholstery and a frame of bright brushed steel (light silver, never dark). Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "15142e42-6d2e-455f-bdb4-4b9b26053eda"
+   }
+  },
+  "lift-cable": {
+   "family": "lift",
+   "subject": "a single D-shaped cable handle with a short strap and a snap hook",
+   "files": [
+    "lift-cable.g.webp",
+    "lift-cable.s.webp"
+   ],
+   "glass": {
+    "job": "45ea9181-f1be-4a31-9b6e-be5745a76723",
+    "file": "hf_20261126_204215_45ea9181-f1be-4a31-9b6e-be5745a76723.png",
+    "round": "g1",
+    "prompt": "Subject: a single D-shaped cable handle with a short strap and a snap hook. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "043a33b1-f6d8-4f94-91c1-1cb83adf7d18",
+    "file": "hf_20261126_204536_043a33b1-f6d8-4f94-91c1-1cb83adf7d18.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A bright chromed steel D-handle with a black rubber grip and a black strap. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "45ea9181-f1be-4a31-9b6e-be5745a76723"
+   }
+  },
+  "lift-curlbar": {
+   "family": "lift",
+   "subject": "an EZ curl bar with a zig-zag shaft and one small plate on each end",
+   "files": [
+    "lift-curlbar.g.webp",
+    "lift-curlbar.s.webp"
+   ],
+   "glass": {
+    "job": "7de14b52-972f-48c5-80d7-79e2a97f925b",
+    "file": "hf_20261126_204216_7de14b52-972f-48c5-80d7-79e2a97f925b.png",
+    "round": "g1",
+    "prompt": "Subject: an EZ curl bar with a zig-zag shaft and one small plate on each end. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "b3d1e32a-6f23-4408-89ba-10c74cee3594",
+    "file": "hf_20261126_204536_b3d1e32a-6f23-4408-89ba-10c74cee3594.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A bright chromed steel EZ bar with plates of bright brushed steel (light silver, never dark). Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "7de14b52-972f-48c5-80d7-79e2a97f925b"
+   }
+  },
+  "lift-barbell": {
+   "family": "lift",
+   "subject": "a straight barbell with two plates on each end, in a three-quarter view",
+   "files": [
+    "lift-barbell.g.webp",
+    "lift-barbell.s.webp"
+   ],
+   "glass": {
+    "job": "2ab4fd19-9462-48bd-b91d-e35539a97735",
+    "file": "hf_20261126_204215_2ab4fd19-9462-48bd-b91d-e35539a97735.png",
+    "round": "g1",
+    "prompt": "Subject: a straight barbell with two plates on each end, in a three-quarter view. Style: futuristic holographic game-UI emblem. The object is made of translucent tinted glass with thin glowing edge lines: electric cyan (#22E3FF) as the main light, magenta (#FF3DDC) as the accent, violet (#9D7BFF) inner glow. Sci-fi cockpit HUD aesthetic, subtle bloom, smooth 3D render. Single centered object occupying about 72% of the frame with clear empty margin on every side, nothing touching or cropped by the edges. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people, no hands, no faces, no animals. Simple chunky shapes with a few large details and no fine surface pattern, so it stays sharp as a tiny app icon."
+   },
+   "solid": {
+    "job": "f2ff5421-88c5-4558-b7a6-25ef03a9bc01",
+    "file": "hf_20261126_204537_f2ff5421-88c5-4558-b7a6-25ef03a9bc01.png",
+    "round": "s1",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. A bright chromed steel bar with plates of bright brushed steel (light silver, never dark) and cyan enamel rings. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "reference_job": "2ab4fd19-9462-48bd-b91d-e35539a97735"
+   }
+  }
+ },
+ "skies": {
+  "sky-dawn": {
+   "files": [
+    "dawn.webp"
+   ],
+   "job": "6d00447d-f79c-4ab0-a872-3bcf25a9c8c2",
+   "file": "hf_20261126_204228_6d00447d-f79c-4ab0-a872-3bcf25a9c8c2.png",
+   "round": "sky",
+   "prompt": "A wide calm sky just before sunrise. Deep indigo and navy above, a thin band of soft peach and rose light glowing along a flat horizon low in the frame, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no moon, no text, no letters, no numbers, no people, no animals, no buildings, no birds."
+  },
+  "sky-day": {
+   "files": [
+    "day.webp"
+   ],
+   "job": "a205e187-bb75-48f1-8352-d060f5f63a65",
+   "file": "hf_20261126_201935_a205e187-bb75-48f1-8352-d060f5f63a65.png",
+   "round": "samples",
+   "prompt": "A wide calm sky at midday, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. Bright clear electric blue at the top easing to pale cyan and white near a flat horizon low in the frame. One thin luminous cyan horizon line, a few long soft glassy white cloud bands, a faint perspective grid fading toward the horizon. Light, airy and minimal, with lots of empty sky in the upper two thirds. No sun disc, no text, no letters, no numbers, no people, no animals, no buildings, no birds."
+  },
+  "sky-sunset": {
+   "files": [
+    "sunset.webp"
+   ],
+   "job": "f8d463e9-108e-47ab-8389-2ebff7d27be5",
+   "file": "hf_20261126_201938_f8d463e9-108e-47ab-8389-2ebff7d27be5.png",
+   "round": "samples",
+   "prompt": "A wide calm sky at sunset, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. Warm amber and magenta glow along a flat horizon low in the frame, rising into deep violet and dark navy above. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no text, no letters, no numbers, no people, no animals, no buildings, no birds."
+  },
+  "sky-afternoon": {
+   "files": [
+    "afternoon.webp"
+   ],
+   "job": "8ff9df5e-03d6-4080-ae83-c10726af0b36",
+   "file": "hf_20261126_204227_8ff9df5e-03d6-4080-ae83-c10726af0b36.png",
+   "round": "sky",
+   "prompt": "A wide calm sky in the late afternoon. Soft azure above easing to pale warm gold near a flat horizon low in the frame, long gentle light, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no moon, no text, no letters, no numbers, no people, no animals, no buildings, no birds."
+  },
+  "sky-night": {
+   "files": [
+    "night.webp"
+   ],
+   "job": "84b59d26-3759-4185-8301-14d15933116e",
+   "file": "hf_20261126_204227_84b59d26-3759-4185-8301-14d15933116e.png",
+   "round": "sky",
+   "prompt": "A wide calm sky at night. Deep navy fading to near black at the top, a calm field of small crisp stars, a faint violet glow along a flat horizon low in the frame, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no moon, no text, no letters, no numbers, no people, no animals, no buildings, no birds."
+  }
+ }
+}

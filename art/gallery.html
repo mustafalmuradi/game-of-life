@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game of Life art gallery</title>
+<!-- Every emblem and sky the app ships, in every state and at the sizes the app uses. A review page, not part of
+     the published app. Serve the repo root and open /art/gallery.html:  python3 -m http.server 8000
+     Add ?theme=light or ?theme=dark to force a theme, ?motion=calm for calm mode. -->
+<base href="../src/">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/art.css">
+<style>
+  body{margin:0;padding:20px 16px 60px;background:var(--bg);color:var(--ink);font:14px/1.4 var(--font-body)}
+  h1{font:800 22px var(--font-display);text-transform:uppercase;letter-spacing:.02em;margin:0 0 4px}
+  h2{font:800 13px var(--font-body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:26px 0 8px}
+  p{margin:0 0 10px;color:var(--ink-2);max-width:70ch}
+  .row{display:flex;flex-wrap:wrap;gap:8px}
+  .cell{display:grid;grid-template-columns:repeat(3,auto);gap:6px 10px;align-items:center;justify-items:center;padding:10px 12px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+  .cell b{grid-column:1/-1;font:700 11px var(--font-mono);color:var(--ink-2)}
+  .cell small{font:600 9px var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .big .emb{--emb:96px} .mid .emb{--emb:44px} .sm .emb{--emb:30px;margin:0}
+  .skies{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+  .skies .salah-card{height:150px;border-radius:18px;padding:12px 14px;border:1px solid var(--line);font-weight:700}
+  .bar{display:flex;gap:8px;margin:10px 0 0}
+  .bar a{padding:6px 12px;border-radius:99px;border:1px solid var(--line);color:var(--accent-ink);text-decoration:none;font-weight:700;font-size:12px}
+</style>
+</head>
+<body>
+<h1>Art gallery</h1>
+<p>Each emblem is two pictures of one object: <b>glass</b> (not earned yet) and its <b>solid</b> twin (earned). The third column is the hero <b>loop</b>, which only the overall rank and the power form use in the app.</p>
+<div class="bar"><a href="art/gallery.html">Follow the device</a><a href="art/gallery.html?theme=light">Light</a><a href="art/gallery.html?theme=dark">Dark</a><a href="art/gallery.html?motion=calm">Calm mode</a></div>
+<div id="out"></div>
+<script type="module">
+import { emblem, SKIES } from './js/core/art.js';
+var q = new URLSearchParams(location.search);
+if(q.get('theme')) document.documentElement.setAttribute('data-theme', q.get('theme'));
+if(q.get('motion')) document.documentElement.setAttribute('data-motion', q.get('motion'));
+document.querySelectorAll('.bar a').forEach(function(a){ a.href = '../' + a.getAttribute('href'); }); // the links are relative to the repo root, not to <base>
+var GROUPS = [
+  ['Habits (Today, 34 px in the check circle)', 'mid', ['read','meditate','workout','money','sleep','nicotine','eat','sunnah','dhikr','ice'].map(function(k){ return 'habit-' + k; })],
+  ['Overall rank (the belt card on every screen, 70 px)', 'big', [0,1,2,3,4].map(function(b){ return 'belt-' + b; })],
+  ['Power forms (Lifts, 88 px; 32 px on the ladder)', 'big', [1,2,3,4,5,6,7].map(function(p){ return 'power-' + p; })],
+  ['Lift equipment (Lifts, 30 px beside each exercise; a dumbbell lift uses habit-workout)', 'sm', ['band','rope','kettlebell','abwheel','rings','row','plate','machine','bench','cable','curlbar','barbell'].map(function(k){ return 'lift-' + k; })],
+  ['Trophies: Pillars, Full House, Clean Streak, Sweep Count (tiers 1-5), habit streaks (30, 75, 250 days)', 'mid',
+    [['pillars',5],['house',5],['sweep',5],['sweeps',5],['streak',3]].reduce(function(a, f){ for(var t = 1; t <= f[1]; t++) a.push('trophy-' + f[0] + '-' + t); return a; }, [])],
+  ['Badges (Progress, 40 px)', 'mid', ['firstrep','cleansweep','doubleup','lightsout','deepreader','rainmaker','yearone'].map(function(k){ return 'badge-' + k; })]
+];
+var h = '';
+GROUPS.forEach(function(g){
+  h += '<h2>' + g[0] + '</h2><div class="row ' + g[1] + '">' + g[2].map(function(id){
+    var lg = g[1] === 'big';
+    return '<div class="cell' + (/^lift-/.test(id) ? ' sx-head' : '') + '"><b>' + id + '</b>' + emblem(id, 'glass', {lg:lg}) + emblem(id, 'solid', {lg:lg}) + emblem(id, 'loop', {lg:lg}) + '<small>glass</small><small>solid</small><small>loop</small></div>';
+  }).join('') + '</div>';
+});
+h += '<h2>Salah skies (the card backdrop follows the prayer window that is open)</h2><div class="skies">' + SKIES.map(function(s){
+  return '<div class="salah-card" data-sky="' + s + '">' + s + '</div>';
+}).join('') + '</div>';
+document.getElementById('out').innerHTML = h;
+</script>
+</body>
+</html>
