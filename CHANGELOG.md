@@ -11,6 +11,14 @@ sections of `README.md`.
   first card on the screen. Order now: week strip, day score, Salah, calendar, habits, wind-down, Tasks.
 - Only the card's place in `src/index.html` changed. When it shows, what it says and what its buttons do are the
   same.
+- The baseline was re-recorded: every step differs only by where the card is (lifting it out of the old and new
+  snapshots leaves all 105 identical).
+
+### Known
+
+- Published Nov 26 2026 (artifact version `1795734705-f94d`, one file: `index.html`, the complete document). The
+  live page was read back and has the new order. Looked at in a phone-sized test build at 9 PM; not looked at on
+  the live page with the card showing, and not on an iPhone.
 
 ## 2026-11-26 · Light/dark button in the header
 
