@@ -54,6 +54,7 @@ object (earned), and the page moves between the two. Guide: `docs/ASSETS.md`.
   line and no Salah sky. The next-trophy emblem made that line 5 px taller and the harness could not see it; it was
   found by measuring the page with and without the pictures and fixed the same day (commit 825c32e, whose message
   gives the wrong reason for the miss). Today's own Today screen still needs a screenshot in the harness.
-- The motion was checked in desktop Chrome (60 fps). It has not been checked on a phone yet.
+- The motion was checked in desktop Chrome (60 fps) and on Mustafa's iPhone (Nov 26 2026: smooth). Battery use was
+  not measured, and no Android phone has been tried.
 - The Lifts tab still uses Dragon Ball names for forms and tiers. The new art does not depend on them.
   See `docs/APP-RELEASE.md`.

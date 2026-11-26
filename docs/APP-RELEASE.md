@@ -20,7 +20,7 @@ Started Nov 26 2026.
 | Fonts | Orbitron, Space Grotesk and JetBrains Mono load from Google Fonts. They are open-licensed; a store app should bundle them instead of loading them from the network, and carry their licence files. | `src/index.html` |
 | Health wording | The app shows recovery zones, training advice, calorie and protein targets, a nicotine habit and "Medical Rest". Stores review health claims, and the Coach gives advice. It needs a clear "not medical advice" line and a look at each store's health rules. | Body, Lifts, Coach |
 | Old nickname in the code | Mustafa no longer goes by "Moose". It survives in identifiers (`MOOSE_RANKS`, `mooseRank`, `mooseStage`: 17 lines in `src/`). Nobody sees them, but they should go when the forms are renamed. | `src/js/core/strength.js`, `src/js/features/lifts.js` |
-| Motion on phones | The emblem loops were measured in desktop Chrome only. Check an iPhone and a mid-range Android for smoothness and battery. Calm mode is the off switch. | `src/css/art.css` |
+| Motion on other phones | The emblem loops are smooth on Mustafa's iPhone (Nov 26 2026) and held 60 fps in desktop Chrome. Still to check: a mid-range Android, and battery use over a full day. Calm mode is the off switch. | `src/css/art.css` |
 | This repo is public | Code, art and this list are visible to anyone. Account ids and links to the full-size art masters are kept out on purpose. Decide whether the repo stays public once the app is a product. | GitHub settings |
 
 ## Already in good shape for a release
