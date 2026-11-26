@@ -93,7 +93,9 @@
   function sample(input, opts) {
     opts = opts || {};
     var step = script.shift() || { text: 'ok' };
-    log.push({ op: 'sample', turns: Array.isArray(input) ? input.length : 1, tools: (opts.tools || []).map(function (t) { return t.name; }), hasSignal: !!opts.signal, images: (opts.images || []).length });
+    var entry = { op: 'sample', turns: Array.isArray(input) ? input.length : 1, tools: (opts.tools || []).map(function (t) { return t.name; }), hasSignal: !!opts.signal, images: (opts.images || []).length };
+    if (cfg.logInput) { var lastTurn = Array.isArray(input) ? input[input.length - 1].content : String(input); entry.tail = lastTurn.slice(lastTurn.lastIndexOf('</live_tracker_data>')); }
+    log.push(entry);
     return later(function () { return runStep(step, opts); });
   }
   function runStep(step, opts) {
@@ -112,7 +114,7 @@
       return { text: step.text, truncated: !!step.truncated };
     });
   }
-  sample.limits = function () { return later(function () { return { tools: { maxCount: 20 }, images: { maxCount: 4, maxInputBytes: 5000000, mediaTypes: ['image/jpeg', 'image/png'] } }; }); };
+  sample.limits = function () { return later(function () { return { tools: { maxCount: cfg.toolCap || 20 }, images: { maxCount: 4, maxInputBytes: 5000000, mediaTypes: ['image/jpeg', 'image/png'] } }; }); };
   sample.json = function (input, opts) { return sample(input, opts).then(function (r) { return JSON.parse(r.text); }); };
 
   // ---- fake mcp (connectors): only when the config carries events; a watch delivers them once, calls are logged ----

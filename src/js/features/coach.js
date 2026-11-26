@@ -446,8 +446,47 @@ var COACH_TOOLS = [
  }}
 ];
 
+/* ----- tool routing (Nov 25, 2026) -----
+   The runtime caps how many tools one call may offer (limits().tools.maxCount). With more tools than that, the old
+   plain slice dropped the last ones on every call (late_night, tasks, task_templates, salah), and the Coach told him
+   "I have no late-night planning tool". Now: every tool when they fit; otherwise the tools his new message cues first,
+   then the core, then what the last exchange cues, then the rest by daily use. The Coach is told what was left out. */
+var TOOL_PRIORITY = ['update_day', 'set_habit', 'tasks', 'late_night', 'log_lift', 'read_days', 'notes', 'manage_habit', 'build_log', 'review', 'lift_history', 'update_lift', 'remove_entry', 'salah', 'set_targets', 'task_templates', 'rewards', 'navigate', 'data_status', 'export_data'];
+var TOOL_CORE = ['update_day', 'set_habit', 'read_days'];
+var LIFT_CUE = /lift|bench|squat|dead ?lift|press|curl|\brows?\b|\breps?\b|\bsets?\b|\blbs?\b|\bbands?\b|ripright|pull.?ups?|chin.?ups?|\bdips?\b|dumbbell|barbell|machine|\bpr\b/i;
+var TOOL_CUES = {
+  late_night:/\blate\b|bed ?by|bedtime|stay(ing)? up|tonight|wind.?down/i,
+  tasks:/\btasks?\b|to.?dos?|agenda|errand|follow.?up|remind|\bplan|schedule|\bmove\b|\bcall|meeting/i,
+  task_templates:/recurring|template|repeat|every (day|weekday|week|morning|night|evening|mon|tue|wed|thu|fri|sat|sun)/i,
+  salah:/salah|salat|\bpray|fajr|dhuhr|zuhr|\basr\b|maghrib|isha|rawatib|witr|masjid|jumu/i,
+  log_lift:LIFT_CUE, update_lift:LIFT_CUE, lift_history:LIFT_CUE,
+  build_log:/\bship|\bbuilt\b|\bbuild|launch|deploy|connect|learn|skill|website|\bsite\b|\bapp\b|system map/i,
+  manage_habit:/habit|rest day|\bpass(es)?\b|life happens|medical|injur|\bsick\b|ladder|rename|\bpause|resume|exception/i,
+  rewards:/reward|treat|prize|\bclaim/i,
+  set_targets:/target|calorie|kcal|protein|goal weight/i,
+  notes:/\bnotes?\b|remember|journal|write (this|that|it) down/i,
+  export_data:/export|back ?up|download|\.zip|\bcsv\b/i,
+  data_status:/storage|quota|space left|how much data|records|database/i,
+  navigate:/\bopen\b|show me|go to|take me|\btabs?\b|\bpage\b|switch to/i,
+  review:/review|recap|summary|how am i|how did i|progress|streak|belt|\bxp\b|this week|last week|this month/i,
+  read_days:/yesterday|last night|\b(mon|tues|wednes|thurs|fri|satur|sun)day\b|history/i,
+  remove_entry:/delete|remove|undo|wrong|mistake|by accident/i
+};
+export function pickTools(cap, cur, recent){
+  if(COACH_TOOLS.length <= cap) return {tools:COACH_TOOLS.slice(), left:[]};
+  function cued(t, s){ var re = TOOL_CUES[t.name]; return !!(re && s && re.test(s)); }
+  function tier(t){ return cued(t, cur) ? 0 : TOOL_CORE.indexOf(t.name) >= 0 ? 1 : cued(t, recent) ? 2 : 3; }
+  function rank(t){ var i = TOOL_PRIORITY.indexOf(t.name); return i < 0 ? TOOL_PRIORITY.length : i; }
+  var ranked = COACH_TOOLS.slice().sort(function(x, y){ return (tier(x) - tier(y)) || (rank(x) - rank(y)); });
+  return {tools:ranked.slice(0, cap), left:ranked.slice(cap)};
+}
 function coachTools(){
-  return COACH_TOOLS.slice(0, coach.maxTools).map(function(t){
+  var done = coach.turns.filter(function(t){ return !t.pending; }), last = done[done.length - 1];
+  var cur = last && last.role === 'user' ? last.content || '' : '';
+  var recent = done.slice(-3, -1).map(function(t){ return t.content || ''; }).join('\n');
+  var pick = pickTools(coach.maxTools, cur, recent);
+  coach.toolsLeft = pick.left.map(function(t){ return t.busy || t.name; });
+  return pick.tools.map(function(t){
     return {name:t.name, description:t.description, inputSchema:t.schema, execute:function(inp, ctx){
       if(ctx && ctx.signal && ctx.signal.aborted) throw new Error('Stopped by Mustafa.');
       coach.status = t.busy; coachRender();
@@ -467,7 +506,8 @@ function coachInput(){
   while(hist.length && hist[0].role !== 'user') hist.shift();
   var last = hist[hist.length - 1];
   last.content += '\n\n<live_tracker_data>\n' + JSON.stringify(coachSnapshot()) + '\n</live_tracker_data>' +
-    (coach.canTools ? '' : '\n[This view can’t run tools. You can answer, but you can’t change any data. Say so if he asks you to log something.]');
+    (coach.canTools ? '' : '\n[This view can’t run tools. You can answer, but you can’t change any data. Say so if he asks you to log something.]') +
+    (coach.canTools && coach.toolsLeft && coach.toolsLeft.length ? '\n[This view allows ' + coach.maxTools + ' tools per message, so these are not loaded for this one: ' + coach.toolsLeft.join(', ') + '. If he needs one of them, say in one line that he should send it again naming it (for example “late night”, “task”, “salah”) and it will load. Never say the feature doesn’t exist.]' : '');
   return [{role:'user', content:COACH_RULES}].concat(hist);
 }
 var COACH_ERR = {
