@@ -1,5 +1,5 @@
 // Wind-down: from Isha (or an hour before the bed target, whichever comes first) until the night's bedtime is logged,
-// the top of Today counts down to bed, marks the screens-off checkpoint, shows the sleep he can still get before Fajr,
+// Today, right under the habits, counts down to bed, marks the screens-off checkpoint, shows the sleep he can still get before Fajr,
 // and logs "in bed" with one tap. The bedtime lands on the wake date (m.bed), where the check-in and Coach put it,
 // so Bed on time scores through the same code as always.
 import { $, addDays, clone, esc, mondayOf, pad, parseKey, todayKey } from '../core/utils.js';
