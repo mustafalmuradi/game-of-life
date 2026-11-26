@@ -1,5 +1,5 @@
 {
- "recorded": "2026-11-26T21:28:29.264Z",
+ "recorded": "2026-11-26T21:46:39.553Z",
  "frozenClock": "2026-10-07T15:30:00-04:00",
  "steps": {
   "10": {
@@ -532,12 +532,12 @@
  "shots": {
   "light-today": "c997ac24bded3b30018948fefdabf7a3b176de93051ed26e1fae17f40079bff8",
   "light-tasks": "209f1db5fa99d51b00dfda378e6aa27857eb83b9d1ba34ef0e4930aca910fc43",
-  "light-lifts": "fc1227fa455fbe470f4843186c8c81e9915abcab5f603d0d82f4705cb6f0db8c",
-  "light-body": "4b9005ceb1ccb3e5d1d58e0a5cf0ceaff2d382a2ec5c0e09e3deb6f29b5339a7",
-  "light-progress": "8955b353f385a51be316ddc7fe162da935a21589821117a7b8cf26a03eedad3c",
+  "light-lifts": "c72ff9ce5182443cbc72075714b164941d19c06abbdcceb0bcd3ccb7e4c97074",
+  "light-body": "ce2a769596041a315296351e6182a19ea1deb432c2a9e2e5352d743e6343bf46",
+  "light-progress": "f1bc7b94deb888d9d63ce5ef9d4e1452ee492be7b0a26a778133d5ab6abb0f7f",
   "light-build": "8b9ee09277e83932ef878629106cc17a86da0d6a15cced49f7e5bdfa1b1720e2",
   "dark-today": "48dc0cf36004301cc43345896866e85fd9b6f2b470ee6041861af028d6be606f",
-  "dark-tasks": "7568f7866e107f066255e5d084100db55b0f0dabefddbde0e61f23cced26be24",
+  "dark-tasks": "19ad075918a2e60dcb7bb0ab8727f55406720232fabc4f99cb2899836e37040a",
   "dark-lifts": "1de51a5bfe4a53d0dbbde3bbae7ab8ef24ad565d56cb44400be2316fda813339",
   "dark-body": "342f2df01f4156b2d0e4252782718fafda11a2257fd032d5472dbde1ee34b07b",
   "dark-progress": "2f9ada4f800979d83f76240704aa0bc021b7194c1cc0c7045548dc989db5b689",
