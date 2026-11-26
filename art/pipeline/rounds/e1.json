@@ -1,0 +1,158 @@
+{
+ "b0": [
+  {
+   "index": 0,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes pearl white (#F4F4F0), a milky white glass. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 1,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes royal purple (#6B3FB0). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 2,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes warm brown (#6E4526), an amber-brown glass. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 3,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes black (#141417), a smoked dark glass with bright edge lines, and make the rank bar red (#B3261E). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 4,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 5,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 6,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 7,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "bd9e03b8-87e9-4899-b466-13c5ff554384"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "keys": [
+  "belt-0:g",
+  "belt-2:g",
+  "belt-3:g",
+  "belt-4:g",
+  "trophy-pillars-1:g",
+  "trophy-pillars-2:g",
+  "trophy-pillars-4:g",
+  "trophy-pillars-5:g"
+ ]
+}

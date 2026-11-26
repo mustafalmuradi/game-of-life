@@ -1,0 +1,407 @@
+{
+ "b0": [
+  {
+   "index": 0,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "03e0da2b-293a-4ace-b8b6-f39a064c888a"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. An opaque chocolate-brown (#6E4526) woven cotton martial-arts belt tied in the same flat knot, with visible rows of stitching and a solid black rank bar in the same place. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 1,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "a4678813-719f-487e-97b2-e8c5824ff407"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 2,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "11b30317-e9c6-4c98-812e-ac69143b253e"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 3,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "af02fbae-0eda-450a-9af6-3e966dcdb6ec"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 4,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "8a46bc61-b832-4696-9586-acc9b5d21523"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 5,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "fccfadea-96fb-4832-881d-df69455df727"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 6,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "fedd4353-b907-4bb9-84ed-5e5ee41d5b20"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 7,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "37a1e3e4-8351-4fc6-8482-a656a43c32aa"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 8,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "2079607e-5e8c-4d64-a8ba-a5465f46ea2c"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 9,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "889dea36-2a60-42ff-8b7e-e2b46afb761f"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 10,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "a067e27c-071d-4411-805a-fc6f9043c72c"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 11,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "7d6ea5ef-c4d8-4d2b-a5c7-2d023ebe9f07"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem made of platinum: a bright white metal with a faint icy-cyan tint, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "b1": [
+  {
+   "index": 12,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "c9260009-6b85-4162-82c9-0e97a84c9d15"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cut from diamond: clear faceted crystal with blue-violet refraction and platinum trim, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 13,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "9f5cb8d7-3166-4cf9-bdc6-4c8bae9fb8df"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished bronze, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 14,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "95d4f162-7a0a-4376-808b-5444fbc67a13"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The same emblem cast in polished silver, with crisp beveled edges. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 15,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "7f1f5ca3-7b90-493b-91e4-6cf2447cf20a"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut magenta gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 16,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "3325d2de-96bb-4c3f-a2b0-f7f61e741284"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut violet gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 17,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "0ea8d96a-d3d3-4e46-9beb-7ba456fcb3af"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut cyan gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 18,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "13e5dab1-a80b-4048-ae77-79294ca93ed2"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut lime-green gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 19,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "c4f67e59-c48c-41d7-b71a-1a4302be0448"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut gold gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 20,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "daa335fb-d2a3-41c7-8dd9-3c7d1d6cf5ae"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline. Change only the material: the hologram has become a real, solid object. The crystal and every shard are now solid cut white diamond gemstones with polished facets, and every ring and the base are bright brushed steel (light silver, never dark) with gold trim. Soft studio lighting with a thin cyan (#22E3FF) rim light. No translucency, no see-through areas, no outer glow. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "keys": [
+  "belt-3:s",
+  "trophy-house-1:s",
+  "trophy-house-2:s",
+  "trophy-house-4:s",
+  "trophy-house-5:s",
+  "trophy-sweep-1:s",
+  "trophy-sweep-2:s",
+  "trophy-sweep-4:s",
+  "trophy-sweep-5:s",
+  "trophy-sweeps-1:s",
+  "trophy-sweeps-2:s",
+  "trophy-sweeps-4:s",
+  "trophy-sweeps-5:s",
+  "trophy-streak-1:s",
+  "trophy-streak-2:s",
+  "power-2:s",
+  "power-3:s",
+  "power-4:s",
+  "power-5:s",
+  "power-6:s",
+  "power-7:s"
+ ]
+}

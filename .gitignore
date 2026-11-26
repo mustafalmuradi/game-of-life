@@ -4,3 +4,9 @@ test/baseline/full/
 test/baseline/shots/
 .DS_Store
 dist/
+# art pipeline working files (masters are archived outside the repo: see docs/ASSETS.md)
+art/pipeline/masters/
+art/pipeline/out/
+art/pipeline/qa/
+art/pipeline/*.zip
+__pycache__/

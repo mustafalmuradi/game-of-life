@@ -1,0 +1,42 @@
+{
+ "b0": [
+  {
+   "index": 0,
+   "params": {
+    "aspect_ratio": "3:2",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "A wide calm sky just before sunrise. Deep indigo and navy above, a thin band of soft peach and rose light glowing along a flat horizon low in the frame, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no moon, no text, no letters, no numbers, no people, no animals, no buildings, no birds.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 1,
+   "params": {
+    "aspect_ratio": "3:2",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "A wide calm sky in the late afternoon. Soft azure above easing to pale warm gold near a flat horizon low in the frame, long gentle light, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no moon, no text, no letters, no numbers, no people, no animals, no buildings, no birds.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 2,
+   "params": {
+    "aspect_ratio": "3:2",
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "A wide calm sky at night. Deep navy fading to near black at the top, a calm field of small crisp stars, a faint violet glow along a flat horizon low in the frame, used as the backdrop of a prayer-times card in a sci-fi HUD app. Stylized, not photographic: the sky is built from smooth layered translucent gradients like tinted holographic glass. One thin luminous cyan horizon line, a few long soft glassy cloud bands, a faint perspective grid fading toward the horizon. Minimal and quiet, with lots of empty sky in the upper two thirds. No sun disc, no moon, no text, no letters, no numbers, no people, no animals, no buildings, no birds.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "keys": [
+  "sky-dawn",
+  "sky-afternoon",
+  "sky-night"
+ ]
+}

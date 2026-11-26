@@ -9,7 +9,9 @@ and write the tracker through tools.
 | Path | What it is |
 | --- | --- |
 | `legacy/index.html` | The single-file v2 app, frozen at the module split (Oct 2026). It is an archive now: features land in `src/` only. `npm run test:legacy` still runs the two side by side for the features both have. |
-| `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root. |
+| `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root, `img/` the art. |
+| `art/` | How the art was made: the manifest of every picture (prompt, Higgsfield job, settings), the generation and build scripts, and `gallery.html`, a page showing every emblem in every state. Not published with the app. |
+| `docs/` | `ASSETS.md` (the art: what ships, how the page uses it, how to add more) and `APP-RELEASE.md` (what has to change before this ships as an app). `CHANGELOG.md` sits at the root. |
 | `test/` | The golden-master regression harness (see below), plus `salah.mjs` (prayer-time engine against reference values) and `stale-cache.mjs`. |
 | `tools/` | `publish-prep.py` builds `dist/` for the artifact (`npm run dist`). The split scripts (`split-*.py`, `check-cascade.py`, `reassemble-js.py`) are the one-off migration from `legacy/` and are kept for the record. |
 
@@ -21,7 +23,7 @@ The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
 | --- | --- | --- |
 | `app.js` | events + boot | The composition root. The only file that imports everything. |
 | `features/` | `today`, `salah`, `winddown`, `calendar`, `tasks`, `progress`, `lifts`, `gym`, `body`, `build`, `coach` | One file per tab or card. Each tab calls `registerTab()` when it loads and keeps its own UI flags behind small exported actions. |
-| `core/` | `config`, `utils`, `state`, `xp`, `strength`, `salah`, `stats`, `store`, `effects`, `svg`, `render`, `sheets` | Shared by every tab, imports nothing above it. `store.js` is the only file that talks to the database. |
+| `core/` | `config`, `utils`, `state`, `xp`, `strength`, `salah`, `stats`, `store`, `effects`, `svg`, `art`, `render`, `sheets` | Shared by every tab, imports nothing above it. `store.js` is the only file that talks to the database. |
 
 `npm run check` prints the cascade proof and the line-by-line difference between
 the modules and the original script (98.7% of lines moved verbatim; the rest is
@@ -39,7 +41,7 @@ npm run test:legacy   # legacy vs src side by side, for the features both have
 node test/salah.mjs   # the prayer-time engine against reference values
 ```
 
-The app is served locally and driven through an 89-step scenario with a seeded
+The app is served locally and driven through a 105-step scenario with a seeded
 fixture, a frozen clock (2026-10-07 15:30 ET), seeded `Math.random` and a fake
 `window.claude` (database, user, coach). After every step the DOM, localStorage
 and the cloud-write log are snapshotted. The golden master is
@@ -76,14 +78,18 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
 3. State that more than one file changes lives in `core/state.js`.
 4. Run the harness before publishing. `npm run dist` builds `dist/`; publish by
    republishing the artifact with `dist/index.html` as the page and `dist/css`,
-   `dist/js`, `dist/tools` as its files. The artifact declares these runtime
+   `dist/js`, `dist/tools`, `dist/img` as its files. The artifact declares these runtime
    capabilities (restate all of them whenever `capabilities` is passed):
    `assets`, `db`, `downloads`, `sample` (`images: true`), `user`, and `mcp` with
    `servers: [{server: "Google Calendar", tools: ["list_events", "create_event"]}]`.
 
+## Art: holo emblems and the Salah sky (Nov 26 2026)
+
+Habits, the overall rank, trophies, badges, power forms and lift equipment each have an emblem, and the Salah card has a sky for each prayer window. Every emblem is two registered pictures: **glass** (not earned yet) and **solid** (earned). A habit turns solid when it is done; the overall rank on the belt card and the power form on Lifts loop glass → solid → glass every 6 seconds. `core/art.js` holds the registry, the id mapping (`habitArt`, `trophyArt`, `liftArt`, `beltArt`, `powerArt`, `skyFor`) and `emblem()`, which returns the two-layer markup or `''`; every caller keeps its old markup next to it and adds `has-art`, so a picture that is missing or fails to load leaves the page as it was. `css/art.css` holds the wave (a radial mask on two registered custom properties), where each emblem sits, and the sky. The page rebuilds its cards on every tap, so `emblem()` starts each animation where its clock already stands (`--emb-at`); that is what keeps the loop unbroken. Reduced motion stops everything; Calm mode stops the loops and keeps the one wave on a tap. Files are `src/img/art/<id>.g|s[.lg].webp` and `src/img/sky/<name>.webp`. The full guide, including how to generate and add an emblem, is `docs/ASSETS.md`; `art/gallery.html` shows them all.
+
 ## Power levels (Lifts tab)
 
-The strength rank is themed on Dragon Ball Z: `MOOSE_RANKS` in `core/strength.js` maps strength level to a form, paced for about a year at ~1,400 XP/week (1 Saiyan Warrior, 4 Kaioken, 9 Super Saiyan, 15 Super Saiyan 2, 22 Super Saiyan 3, 30 Super Saiyan Blue, 40 Ultra Instinct). Each entry's third element lists the levels where its 3 stages start; `mooseStage(L)` returns `{form, stage, next}` for the stage row under the title, the ladder and the level-up toast. Per-lift tiers (`TIERS`, est. 1RM gain): Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai's Planet +20%, Over 9,000 +35%. Only labels changed; tier keys (`bronze`…`diamond`) and their colors are unchanged.
+The strength rank is themed on Dragon Ball Z (names that have to change before a public release: `docs/APP-RELEASE.md`): `MOOSE_RANKS` in `core/strength.js` maps strength level to a form, paced for about a year at ~1,400 XP/week (1 Saiyan Warrior, 4 Kaioken, 9 Super Saiyan, 15 Super Saiyan 2, 22 Super Saiyan 3, 30 Super Saiyan Blue, 40 Ultra Instinct). Each entry's third element lists the levels where its 3 stages start; `mooseStage(L)` returns `{form, stage, next}` for the stage row under the title, the ladder and the level-up toast. Per-lift tiers (`TIERS`, est. 1RM gain): Weighted Gi, Gravity Room +5%, Time Chamber +10%, King Kai's Planet +20%, Over 9,000 +35%. Only labels changed; tier keys (`bronze`…`diamond`) and their colors are unchanged.
 
 ## Layout: three sections, two views each (Oct 2026)
 

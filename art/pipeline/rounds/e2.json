@@ -1,0 +1,407 @@
+{
+ "b0": [
+  {
+   "index": 0,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "3e65e380-89cf-47e8-98d8-e45a18e442d4"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the belt colour becomes deep chocolate brown (#6E4526): a dark smoked brown glass with warm amber edge highlights, clearly brown and not orange. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 1,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 2,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 3,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 4,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "fc3bbc26-9fd5-4c76-9449-009494d5c049"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 5,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d20c6814-b900-4057-bf22-c757b58cbd00"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 6,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d20c6814-b900-4057-bf22-c757b58cbd00"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 7,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d20c6814-b900-4057-bf22-c757b58cbd00"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 8,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d20c6814-b900-4057-bf22-c757b58cbd00"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 9,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 10,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 11,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to icy cyan-white (#4FE0F2), so it reads as the platinum tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "b1": [
+  {
+   "index": 12,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "555c6353-e44d-45a2-a8a2-aa7d0e32dbe6"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to brilliant blue-violet (#8AA8FF) with prismatic sparkle, so it reads as the diamond tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 13,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "9570597d-9a28-41b2-9508-34e659ed4a7d"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to warm bronze-orange (#E8955A), so it reads as the bronze tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 14,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "9570597d-9a28-41b2-9508-34e659ed4a7d"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the light of the glass changes from gold to cool silver-white (#B9C4D6), so it reads as the silver tier. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 15,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but two small crystal shards now orbit it, one on each side, all kept inside the frame with a clear margin, and the glass colour becomes hot magenta (#FF3DDC). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 16,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but four small crystal shards now float around it and one thin ring orbits it at a tilt, all kept inside the frame with a clear margin, and the glass colour becomes violet (#9D7BFF). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 17,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but six crystal shards now float around it and two thin rings cross around it, all kept inside the frame with a clear margin, and the glass colour becomes electric cyan (#22E3FF). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 18,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but eight crystal shards now form a crown around it, two thin rings cross around it and small arcs of energy jump between the shards, all kept inside the frame with a clear margin, and the glass colour becomes lime green (#B4FF5C). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 19,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but it has grown two layered wings of long crystal shards, three thin rings orbit it and arcs of energy jump between the shards, all kept inside the frame with a clear margin, and the glass colour becomes warm gold (#FFC53D). Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  },
+  {
+   "index": 20,
+   "params": {
+    "aspect_ratio": "1:1",
+    "background": "transparent",
+    "medias": [
+     {
+      "role": "image_references",
+      "value": "d5d33b6f-c918-49b9-9174-8e5a58ca50c8"
+     }
+    ],
+    "model": "gpt_image_2_6",
+    "output_format": "png",
+    "prompt": "Use the reference image. Keep the exact same object, shape, proportions, camera angle, size and position in the frame, with the same outline and the same holographic glass style. Change only this: the crystal stays the same size in the same place, but it has become a radiant many-pointed star crystal with long shard wings, three thin rings and a bright halo of light behind it, all kept inside the frame with a clear margin, and the glass colour becomes white with a full-spectrum prismatic sheen. Isolated on a fully transparent background, no ground plane, no floor shadow, no text, no letters, no numbers, no symbols, no logos, no people.",
+    "quality": "high",
+    "resolution": "1k"
+   }
+  }
+ ],
+ "keys": [
+  "belt-3:g",
+  "trophy-house-1:g",
+  "trophy-house-2:g",
+  "trophy-house-4:g",
+  "trophy-house-5:g",
+  "trophy-sweep-1:g",
+  "trophy-sweep-2:g",
+  "trophy-sweep-4:g",
+  "trophy-sweep-5:g",
+  "trophy-sweeps-1:g",
+  "trophy-sweeps-2:g",
+  "trophy-sweeps-4:g",
+  "trophy-sweeps-5:g",
+  "trophy-streak-1:g",
+  "trophy-streak-2:g",
+  "power-2:g",
+  "power-3:g",
+  "power-4:g",
+  "power-5:g",
+  "power-6:g",
+  "power-7:g"
+ ]
+}
