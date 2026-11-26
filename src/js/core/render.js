@@ -4,6 +4,7 @@ import { isActive, state, ui } from './state.js';
 import { beltOf, habitCurve, nextLabel, rankInfo, rankSub, rankTitle, testState } from './xp.js';
 import { habit30 } from './stats.js';
 import { beltSVG, miniBelt, rankProgressHTML } from './svg.js';
+import { beltArt, emblem } from './art.js';
 
 /* ---------- render ---------- */
 var tabs = {};
@@ -47,7 +48,7 @@ function renderBelt(){
   var st = state.stats, rk = st.rank;
   $('#belt').innerHTML =
     '<div class="belt-row"><div><p class="eyebrow">Overall rank · Level ' + (rk.level+1) + '</p><h1 class="rank">' + esc(rankTitle(rk.level)) + '</h1><p class="rank-sub">' + esc(rankSub(rk.level)) + '</p></div>' +
-    '<div class="total"><span class="n">' + fmt(lastTotal === null ? st.total : lastTotal) + '</span><span class="l">Total XP</span></div></div>' +
+    '<div class="belt-side">' + emblem(beltArt(beltOf(rk.level).b), 'loop', {lg:true}) + '<div class="total"><span class="n">' + fmt(lastTotal === null ? st.total : lastTotal) + '</span><span class="l">Total XP</span></div></div></div>' +
     beltSVG(rk.level) + rankProgressHTML(rk) +
     '<button class="link-btn" type="button" data-act="open-rank" data-h="overall">Belt tests and habit ranks</button><span class="scan-beam" aria-hidden="true"></span>';
   $('#belt').classList.add('scan');

@@ -6,6 +6,7 @@ import { CURVES, HABIT_MS, habitCurve, MILESTONES, unpaidPasses, rewardSlots, re
 import { saveSettings } from '../core/store.js';
 import { burst, toast } from '../core/effects.js';
 import { ICON } from '../core/svg.js';
+import { emblem, trophyArt } from '../core/art.js';
 import { habitRankRow, registerTab, render } from '../core/render.js';
 
 /* ---------- progress ---------- */
@@ -83,7 +84,8 @@ function trophyRoomHTML(){
     var cur = st.msNow[f.id] || 0, next = null;
     var cups = f.tiers.map(function(t, i){
       var k = f.id + '-' + (i+1), e = st.earned[k]; tot++; if(e) n++; else if(!next) next = {t:t, i:i};
-      return '<span class="cup' + (e ? ' on' : '') + (t.reward ? ' gift' : '') + '" style="--tc:' + tierColor(i) + '" title="' + esc(f.name + ' ' + ROMAN[i] + ': ' + f.desc(t.v) + ' · +' + t.xp + ' XP' + (e ? ' · earned ' + fmtShort(e.d) : '')) + '">' + trophySVG(i, !!e) + '<small>' + ROMAN[i] + '</small></span>';
+      var art = emblem(trophyArt(k), e ? 'solid' : 'glass');
+      return '<span class="cup' + (e ? ' on' : '') + (t.reward ? ' gift' : '') + (art ? ' has-art' : '') + '" style="--tc:' + tierColor(i) + '" title="' + esc(f.name + ' ' + ROMAN[i] + ': ' + f.desc(t.v) + ' · +' + t.xp + ' XP' + (e ? ' · earned ' + fmtShort(e.d) : '')) + '">' + art + trophySVG(i, !!e) + '<small>' + ROMAN[i] + '</small></span>';
     }).join('');
     var pct = next ? Math.min(100, cur/next.t.v*100) : 100;
     return '<div class="tro"><div class="tro-head"><b>' + esc(f.name) + '</b>' + (next ? '<em>+' + next.t.xp + ' XP</em>' : '<em>Complete</em>') + '</div>' +
@@ -94,7 +96,8 @@ function trophyRoomHTML(){
   var hab = activeHabits(todayKey()).map(function(h){
     var held = st.habits[h.id] ? st.habits[h.id].held : 0;
     var cups = HABIT_MS.map(function(t, i){ var k = 'h:' + h.id + '-' + (i+1), e = st.earned[k]; tot++; if(e) n++;
-      return '<span class="cup' + (e ? ' on' : '') + '" style="--tc:' + tierColor(i) + '" title="' + esc(h.name + ' ' + ROMAN[i] + ': ' + t.v + ' days in a row · +' + t.xp + ' XP') + '">' + trophySVG(i, !!e) + '<small>' + t.v + '</small></span>'; }).join('');
+      var art = emblem(trophyArt(k), e ? 'solid' : 'glass');
+      return '<span class="cup' + (e ? ' on' : '') + (art ? ' has-art' : '') + '" style="--tc:' + tierColor(i) + '" title="' + esc(h.name + ' ' + ROMAN[i] + ': ' + t.v + ' days in a row · +' + t.xp + ' XP') + '">' + art + trophySVG(i, !!e) + '<small>' + t.v + '</small></span>'; }).join('');
     return '<div class="tro-hab"><span class="hn"><i style="background:var(--h-' + h.color + ')"></i><span>' + esc(h.name) + '</span><em>' + held + 'd</em></span><span class="tro-cups">' + cups + '</span></div>';
   }).join('');
   return '<section class="card panel"><div class="panel-head"><h3>Trophy Room</h3><span class="muted" style="font-size:12px">' + n + ' of ' + tot + ' · +' + fmt(st.msTotal) + ' XP</span></div>' + fam +
@@ -157,19 +160,19 @@ function renderProgress(){
   var hsx = st.habits;
   function hv(id, k){ return (hsx[id] && hsx[id][k]) || 0; }
   var badges = [
-    {n:'First Rep', d:'Complete any habit', goal:1, v:st.baseChecks, c:'var(--accent)', g:ICON.check},
-    {n:'Clean Sweep', d:'Every habit in one day', goal:1, v:st.sweepDays, c:'var(--gold)', g:'<circle cx="12" cy="12" r="6"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/>'},
-    {n:'Double Up', d:'Extras in 3 habits in one day', goal:3, v:st.maxExtraHabits, c:'var(--gold)', g:'<path d="M6 13l6-5 6 5M6 18l6-5 6 5"/>'},
-    {n:'Lights Out', d:'14 nights on time in a row', goal:14, v:hv('sleep','best'), c:'var(--h-sleep)', g:'<path d="M15 5.5a6.5 6.5 0 1 0 3.5 11 5.2 5.2 0 0 1-3.5-11z"/>'},
-    {n:'Deep Reader', d:'30 reading days', goal:30, v:hv('read','days'), c:'var(--h-read)', g:'<path d="M4 6.5c3-1 5.5-.5 8 1.5v11c-2.5-2-5-2.5-8-1.5zM20 6.5c-3-1-5.5-.5-8 1.5v11c2.5-2 5-2.5 8-1.5z"/>'},
-    {n:'Rainmaker', d:'25 extra money blocks', goal:25, v:hv('money','extras'), c:'var(--h-money)', g:'<path d="M12 19V6M7.5 10.5L12 6l4.5 4.5M6 20h12"/>'},
-    {n:'Year One', d:'365 days in the game', goal:365, v:st.age || 0, c:'var(--accent)', g:'<rect x="5" y="6" width="14" height="13" rx="2"/><path d="M5 10.5h14M9 4v4M15 4v4"/>'}
+    {n:'First Rep', a:'firstrep', d:'Complete any habit', goal:1, v:st.baseChecks, c:'var(--accent)', g:ICON.check},
+    {n:'Clean Sweep', a:'cleansweep', d:'Every habit in one day', goal:1, v:st.sweepDays, c:'var(--gold)', g:'<circle cx="12" cy="12" r="6"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/>'},
+    {n:'Double Up', a:'doubleup', d:'Extras in 3 habits in one day', goal:3, v:st.maxExtraHabits, c:'var(--gold)', g:'<path d="M6 13l6-5 6 5M6 18l6-5 6 5"/>'},
+    {n:'Lights Out', a:'lightsout', d:'14 nights on time in a row', goal:14, v:hv('sleep','best'), c:'var(--h-sleep)', g:'<path d="M15 5.5a6.5 6.5 0 1 0 3.5 11 5.2 5.2 0 0 1-3.5-11z"/>'},
+    {n:'Deep Reader', a:'deepreader', d:'30 reading days', goal:30, v:hv('read','days'), c:'var(--h-read)', g:'<path d="M4 6.5c3-1 5.5-.5 8 1.5v11c-2.5-2-5-2.5-8-1.5zM20 6.5c-3-1-5.5-.5-8 1.5v11c2.5-2 5-2.5 8-1.5z"/>'},
+    {n:'Rainmaker', a:'rainmaker', d:'25 extra money blocks', goal:25, v:hv('money','extras'), c:'var(--h-money)', g:'<path d="M12 19V6M7.5 10.5L12 6l4.5 4.5M6 20h12"/>'},
+    {n:'Year One', a:'yearone', d:'365 days in the game', goal:365, v:st.age || 0, c:'var(--accent)', g:'<rect x="5" y="6" width="14" height="13" rx="2"/><path d="M5 10.5h14M9 4v4M15 4v4"/>'}
   ];
   var earnedN = badges.filter(function(b){ return b.v >= b.goal; }).length;
   h += '<section class="card panel"><div class="panel-head"><h3>Badges</h3><span class="muted" style="font-size:12px">' + earnedN + ' of ' + badges.length + ' earned</span></div><div class="badges">';
   badges.forEach(function(b){
-    var e = b.v >= b.goal;
-    h += '<div class="badge' + (e ? ' earned' : '') + '">' + badgeSVG(e, b.c, b.g) + '<div><p class="bt">' + esc(b.n) + '</p><p class="bd">' + esc(b.d) + '</p><p class="bp">' + (e ? 'Earned' : Math.min(b.v, b.goal) + ' / ' + b.goal) + '</p></div></div>';
+    var e = b.v >= b.goal, bart = emblem('badge-' + b.a, e ? 'solid' : 'glass');
+    h += '<div class="badge' + (e ? ' earned' : '') + (bart ? ' has-art' : '') + '">' + bart + badgeSVG(e, b.c, b.g) + '<div><p class="bt">' + esc(b.n) + '</p><p class="bd">' + esc(b.d) + '</p><p class="bp">' + (e ? 'Earned' : Math.min(b.v, b.goal) + ' / ' + b.goal) + '</p></div></div>';
   });
   h += '</div></section>';
 

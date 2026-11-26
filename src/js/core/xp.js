@@ -122,10 +122,10 @@ export function nextTrophy(){
   var st = state.stats, best = null;
   function consider(c){ if(c.cur >= c.v) return; var fr = c.cur/c.v; if(!best || fr > best.fr) best = Object.assign({fr:fr}, c); }
   MILESTONES.forEach(function(f){
-    for(var i=0;i<f.tiers.length;i++){ var k = f.id + '-' + (i+1); if(st.earned[k]) continue; consider({name:f.name + ' ' + ROMAN[i], v:f.tiers[i].v, cur:st.msNow[f.id] || 0, unit:f.unit, xp:f.tiers[i].xp, i:i}); break; }
+    for(var i=0;i<f.tiers.length;i++){ var k = f.id + '-' + (i+1); if(st.earned[k]) continue; consider({k:k, name:f.name + ' ' + ROMAN[i], v:f.tiers[i].v, cur:st.msNow[f.id] || 0, unit:f.unit, xp:f.tiers[i].xp, i:i}); break; }
   });
   activeHabits(todayKey()).forEach(function(h){
-    for(var i=0;i<HABIT_MS.length;i++){ var k = 'h:' + h.id + '-' + (i+1); if(st.earned[k]) continue; consider({name:h.name + ' ' + ROMAN[i], v:HABIT_MS[i].v, cur:st.habits[h.id].held, unit:'days', xp:HABIT_MS[i].xp, i:i}); break; }
+    for(var i=0;i<HABIT_MS.length;i++){ var k = 'h:' + h.id + '-' + (i+1); if(st.earned[k]) continue; consider({k:k, name:h.name + ' ' + ROMAN[i], v:HABIT_MS[i].v, cur:st.habits[h.id].held, unit:'days', xp:HABIT_MS[i].xp, i:i}); break; }
   });
   return best;
 }

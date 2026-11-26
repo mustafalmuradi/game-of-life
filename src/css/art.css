@@ -1,0 +1,149 @@
+/* Art: the two-layer emblems (glass + solid) and the Salah sky. Glass = not earned yet, solid = earned.
+   Hero emblems (.is-loop) run a wave out from the centre: glass to solid, hold, a second wave back to glass.
+   Markup comes from core/art.js; where each emblem sits is at the bottom of this file. See docs/ASSETS.md. */
+
+/* the wave's radius, registered so it can be animated (unregistered, it would jump instead of sweep) */
+@property --emb-r  { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --emb-r2 { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+.emb{position:relative;display:grid;place-items:center;width:var(--emb,40px);height:var(--emb,40px);flex:none;line-height:0}
+.emb img{grid-area:1/1;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none}
+.emb .emb-s{opacity:0}
+.emb-glow{position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--neon) 36%,transparent),transparent 66%);opacity:0;pointer-events:none}
+.emb-ring{position:absolute;inset:4%;border-radius:50%;border:1.5px solid var(--neon);box-shadow:0 0 10px color-mix(in srgb,var(--neon) 70%,transparent);opacity:0;transform:scale(.1);pointer-events:none}
+.emb.emb-fail{display:none}
+
+/* resting states */
+.emb.is-solid .emb-s{opacity:1}
+.emb.is-solid .emb-g{opacity:0}
+
+/* hero loop: 6 s. 0-10% glass, 10-40% the wave turns it solid, 40-60% solid, 60-90% a second wave turns it back.
+   --emb-at (set by art.js) is where the shared 6 s clock stands, so a re-rendered card carries on mid-loop. */
+.emb.is-loop .emb-s{opacity:1;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent calc(var(--emb-r2,0%) - 16%),#000 var(--emb-r2,0%),#000 calc(var(--emb-r,0%) - 16%),transparent var(--emb-r,0%));
+          mask-image:radial-gradient(circle at 50% 50%,transparent calc(var(--emb-r2,0%) - 16%),#000 var(--emb-r2,0%),#000 calc(var(--emb-r,0%) - 16%),transparent var(--emb-r,0%));
+  animation:embWave 6s linear var(--emb-at,0s) infinite}
+.emb.is-loop .emb-g{
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 calc(var(--emb-r2,0%) - 16%),transparent var(--emb-r2,0%),transparent calc(var(--emb-r,0%) - 16%),#000 var(--emb-r,0%));
+          mask-image:radial-gradient(circle at 50% 50%,#000 calc(var(--emb-r2,0%) - 16%),transparent var(--emb-r2,0%),transparent calc(var(--emb-r,0%) - 16%),#000 var(--emb-r,0%));
+  animation:embWave 6s linear var(--emb-at,0s) infinite}
+.emb.is-loop .emb-ring{animation:embRing 6s linear var(--emb-at,0s) infinite}
+@keyframes embWave{
+  0%,10%{--emb-r:0%;--emb-r2:0%;animation-timing-function:cubic-bezier(.45,0,.2,1)}
+  40%,60%{--emb-r:132%;--emb-r2:0%;animation-timing-function:cubic-bezier(.45,0,.2,1)}
+  90%,100%{--emb-r:132%;--emb-r2:132%}
+}
+@keyframes embRing{
+  0%,10%{opacity:0;transform:scale(.1);animation-timing-function:cubic-bezier(.45,0,.2,1)}
+  16%{opacity:.8}
+  36%,40%{opacity:0;transform:scale(1.18)}
+  60%{opacity:0;transform:scale(.1);animation-timing-function:cubic-bezier(.45,0,.2,1)}
+  66%{opacity:.8}
+  86%,100%{opacity:0;transform:scale(1.18)}
+}
+
+/* just earned (.emb-pop): the wave plays once and leaves it solid. If the card is rebuilt while it plays,
+   art.js hands the new copy the time already gone (--emb-at), so the wave carries on instead of starting over. */
+.emb.is-solid.emb-pop .emb-s{
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 calc(var(--emb-r,132%) - 16%),transparent var(--emb-r,132%));
+          mask-image:radial-gradient(circle at 50% 50%,#000 calc(var(--emb-r,132%) - 16%),transparent var(--emb-r,132%));
+  animation:embIn .95s cubic-bezier(.3,.6,.2,1) var(--emb-at,0s) both}
+.emb.is-solid.emb-pop .emb-g{opacity:1;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent calc(var(--emb-r,132%) - 16%),#000 var(--emb-r,132%));
+          mask-image:radial-gradient(circle at 50% 50%,transparent calc(var(--emb-r,132%) - 16%),#000 var(--emb-r,132%));
+  animation:embIn .95s cubic-bezier(.3,.6,.2,1) var(--emb-at,0s) both}
+.emb.is-solid.emb-pop .emb-ring{animation:embRingOnce .95s cubic-bezier(.3,.6,.2,1) var(--emb-at,0s) both}
+@keyframes embIn{from{--emb-r:0%}to{--emb-r:132%}}
+@keyframes embRingOnce{0%{opacity:0;transform:scale(.1)}18%{opacity:.9}100%{opacity:0;transform:scale(1.3)}}
+@keyframes embBadge{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes embBreathe{0%,100%{opacity:.2;transform:scale(.92)}50%{opacity:.85;transform:scale(1.06)}}
+
+/* Reduced motion (the device setting): nothing moves. A hero rests solid, an earned emblem is simply solid. */
+@media (prefers-reduced-motion: reduce){
+  .emb .emb-g,.emb .emb-s,.emb .emb-glow,.emb .emb-ring,.check.has-art>svg{animation:none!important}
+  .emb.is-loop .emb-s,.emb.emb-pop .emb-s{opacity:1;-webkit-mask-image:none;mask-image:none}
+  .emb.is-loop .emb-g,.emb.is-solid.emb-pop .emb-g{opacity:0;-webkit-mask-image:none;mask-image:none}
+}
+/* Calm mode (the app's own switch): the ambient motion stops, so a hero rests solid and the glass stops breathing.
+   "Taps still pop": the one wave that plays when something is earned stays. */
+:root[data-motion="calm"] .emb.is-loop .emb-g,:root[data-motion="calm"] .emb.is-loop .emb-s,:root[data-motion="calm"] .emb.is-loop .emb-ring,:root[data-motion="calm"] .emb.is-glass .emb-glow{animation:none!important}
+:root[data-motion="calm"] .emb.is-loop .emb-s{opacity:1;-webkit-mask-image:none;mask-image:none}
+:root[data-motion="calm"] .emb.is-loop .emb-g{opacity:0;-webkit-mask-image:none;mask-image:none}
+
+/* ---------- where the emblems sit ---------- */
+/* Today: a habit's check circle. Glass until it is done, then solid; the check mark becomes a small badge. */
+.check.has-art .emb{--emb:34px}
+.check.has-art .emb.is-glass .emb-glow{animation:embBreathe 3s ease-in-out var(--emb-at,0s) infinite}
+.habit:nth-child(3n+2) .check.has-art .emb.is-glass .emb-glow{animation-delay:calc(var(--emb-at,0s) - 1s)}
+.habit:nth-child(3n) .check.has-art .emb.is-glass .emb-glow{animation-delay:calc(var(--emb-at,0s) - 2s)}
+.check.has-art>svg{position:absolute;right:-6px;bottom:-6px;width:20px;height:20px;padding:4.5px;border-radius:50%;background:var(--hc);stroke:var(--on-hc);opacity:1;transform:scale(0);box-shadow:0 0 0 2px var(--surface)}
+.habit.is-done .check.has-art{background:color-mix(in srgb,var(--hc) 24%,transparent)}
+.habit.is-done .check.has-art>svg{transform:scale(1);animation:none}
+.habit.is-done .check.has-art>.emb-pop:not(.emb-cont)+svg{animation:embBadge .4s var(--spring) .1s both}
+
+/* every screen: the overall rank on the belt card (hero, loops) */
+.belt-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.belt-side .emb{--emb:70px;margin:-10px -4px 0 0}
+
+/* Today: the next trophy, still glass */
+.trophy-line.has-art>svg{display:none}
+.trophy-line .emb{--emb:24px}
+
+/* the "Trophy unlocked" screen: the wave plays as it opens */
+.promo-art{align-self:center;display:grid;place-items:center}
+.promo-art.has-art>svg{display:none}
+.promo-art .emb{--emb:132px;filter:drop-shadow(0 12px 22px color-mix(in srgb,var(--gold) 45%,transparent))}
+
+/* Progress: the Trophy Room and the badges. Locked ones stay glass and dim. */
+.cup.has-art{width:44px;height:44px;border-radius:13px}
+.cup.has-art>svg{display:none}
+.cup.has-art .emb{--emb:34px}
+.cup.has-art:not(.on) .emb,.badge.has-art:not(.earned) .emb{opacity:.5;filter:saturate(.55)}
+.tro-hab .tro-cups .cup.has-art{width:34px;height:34px;border-radius:10px}
+.tro-hab .tro-cups .cup.has-art .emb{--emb:26px}
+.badge.has-art>svg{display:none}
+.badge .emb{--emb:40px}
+
+/* Lifts: the power form (hero, loops) with the level on a plate under it; the ladder; each lift's equipment */
+.emblem.has-art{width:92px;height:98px;background:none;clip-path:none;filter:none;animation:none;position:relative;display:grid;place-items:start center}
+.emblem.has-art .emb{--emb:88px}
+.emblem.has-art .emblem-in{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);width:auto;height:auto;clip-path:none;flex-direction:row;align-items:baseline;gap:4px;padding:3px 10px 2px;border-radius:99px;background:#07101F;border:1px solid color-mix(in srgb,var(--gold) 60%,transparent);box-shadow:0 6px 14px -8px var(--gold)}
+.emblem.has-art .emblem-in .lv{font-size:9px}
+.emblem.has-art .emblem-in .n{font-size:17px;line-height:1.1}
+.ladder.has-art{grid-template-columns:1fr}
+.rung.has-art{justify-content:flex-start;align-items:center;gap:10px}
+.rung.has-art>span:last-child{margin-left:auto;white-space:nowrap}
+.rung .emb{--emb:32px;margin:-5px 0}
+.sx-head .emb{--emb:30px;margin:-4px 0}
+.sx-head .emb-s{filter:var(--emb-edge)}
+/* black equipment (rope, bench, cable) on a dark card: a thin edge light keeps its outline readable */
+:root{--emb-edge:none}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--emb-edge:drop-shadow(0 0 .6px rgba(205,232,255,.95)) drop-shadow(0 0 3px rgba(120,200,255,.35))}
+}
+:root[data-theme="dark"]{--emb-edge:drop-shadow(0 0 .6px rgba(205,232,255,.95)) drop-shadow(0 0 3px rgba(120,200,255,.35))}
+
+/* ---------- the Salah sky: the card's backdrop follows the prayer window that is open now ---------- */
+:root{--sky-veil:linear-gradient(180deg,rgba(246,250,255,.30) 0%,rgba(246,250,255,.56) 42%,rgba(246,250,255,.78) 100%)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--sky-veil:linear-gradient(180deg,rgba(5,9,19,.16) 0%,rgba(5,9,19,.46) 42%,rgba(5,9,19,.70) 100%)}
+}
+:root[data-theme="dark"]{--sky-veil:linear-gradient(180deg,rgba(5,9,19,.16) 0%,rgba(5,9,19,.46) 42%,rgba(5,9,19,.70) 100%)}
+.salah-card[data-sky]{background-image:var(--sky-veil),var(--sky-img);background-size:cover;background-position:center 78%}
+.salah-card[data-sky="dawn"]{--sky-img:url(../img/sky/dawn.webp)}
+.salah-card[data-sky="day"]{--sky-img:url(../img/sky/day.webp)}
+.salah-card[data-sky="afternoon"]{--sky-img:url(../img/sky/afternoon.webp)}
+.salah-card[data-sky="sunset"]{--sky-img:url(../img/sky/sunset.webp)}
+.salah-card[data-sky="night"]{--sky-img:url(../img/sky/night.webp)}
+/* A dark sky (before sunrise, after sunset) stays dark in the light theme too: the card takes the night palette,
+   so its words keep their contrast. The two daytime skies follow the theme through --sky-veil above. */
+.salah-card[data-sky="night"],.salah-card[data-sky="dawn"],.salah-card[data-sky="sunset"]{
+  --sky-veil:linear-gradient(180deg,rgba(5,9,19,.16) 0%,rgba(5,9,19,.46) 42%,rgba(5,9,19,.70) 100%);
+  --surface:rgba(13,20,44,.72);--surface-2:rgba(20,30,64,.85);--track:#1B2650;
+  --ink:#EAF4FF;--ink-2:#B9C8EA;--muted:#7F8DB8;--line:rgba(0,229,255,.16);
+  --accent-ink:#8CF1FF;--accent-soft:rgba(0,229,255,.12);--glow:0 0 0 4px rgba(34,227,255,.22);
+  --grad:linear-gradient(135deg,#22E3FF 0%,#9D7BFF 55%,#FF3DDC 100%);
+  color:var(--ink)}
+/* small labels sit on a picture now, so they take the stronger ink */
+.salah-card[data-sky] .eyebrow,.salah-card[data-sky] .sl-method,.salah-card[data-sky] .sl-p .sl-n,.salah-card[data-sky] .sl-foot,.salah-card[data-sky] .sl-p.is-past .sl-t{color:var(--ink-2)}
+.salah-card[data-sky] .sl-p.is-cur .sl-n{color:var(--accent-ink)}

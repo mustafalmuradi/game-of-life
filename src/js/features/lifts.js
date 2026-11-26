@@ -10,6 +10,7 @@ import { registerTab, render } from '../core/render.js';
 import { badgeSVG } from './progress.js';
 import { tmin } from './body.js';
 import { closeSheets, openSheet } from '../core/sheets.js';
+import { emblem, hasArt, liftArt, powerArt } from '../core/art.js';
 import { renderPlates, restStart, restState } from './gym.js';
 
 /* ---------- lifts view ---------- */
@@ -46,7 +47,7 @@ function sessionEntry(e, g){
   var rir = e.rir !== undefined && e.rir !== null && e.rir !== '' ? 'RIR ' + esc(e.rir) : '';
   var meta = [rir, e.notes ? esc(e.notes) : ''].filter(Boolean).join(' · ');
   var h = '<div class="sx t-' + t.key + '">' +
-    '<div class="sx-head"><h4>' + esc(e.exercise) + '</h4><span class="lpill ' + st[0] + '">' + st[1] + '</span>' + (e._cleared ? '<span class="cleared">✓ Quest</span>' : '') + '<span class="sx-xp">+' + e._xp + '</span></div>' +
+    '<div class="sx-head">' + emblem(liftArt(e.exercise), 'solid', {pop: popLift === e.id, key: 'lift:' + e.id}) + '<h4>' + esc(e.exercise) + '</h4><span class="lpill ' + st[0] + '">' + st[1] + '</span>' + (e._cleared ? '<span class="cleared">✓ Quest</span>' : '') + '<span class="sx-xp">+' + e._xp + '</span></div>' +
     '<div class="sets">' + setsHTML(e.sets) + '</div>' +
     (meta ? '<p class="meta">' + meta + '</p>' : '');
   if(isLatest){
@@ -86,22 +87,26 @@ function sessionCard(date, entries, groupOf, idx){
     '<div class="sess-body">' + entries.map(function(e){ return sessionEntry(e, groupOf.get(e.id)); }).join('') + '</div></details>';
 }
 var liftFilter = 'All', showLadder = false, progOpen = false;
+var popLift = null; // the lift saved a moment ago: its icon plays the glass-to-solid wave once, on the next render only
+function formIx(L){ var i = 0; MOOSE_RANKS.forEach(function(x, k){ if(L >= x[0]) i = k; }); return i; }
 function renderLifts(){
   var view = $('#view-lifts');
   view.querySelectorAll('details.sx-more').forEach(function(d){ if(d.open) openLiftKeys.add(d.dataset.id); else openLiftKeys.delete(d.dataset.id); });
   view.querySelectorAll('details.sess').forEach(function(d){ sessOpen.set(d.dataset.date, d.open); });
   var pcard = view.querySelector('details.prog-card'); if(pcard) progOpen = pcard.open;
   var a = state.liftStats, L = a.level, lo = ironXPFor(L), hi = ironXPFor(L+1), pct = (a.xp - lo)/(hi - lo)*100;
+  var pArt = emblem(powerArt(formIx(L)), 'loop', {lg:true});
   var h = '<section class="card iron">' +
-    '<div class="iron-main"><span class="aura" aria-hidden="true"></span><button class="emblem" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Power level ' + L + '. Show the Saiyan ladder"><span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
+    '<div class="iron-main"><span class="aura" aria-hidden="true"></span><button class="emblem' + (pArt ? ' has-art' : '') + '" type="button" data-act="toggle-ladder" aria-expanded="' + showLadder + '" aria-label="Power level ' + L + '. Show the Saiyan ladder">' + pArt + '<span class="emblem-in"><span class="lv">LVL</span><span class="n">' + L + '</span></span></button>' +
     '<div class="iron-rank"><p class="eyebrow">Power level</p><p class="iron-title">' + esc(mooseRank(L)) + '</p>' + stageRow(L) +
     '<div class="bar gold"><span style="width:' + pct.toFixed(1) + '%"></span></div>' +
     '<p class="iron-xp"><span><b>' + fmt(a.xp) + '</b> power XP</span><span>' + fmt(hi - a.xp) + ' to level ' + (L+1) + '</span></p></div></div>';
   if(showLadder){
-    h += '<div class="ladder">' + MOOSE_RANKS.map(function(r, i){
+    h += '<div class="ladder' + (hasArt(powerArt(0)) ? ' has-art' : '') + '">' + MOOSE_RANKS.map(function(r, i){
       var nextMin = MOOSE_RANKS[i+1] ? MOOSE_RANKS[i+1][0] - 1 : null;
       var now = L >= r[0] && (nextMin === null || L <= nextMin), done = nextMin !== null && L > nextMin;
-      return '<div class="rung' + (now ? ' now' : '') + (done ? ' done' : '') + '"><b>' + esc(r[1]) + '</b><span>Lv ' + r[0] + (nextMin ? '–' + nextMin : '+') + (now ? ' · stage ' + mooseStage(L).stage + '/3' : '') + '</span></div>';
+      var rArt = emblem(powerArt(i), now || done ? 'solid' : 'glass');
+      return '<div class="rung' + (now ? ' now' : '') + (done ? ' done' : '') + (rArt ? ' has-art' : '') + '">' + rArt + '<b>' + esc(r[1]) + '</b><span>Lv ' + r[0] + (nextMin ? '–' + nextMin : '+') + (now ? ' · stage ' + mooseStage(L).stage + '/3' : '') + '</span></div>';
     }).join('') + '</div>';
   }
   h += '<div class="iron-tiles">' +
@@ -162,6 +167,7 @@ function renderLifts(){
     '<p class="principle">Strength XP is its own track. It doesn’t feed your belts, so a heavy day can’t cover for a skipped habit.</p></section>';
   view.innerHTML = h;
   view.style.display = 'flex'; view.style.flexDirection = 'column'; view.style.gap = '14px';
+  popLift = null;
 }
 var liftSetCount = 0;
 export function addSetRow(w, r, b){
@@ -206,6 +212,7 @@ export function saveLift(){
   recompute(); persistLocal(); flushLiftOps();
   closeSheets();
   sessOpen.set(date, true);
+  popLift = id;
   if(!trainFromLift(date, isBandEntry(doc))) render();
   celebrateLift(prevA, state.liftStats, id);
 }

@@ -4,6 +4,7 @@ import { $, esc, fmtShort, todayKey } from '../core/utils.js';
 import { habitById, isActive, state, T, ui } from '../core/state.js';
 import { fmtLeft, fmtMin, fmtMin24, PRAYERS, prayerName, RAWATIB, RAWATIB_TOTAL, salahConfig, salahNight, salahNow, salahTimes } from '../core/salah.js';
 import { render } from '../core/render.js';
+import { skyFor } from '../core/art.js';
 import { mutateDay } from './today.js';
 
 export var SUNNAH_ID = 'sunnah';
@@ -72,6 +73,7 @@ export function renderSalah(){
   }).join('') + '</div>';
   h += '<p class="sl-foot">Last third of the night from <b>' + esc(fmtMin(night.lastThird)) + '</b>' + (rawatibOf(d).length ? ' \u00b7 rawatib ' + rawatibCount(d) + ' of ' + RAWATIB_TOTAL + ' logged' : '') + '</p>';
   el.innerHTML = h;
+  if(w) el.setAttribute('data-sky', skyFor(w.idx, !!w.cur.night)); else el.removeAttribute('data-sky');
 }
 /* the HUD readout: the next prayer and the time left, compact so the readout stays on one line on a phone */
 function hudLeft(min){ return fmtLeft(min).replace(/h (\d)/, 'h$1'); }
