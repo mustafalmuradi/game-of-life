@@ -82,6 +82,14 @@ Bed on time has 2 planned late nights a week (Friday, already `friBed` 11 PM, an
    capabilities (restate all of them whenever `capabilities` is passed):
    `assets`, `db`, `downloads`, `sample` (`images: true`), `user`, and `mcp` with
    `servers: [{server: "Google Calendar", tools: ["list_events", "create_event"]}]`.
+5. Which `index.html` to publish depends on the tool. One that wraps the page in its own
+   skeleton takes `dist/index.html` (content only). One that stores each file exactly as
+   given (`publish_files` on the claude-artifacts server does) must get **`src/index.html`**,
+   the complete document. Given the content-only file it publishes a page with no doctype,
+   no viewport and none of the base styles (this happened for one minute on Nov 26 2026).
+   After every publish, read the live page and check that it starts with `<!doctype html>`.
+   Publish only the files that changed; the rest are kept. When images are new, publish them
+   first and the code last, so the page never asks for a picture that is not there yet.
 
 ## Art: holo emblems and the Salah sky (Nov 26 2026)
 

@@ -3,8 +3,11 @@
 
 src/index.html is a complete document (it runs standalone and in the harness).
 The Artifact tool wraps the page in its own skeleton at publish time, so the
-published copy carries only the content: from <title> to the module script tag.
+copy built here carries only the content: from <title> to the module script tag.
 Everything else (css, js, tools and the img art) is copied as is.
+
+A publishing tool that stores files exactly as given does not add that skeleton:
+give it src/index.html instead of dist/index.html (README, "Rules for changes", rule 5).
 """
 import os, shutil, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
