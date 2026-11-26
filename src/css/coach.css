@@ -68,14 +68,7 @@
 .cbtn.photo{background:var(--accent-soft)}
 .cbtn.photo svg{stroke:var(--accent-ink)}
 body:has(#chat-sheet:not([hidden])) .toast{bottom:auto;top:calc(14px + env(safe-area-inset-top,0px))}
-@media (max-width:440px){
-  .brand span{display:none}
-  .brand b{font-size:24px}
-}
-@media (max-width:350px){
-  .coach-btn{padding:0 12px}
-  .coach-btn span{display:none}
-}
+/* how the header fits a narrow screen (name size, gaps, when the Coach label goes) lives in fx.css: "header fit" */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }

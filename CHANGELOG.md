@@ -3,6 +3,68 @@
 What changed in the app, newest first. Started Nov 26 2026; for anything earlier, read `git log` and the dated
 sections of `README.md`.
 
+## 2026-11-26 · Light/dark button in the header
+
+A sun/moon button in the top bar, between Coach and settings, on every screen. One tap shows the other look at
+once. Guide: `README.md`, "The light/dark button in the header".
+
+### Added
+
+- **The button** (`#btn-theme`). A moon while the page is light, a sun while it is dark: the icon shows where a
+  tap goes.
+- **A flip, not a setting.** The tap does not change the Theme setting. It lasts until the sun next crosses the
+  horizon (sunrise or Maghrib, from the app's own prayer times), then the Theme setting decides again. With
+  Auto · sun that means the page goes back to following the sun; with Light, Dark or System, that setting
+  comes back.
+- A toast says until when ("Dark until Maghrib, 6:29 PM"). While a flip is on, the button keeps an accent edge
+  and the Theme row in Settings reads "Dark for now, until Maghrib, 6:29 PM. Then Auto · sun again."
+- A second tap ends the flip ("Back to Auto · sun"). So does picking a Theme chip.
+- The flip survives a reload (`localStorage` `gol-theme-flip`, this device only). If the browser refuses to
+  save, it holds for the visit.
+- `test/theme-flip.mjs` (day and night flips, reload, second tap, running out on the ticker and on wake-up,
+  standing Light/Dark/System, blocked storage, junk in storage) and `test/header-fit.mjs` (the header at every
+  width up to 600 px with the real fonts, as a phone and as a desktop browser with a scrollbar). Both run in
+  `npm test`.
+
+### Changed
+
+- **The name is a little smaller on phones under 416 px wide**, to make room for a third button: 19.2 px on a
+  390 px screen and 19.6 px on a 393 px one, where it was 22 px. From 416 px up it stays 22 px.
+- At 460 px and below the header is tighter: 6 px between the buttons (it was 8), 8 px between the name and the
+  buttons (it was 12), the Coach button 6 px narrower, and the name's letters a touch closer (.03em, was .04em).
+- The Coach button drops its label at 371 px and below (it was 350 px). The "Mustafa" pill shows from 561 px (it
+  was 441 px).
+- On a desktop browser (mouse pointer) the name is sized as if a 17 px scrollbar were on screen, because the
+  viewport width counts one: in a window 460 px wide or narrower it is about 2 px smaller than on a phone of the
+  same width.
+- The header's narrow-screen rules moved from `css/coach.css` to one block in `css/fx.css` ("header fit"), next
+  to the rule that really sets the name's size. The `font-size:24px` rule that left `coach.css` never applied.
+- The theme is checked when the app comes back to the foreground, not only every 30 seconds: a phone that slept
+  through sunrise or Maghrib shows the right look at once.
+- The baseline was re-recorded: against the old one, every step differs only by the new button's markup
+  (checked by stripping it and comparing: 105 of 105 identical), and every screenshot differs only in the header
+  band (compared with the same screens on `main`: no changed pixel below the top 90 px on any of the twelve, and
+  page heights are unchanged).
+
+### Fixed
+
+- "GAME OF LIFE" wrapped onto two lines on screens 323 px wide and narrower, from 351 to 376 px (a 375 px
+  iPhone) and from 441 to 471 px. It is one line at every width now.
+
+### Not changed
+
+- The Theme setting and its four choices, the colours of both looks, and everything below the header. With a
+  flip never used, the page behaves as before.
+
+### Known
+
+- The page switches look in one step, with no fade. Only the button's icon animates (not with reduced motion).
+- Checked in desktop Chrome with a phone-sized touch screen. The button has not been tried on an iPhone yet.
+- The main harness lays text out in a fallback font because it blocks the network, so it cannot see text that
+  does not fit. `test/header-fit.mjs` covers the header; the rest of the app has no such check.
+- `test/header-fit.mjs` needs the real fonts (Google Fonts, or a stylesheet named in `GOL_FONT_CSS`). Without
+  them it prints SKIPPED and checks nothing.
+
 ## 2026-11-26 · Art v1: holo emblems and the Salah sky
 
 The first pictures in the app. Every emblem exists twice, as holographic glass (not earned yet) and as a solid

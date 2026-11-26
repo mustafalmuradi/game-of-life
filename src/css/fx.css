@@ -172,3 +172,44 @@ body::after{
 .theme-row{flex-wrap:wrap}
 .theme-picks{display:flex;gap:6px;flex-wrap:wrap}
 .theme-picks .gchip{padding:6px 10px;font-size:12px}
+
+/* ---------- header light/dark button ----------
+   The icon shows where a tap takes you: a moon while the page is light, a sun while it is dark. It follows the same two
+   selectors as every themed rule (data-theme, and the system setting when the attribute is absent). */
+#btn-theme .ic-sun{display:none}
+:root[data-theme="dark"] #btn-theme .ic-moon{display:none}
+:root[data-theme="dark"] #btn-theme .ic-sun{display:block}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) #btn-theme .ic-moon{display:none}
+  :root:not([data-theme="light"]) #btn-theme .ic-sun{display:block}
+}
+@keyframes themeIn{from{transform:rotate(-70deg) scale(.5);opacity:0}to{transform:none;opacity:1}}
+#btn-theme svg{animation:themeIn .4s var(--spring) both}
+/* while a flip is on, the button keeps the accent edge: this look is your pick for now, not the sun's */
+:root[data-theme-flip] #btn-theme{border-color:var(--accent)}
+/* a tapped button keeps :hover on a touch screen, and this one leaves you on the same page: it must not stay tilted */
+@media (hover:none){
+  #btn-theme:hover{transform:none;border-color:var(--line);box-shadow:var(--shadow)}
+  #btn-theme:active{transform:scale(.92)}
+}
+/* ---------- header fit: the name and three buttons on one line, from 280 px up ----------
+   Measured with Orbitron 800: the name is 8.38 px wide for each px of font size at .03em tracking. Beside it go the
+   8 px gap and the buttons (185 px with the Coach label, 138 px without); the page padding takes 32 px and 4 px stay
+   spare: 229 px in all with the label, 182 px without. The name gets what is left of the viewport, capped at the
+   22 px it has on a wide screen. vw counts a scrollbar that stays on screen, which a desktop browser may have and a
+   phone never does: --sb leaves room for one. Change a button, a gap or the font and these numbers change with it:
+   test/header-fit.mjs sweeps every width, as a phone and as a desktop with a scrollbar, and fails when the name wraps. */
+:root{--sb:0px}
+@media (hover:hover) and (pointer:fine){ :root{--sb:17px} }
+@media (max-width:560px){ .brand span{display:none} }
+@media (max-width:460px){
+  .top{gap:8px}
+  .top-actions{gap:6px}
+  .coach-btn{padding:0 12px 0 10px;gap:6px}
+  .brand b{letter-spacing:.03em;font-size:clamp(12px,calc((100vw - 229px - var(--sb))/8.38),22px)}
+}
+@media (max-width:371px){
+  .coach-btn{padding:0 12px}
+  .coach-btn span{display:none}
+  .brand b{font-size:clamp(12px,calc((100vw - 182px - var(--sb))/8.38),22px)}
+}

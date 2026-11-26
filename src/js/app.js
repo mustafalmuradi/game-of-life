@@ -22,7 +22,7 @@ import { salahHud, salahTick } from './features/salah.js';
 import { lifeHappens, logInBed, windTick } from './features/winddown.js';
 import { gymInit, restPick, restReset, restToggle } from './features/gym.js';
 import { calConnect, calInit, calTick } from './features/calendar.js';
-import { applyTheme, renderThemeRow, setThemePref, themeTick } from './features/theme.js';
+import { applyTheme, flipTheme, renderThemeRow, setThemePref, themeTick } from './features/theme.js';
 
 /* ---------- events ---------- */
 function bind(){
@@ -48,6 +48,7 @@ function bind(){
       case 'rest-open': openLiftSheet(); break;
       case 'cal-connect': calConnect(); break;
       case 'theme': setThemePref(t.getAttribute('data-v')); break;
+      case 'theme-flip': flipTheme(); break;
       case 'open-extra': openExtra(hid); break;
       case 'rm-extra': removeExtra(hid, t.getAttribute('data-x')); break;
       case 'log-preset': { var hh = extraFor; closeSheets(); var anchor = document.querySelector('[data-act="open-extra"][data-h="' + hh + '"]'); addExtra(hh, t.getAttribute('data-note'), anchor); break; }
@@ -178,7 +179,7 @@ function bind(){
     }
   }
   setInterval(rollover, 60000);
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ rollover(); flushUnsynced(); } });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden){ rollover(); flushUnsynced(); themeTick(); } });
   window.addEventListener('online', flushUnsynced);
 }
 
