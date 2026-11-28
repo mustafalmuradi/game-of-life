@@ -5,8 +5,10 @@
 //   half, 26 and 5 at 1); the second aurora and the orbit rings follow the charge; a clean sweep turns it gold;
 //   a check makes one ring while under two thirds of that day is done and two from there, centred on the habit's own
 //   button, gold on the check that completes the day, and gone again within a second and a half; an uncheck makes none;
+//   a ring with no button to start from starts where the finger just went down, or mid-screen;
 //   a past day's checks leave today's charge alone; Calm mode hides the backdrop and keeps the ring;
-//   reduced motion hides the backdrop and makes no ring.
+//   reduced motion hides the backdrop and makes no ring;
+//   "In bed now" as the last habit of the day sends two gold rings from the tap.
 // Run: node test/ambient-charge.mjs
 import { chromium } from 'playwright';
 import fs from 'node:fs';
@@ -41,16 +43,16 @@ const eq = (what, got, want) => { if (JSON.stringify(got) !== JSON.stringify(wan
 const near = (what, got, want, tol) => { if (!(Math.abs(got - want) <= (tol || 0.002))) fails.push(what + ': expected about ' + want + ', got ' + got); };
 
 async function open(opts = {}) {
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, colorScheme: 'dark', reducedMotion: opts.reduce ? 'reduce' : 'no-preference' });
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, colorScheme: 'dark', timezoneId: 'America/New_York', reducedMotion: opts.reduce ? 'reduce' : 'no-preference' });
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   const page = await ctx.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
-  await page.addInitScript(({ src, cfg, calm }) => {
-    const d = new Date('2026-10-07T12:00:00-04:00').getTime(); const Real = Date;
+  await page.addInitScript(({ src, cfg, calm, at }) => {
+    const d = new Date('2026-10-07T' + at + ':00-04:00').getTime(); const Real = Date;
     class Fake extends Real { constructor(...a) { super(...(a.length ? a : [d])); } static now() { return d; } }
     window.Date = Fake;
     try { if (calm) localStorage.setItem('gol-calm', '1'); } catch (e) { }
     window.__fakeCfg = cfg; (0, eval)(src);
-  }, { src: FAKE, cfg: { seed: 11, cloud: cloudFixture(), script: [] }, calm: !!opts.calm });
+  }, { src: FAKE, cfg: { seed: 11, cloud: cloudFixture(), script: [] }, calm: !!opts.calm, at: opts.at || '12:00' });
   await page.goto(`http://127.0.0.1:${srv.address().port}/index.html`, { waitUntil: 'load' });
   await page.waitForTimeout(1200);
   // the levels are read the moment they change, so their fades are switched off; the ring's animation is left alone
@@ -142,9 +144,15 @@ const ringsOk = (what, t, n, gold) => {
   s = await read(page);
   eq('clean sweep', [s.done, s.total, s.charge, s.sweep, s.motes, s.meteors], [9, 9, '1', '1', 26, 5]); agrees('clean sweep', s);
 
-  // a ring with nowhere to start from takes the middle of the screen
-  const mid = await page.evaluate(async () => { document.querySelectorAll('.shock').forEach((e) => e.remove()); const fx = await import('./js/core/effects.js'); fx.shockwave(null, 0, false); const e = document.querySelector('.shock'); return [parseFloat(e.style.left), parseFloat(e.style.top), innerWidth / 2, innerHeight * 0.4]; });
-  eq('a ring with no starting point', [mid[0], mid[1]], [mid[2], mid[3]]);
+  // a ring with no habit button to start from: the middle of the screen (no finger has touched this page yet: the
+  // checks above were made in script), then wherever the finger just went down, then the middle again once that tap is old
+  const loose = () => page.evaluate(async () => { document.querySelectorAll('.shock').forEach((e) => e.remove()); const fx = await import('./js/core/effects.js'); fx.shockwave(null, 0, false); const e = document.querySelector('.shock'); return [parseFloat(e.style.left), parseFloat(e.style.top)]; });
+  const middle = await page.evaluate(() => [innerWidth / 2, innerHeight * 0.4]);
+  eq('a ring with no starting point and no tap', await loose(), middle);
+  await page.evaluate(() => scrollTo(0, 0)); await page.touchscreen.tap(120, 30);   // the page's own name: nothing to press there
+  eq('a ring with no starting point, straight after a tap', await loose(), [120, 30]);
+  await page.waitForTimeout(1700);
+  eq('a ring with no starting point, long after the tap', await loose(), middle);
   if (errs.length) fails.push('page errors: ' + errs.join(' | '));
   await ctx.close();
 }
@@ -201,6 +209,26 @@ const ringsOk = (what, t, n, gold) => {
   await ctx.close();
 }
 
+// 7) the last habit of the day from the wind-down card: 9 PM, everything done but Bed on time, a real tap on "In bed now".
+//    No habit button is involved, so the gold rings start where the finger went down
+{
+  const { ctx, page, errs } = await open({ at: '21:00' });
+  await tapHabit(page, 'eat');
+  let s = await read(page);
+  eq('9 PM, before bed', [s.done, s.total, s.sweep], [8, 9, '0']);
+  const btn = page.locator('#wind [data-act="in-bed"]');
+  await btn.scrollIntoViewIfNeeded();
+  const box = await btn.boundingBox(), x = Math.round(box.x + box.width / 2), y = Math.round(box.y + box.height / 2);
+  await page.evaluate(() => document.querySelectorAll('.shock').forEach((e) => e.remove()));
+  await page.touchscreen.tap(x, y);
+  const rings = await page.evaluate(() => Array.from(document.querySelectorAll('.shock')).map((e) => [parseFloat(e.style.left), parseFloat(e.style.top), e.classList.contains('gold')]));
+  eq('In bed now: two gold rings from the tap', rings, [[x, y, true], [x, y, true]]);
+  s = await read(page);
+  eq('In bed now: the day is complete', [s.done, s.total, s.charge, s.sweep], [9, 9, '1', '1']); agrees('In bed now', s);
+  if (errs.length) fails.push('page errors (9 PM): ' + errs.join(' | '));
+  await ctx.close();
+}
+
 await browser.close(); srv.close();
 if (fails.length) { console.log('ambient-charge: FAIL\n  ' + fails.join('\n  ')); process.exit(1); }
-console.log('ambient-charge: ok (levels, a real day to a clean sweep, rings on the button, low charge, a past day, Calm mode, reduced motion)');
+console.log('ambient-charge: ok (levels, a real day to a clean sweep, rings on the button, low charge, a past day, Calm mode, reduced motion, In bed now)');
