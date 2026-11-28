@@ -1,4 +1,4 @@
-// Floating XP, toasts, confetti, promotion screens.
+// Floating XP, toasts, confetti, the ring a landed habit sends out, promotion screens.
 import { $, cssVar, esc, reduceMotion } from './utils.js';
 import { state } from './state.js';
 import { beltOf, rankSub, rankTitle, trophySVG } from './xp.js';
@@ -56,6 +56,22 @@ export function burst(){
     });
     requestAnimationFrame(frame);
   })(t0);
+}
+/* Shockwave: when a habit lands, a ring runs from its emblem across the screen. It is stronger the more of that day is
+   done (share, 0 to 1: two rings from two thirds), and gold on the check that completes the day. at = {x, y} in the
+   viewport, or null for the middle of the screen. A tap effect: Calm mode keeps it, reduced motion does not. */
+export function shockwave(at, share, gold){
+  if(reduceMotion) return;
+  var c = Math.max(0, Math.min(1, share || 0));
+  var x = at ? at.x : window.innerWidth/2, y = at ? at.y : window.innerHeight*0.4, n = gold || c >= 0.66 ? 2 : 1;
+  for(var i=0;i<n;i++){
+    var el = document.createElement('i');
+    el.className = 'shock' + (gold ? ' gold' : '') + (i ? ' two' : '');
+    el.setAttribute('aria-hidden', 'true');
+    el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.setProperty('--so', (0.42 + 0.3*c).toFixed(2));
+    document.body.appendChild(el);
+    setTimeout(el.remove.bind(el), 1400);
+  }
 }
 var promoQueue = [];
 export function queuePromos(items){ promoQueue = promoQueue.concat(items); if($('#promo').hidden) nextPromo(); }

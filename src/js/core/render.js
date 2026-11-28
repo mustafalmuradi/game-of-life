@@ -13,6 +13,7 @@ export function registerTab(name, fn){ tabs[name] = fn; }
    Coach's navigate tool and the data model are unchanged; the section is derived from it. */
 export var SECTIONS = {hq:['today','tasks'], body:['body','lifts'], progress:['progress','build']};
 export function sectionOf(view){ var k = 'hq'; Object.keys(SECTIONS).forEach(function(s){ if(SECTIONS[s].indexOf(view) >= 0) k = s; }); return k; }
+var charge = null;   // the last --charge written to <html>, so an unchanged value is not written again
 export function render(){
   renderBelt();
   var sec = sectionOf(state.tab);
@@ -23,6 +24,9 @@ export function render(){
   ui.popSeg = null;
   renderHud(); syncTabs(); decorate();
   var td = state.stats.byDate[todayKey()]; document.documentElement.setAttribute('data-sweep', td && td.sweep ? '1' : '0'); // the ambient layer turns gold on a clean sweep
+  /* and charges up on the way there: --charge is today's habits done out of those due, 0 to 1 (css/fx.css, "ambient charge") */
+  var ch = td && td.total ? String(Math.round(Math.min(1, td.done/td.total)*1000)/1000) : '0';
+  if(ch !== charge){ charge = ch; document.documentElement.style.setProperty('--charge', ch); }
 }
 /* HUD chrome: corner brackets on every card (re-added after each innerHTML render), the liquid tab indicator, the readout line */
 var hudFn = null;

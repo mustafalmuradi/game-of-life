@@ -195,9 +195,17 @@ registerHud(function(){
 });
 (function(){
   var sf = $('#stars'); if(sf){ var h = ''; for(var i=0;i<34;i++) h += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;top:' + (Math.random()*100).toFixed(1) + '%;--d:' + (4 + Math.random()*6).toFixed(1) + 's;--o:' + (Math.random()*6).toFixed(1) + 's"></i>'; sf.innerHTML = h; }
-  /* ambient v2: 16 ki motes in the habit colours rising on their own loops, 3 meteors on long staggered cycles */
-  var ki = $('#ki'); if(ki){ var cols = ['neon','neon-2','neon-3','h-money','h-sleep','h-read','gold'], kh = ''; for(var j=0;j<16;j++) kh += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;--d:' + (14 + Math.random()*14).toFixed(1) + 's;--o:' + (-Math.random()*24).toFixed(1) + 's;--x:' + ((Math.random()-.5)*160).toFixed(0) + 'px;--c:var(--' + cols[j % cols.length] + ')"></i>'; ki.innerHTML = kh; }
-  var me = $('#meteors'); if(me){ var mh = ''; for(var k=0;k<3;k++) mh += '<i style="--t:' + (6 + Math.random()*30).toFixed(0) + '%;--d:' + (13 + Math.random()*9).toFixed(1) + 's;--o:' + (-Math.random()*20).toFixed(1) + 's"></i>'; me.innerHTML = mh; }
+  /* ambient v2: 16 ki motes in the habit colours rising on their own loops, 3 meteors on long staggered cycles.
+     ambient charge (Nov 2026): --at is the share of today's habits a mote or a meteor waits for (css/fx.css). Six motes and
+     one meteor are always there. The other ten motes join by the halfway mark, which is the look from before; ten faster
+     ones and two more meteors come after it. The late ones take their numbers from their index, not from Math.random: the
+     test harness seeds it, and extra calls here would shift every id generated afterwards. */
+  var ki = $('#ki'); if(ki){ var cols = ['neon','neon-2','neon-3','h-money','h-sleep','h-read','gold'], kh = ''; for(var j=0;j<16;j++) kh += '<i style="left:' + (Math.random()*100).toFixed(1) + '%;--d:' + (14 + Math.random()*14).toFixed(1) + 's;--o:' + (-Math.random()*24).toFixed(1) + 's;--x:' + ((Math.random()-.5)*160).toFixed(0) + 'px;--c:var(--' + cols[j % cols.length] + ')' + (j > 5 ? ';--at:' + ((j - 5)*0.05).toFixed(2) : '') + '"></i>';
+    for(var q=0;q<10;q++) kh += '<i class="hot" style="left:' + ((q*61.8 + 7) % 100).toFixed(1) + '%;--d:' + (8.5 + (q*3.7) % 6).toFixed(1) + 's;--o:-' + ((q*5.3) % 13).toFixed(1) + 's;--x:' + ((q*47) % 150 - 75) + 'px;--c:var(--' + cols[(q*3 + 1) % cols.length] + ');--at:' + (0.55 + q*0.05).toFixed(2) + '"></i>';
+    ki.innerHTML = kh; }
+  var me = $('#meteors'); if(me){ var mh = ''; for(var k=0;k<3;k++) mh += '<i style="--t:' + (6 + Math.random()*30).toFixed(0) + '%;--d:' + (13 + Math.random()*9).toFixed(1) + 's;--o:' + (-Math.random()*20).toFixed(1) + 's' + (k ? ';--at:' + (k*0.34).toFixed(2) : '') + '"></i>';
+    mh += '<i style="--t:9%;--d:10.5s;--o:-3.1s;--at:0.85"></i><i style="--t:27%;--d:9.2s;--o:-7.4s;--at:1"></i>';
+    me.innerHTML = mh; }
   var calm = false; try { calm = localStorage.getItem('gol-calm') === '1'; } catch(e){}
   if(calm) document.documentElement.setAttribute('data-motion', 'calm');
   var sw = $('#btn-calm'); if(sw){ sw.setAttribute('aria-checked', String(calm)); sw.addEventListener('click', function(){ calm = !calm; sw.setAttribute('aria-checked', String(calm)); if(calm) document.documentElement.setAttribute('data-motion', 'calm'); else document.documentElement.removeAttribute('data-motion'); try { localStorage.setItem('gol-calm', calm ? '1' : '0'); } catch(e){} }); }

@@ -12,7 +12,7 @@ and write the tracker through tools.
 | `src/` | v3: the same app split into modules. `index.html` is the shell, `css/` one stylesheet per feature, `js/core/` shared code, `js/features/` one file per tab, `js/app.js` the composition root, `img/` the art. |
 | `art/` | How the art was made: the manifest of every picture (prompt, Higgsfield job, settings), the generation and build scripts, and `gallery.html`, a page showing every emblem in every state. Not published with the app. |
 | `docs/` | `ASSETS.md` (the art: what ships, how the page uses it, how to add more) and `APP-RELEASE.md` (what has to change before this ships as an app). `CHANGELOG.md` sits at the root. |
-| `test/` | The golden-master regression harness (see below), plus `salah.mjs` (prayer-time engine against reference values), `stale-cache.mjs`, and one file per feature that needs its own walk (`theme-flip.mjs`, `header-fit.mjs`, `hq-reorder.mjs` and the others in `npm test`). |
+| `test/` | The golden-master regression harness (see below), plus `salah.mjs` (prayer-time engine against reference values), `stale-cache.mjs`, and one file per feature that needs its own walk (`theme-flip.mjs`, `header-fit.mjs`, `ambient-charge.mjs`, `hq-reorder.mjs` and the others in `npm test`). |
 | `tools/` | `publish-prep.py` builds `dist/` for the artifact (`npm run dist`). The split scripts (`split-*.py`, `check-cascade.py`, `reassemble-js.py`) are the one-off migration from `legacy/` and are kept for the record. |
 
 The architecture plan lives in the Claude doc "Game of Life v3 Architecture".
@@ -40,6 +40,7 @@ npm run test:local    # the same without a Claude runtime (local mode)
 npm run test:legacy   # legacy vs src side by side, for the features both have
 node test/salah.mjs   # the prayer-time engine against reference values
 node test/theme-flip.mjs   # the header light/dark button (part of npm test)
+node test/ambient-charge.mjs   # the backdrop's charge and the ring (part of npm test)
 node test/header-fit.mjs   # the header at every width, real fonts (part of npm test; see "Header fit")
 ```
 
@@ -299,6 +300,39 @@ loops, 3 meteors on long staggered cycles, two slow orbit rings behind the belt
 card. `render()` sets `data-sweep="1"` on `<html>` when today is a clean sweep,
 which turns the aurora, motes and rings gold. Everything ambient is off in calm
 mode and under `prefers-reduced-motion`.
+
+### Ambient charge (Nov 27 2026)
+
+The backdrop charges up with the day. `render()` sets `--charge` on `<html>`:
+today's habits done out of those due, 0 to 1. It is always the device's today,
+whichever day is on screen. `css/fx.css`, "ambient charge", reads it:
+
+- **Motes and meteors.** Each has an `--at` (handed out in `app.js`) and shows
+  once the charge reaches it. 6 motes and 1 meteor at 0; the 16 motes from before
+  by one half and the 3 meteors from before by two thirds; 10 faster motes (.55
+  to 1) and 2 more meteors (.85 and 1) after that. The late ones take their
+  numbers from their index, not from `Math.random`: the harness seeds it, and
+  extra calls at boot would shift every id generated afterwards.
+- **Second aurora.** `.ambient::before` fades in over the first, at opacity
+  `charge × --charge-glow`. The orbit rings go from .2 to .55.
+- **Gold.** On a clean sweep `.ambient::after` fades in to `--charge-gold` and
+  the neon aurora steps back to 18 %, so the gold stays clean.
+- **The ring.** `shockwave(at, gold)` in `core/effects.js`. `mutateDay` calls it
+  when a day's done count goes up: one ring while under two thirds of that
+  day's habits are done, two from there, gold on the check that completes the
+  day. It starts on the habit's
+  check button, whose place is read before `render()` replaces the row, or in
+  the middle of the screen when that button is not on screen. It sits over the
+  page and under the sheets (`z-index:45`), and is a 360 px box scaled up, so
+  only transform and opacity move. A check on a past day sends a ring too, as
+  strong as that day is full, and leaves the charge alone.
+- **Off switches.** Calm mode and reduced motion hide `.ambient`, so the charge
+  look goes with the rest. The ring is a tap effect: Calm mode keeps it, and
+  under reduced motion none is made.
+
+The harness snapshot carries the charge at every step (`style=--charge: …` on
+its html line). `test/ambient-charge.mjs` covers the levels, the ring and the
+off switches with live motion.
 
 ### Headquarters habit order (Nov 2026)
 
