@@ -38,8 +38,14 @@ way there. Guide: `README.md`, "Ambient charge".
 
 ### Known
 
-- Looked at in desktop Chrome at phone size with a touch screen, in both looks. Not yet seen on an iPhone. The
-  ring and the aurora layers move only transform and opacity, but the frame rate on a phone is not measured.
+- Published Nov 27 2026 in two steps: artifact version `1795837131-9d7b` (`css/fx.css`, `js/app.js`,
+  `js/core/effects.js`, `js/core/render.js`, `js/features/today.js`), then `1795837446-2c82` (`js/core/effects.js`
+  again, for the tap-point rule). `index.html` was not part of either, so the doctype check was not repeated.
+  The live page was opened in desktop Chrome after each: it loads, and with 9 of 10 habits done that day the
+  backdrop shows the charged look. No habit was tapped on the live page, so the ring has not been seen there.
+- Before publishing it was looked at in desktop Chrome at phone size with a touch screen, in both looks. Not yet
+  seen on an iPhone. The ring and the aurora layers move only transform and opacity, but the frame rate on a
+  phone is not measured.
 - A check on a past day sends a ring too, as strong as that day is full. It does not change the charge, which
   is today's.
 - Found while in this code, and not changed: the floating "+XP" text after a check is placed at the top-left
