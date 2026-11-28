@@ -321,8 +321,10 @@ whichever day is on screen. `css/fx.css`, "ambient charge", reads it:
   when a day's done count goes up: one ring while under two thirds of that
   day's habits are done, two from there, gold on the check that completes the
   day. It starts on the habit's
-  check button, whose place is read before `render()` replaces the row, or in
-  the middle of the screen when that button is not on screen. It sits over the
+  check button, whose place is read before `render()` replaces the row. With
+  no button to start from (In bed now, a check-in that scores a habit) it
+  starts where the finger just went down, and in the middle of the screen when
+  there was no tap in the last second and a half (the Coach did it). It sits over the
   page and under the sheets (`z-index:45`), and is a 360 px box scaled up, so
   only transform and opacity move. A check on a past day sends a ring too, as
   strong as that day is full, and leaves the charge alone.

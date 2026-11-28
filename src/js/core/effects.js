@@ -59,9 +59,14 @@ export function burst(){
 }
 /* Shockwave: when a habit lands, a ring runs from its emblem across the screen. It is stronger the more of that day is
    done (share, 0 to 1: two rings from two thirds), and gold on the check that completes the day. at = {x, y} in the
-   viewport, or null for the middle of the screen. A tap effect: Calm mode keeps it, reduced motion does not. */
+   viewport. With no point given it starts where the finger just went down (In bed now, a check-in that scores a
+   habit), or in the middle of the screen when there was no tap in the last second and a half (the Coach did it).
+   A tap effect: Calm mode keeps it, reduced motion does not. */
+var lastTap = null;
+document.addEventListener('pointerdown', function(e){ lastTap = {x:e.clientX, y:e.clientY, t:performance.now()}; }, true);
 export function shockwave(at, share, gold){
   if(reduceMotion) return;
+  if(!at && lastTap && performance.now() - lastTap.t < 1500) at = lastTap;
   var c = Math.max(0, Math.min(1, share || 0));
   var x = at ? at.x : window.innerWidth/2, y = at ? at.y : window.innerHeight*0.4, n = gold || c >= 0.66 ? 2 : 1;
   for(var i=0;i<n;i++){

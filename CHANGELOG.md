@@ -15,11 +15,12 @@ way there. Guide: `README.md`, "Ambient charge".
   the first and brightens the orbit rings. It follows today on every tab, whichever day is on screen.
 - **The ring.** A habit that lands sends a ring from its emblem across the screen: one faint ring early in the
   day, two brighter ones once two thirds of the day is done, gold on the check that completes it. Unchecking
-  sends none.
+  sends none. When the habit lands without its own button being tapped, as with "In bed now", the ring starts
+  where the finger went down.
 - **Gold, cleaner.** On a clean sweep a gold aurora fades in and the neon one steps back. The gold sky from
   before is still there underneath.
 - `test/ambient-charge.mjs`, in `npm test`: the levels, a real day from 6 of 9 to a clean sweep, where the ring
-  starts, low charge, a past day, Calm mode, reduced motion.
+  starts, low charge, a past day, Calm mode, reduced motion, and "In bed now" as the last habit of the day.
 
 ### Changed
 
