@@ -168,6 +168,39 @@ body::after{
 :root[data-sweep="1"] .brand b{text-shadow:0 0 18px color-mix(in srgb,var(--gold) 70%,transparent)}
 @media (prefers-reduced-motion: reduce){.ambient{display:none}}
 :root[data-motion="calm"] .ambient{display:none}
+
+/* ---------- ambient charge: the backdrop charges up with today ----------
+   --charge on <html> is today's habits done out of those due, 0 to 1 (core/render.js sets it on every render).
+   A mote or a meteor shows once the charge reaches its own --at (app.js hands those out): six motes and one meteor at
+   0, the look from before at one half, ten faster motes and two more meteors by 1. A second aurora fades in over the
+   first and the orbit rings brighten along the way. A clean sweep (data-sweep, above) turns all of it gold.
+   Everything here sits inside .ambient, so Calm mode and reduced motion switch it off with the rest. */
+:root{--charge:0;--charge-glow:.42;--charge-gold:.78}   /* a light page washes colour out, so its gold needs more */
+:root[data-theme="dark"]{--charge-glow:.62;--charge-gold:.62}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--charge-glow:.62;--charge-gold:.62} }
+.ki i,.meteors i{scale:clamp(0,calc((var(--charge) - var(--at,0) + .004)*250),1);transition:scale .7s var(--spring)}
+.ki i.hot{width:5px;height:5px;box-shadow:0 0 12px var(--c,var(--neon))}
+.orbit{opacity:calc(.2 + .35*var(--charge));transition:opacity 1.2s var(--ease)}
+.ambient::before,.ambient::after{content:"";position:absolute;inset:-12% -20%;z-index:-1;opacity:0;transition:opacity 1.4s var(--ease);animation:breathe 7s ease-in-out infinite alternate}
+.ambient::before{opacity:calc(var(--charge)*var(--charge-glow));background:
+  radial-gradient(48% 30% at 20% 6%,color-mix(in srgb,var(--neon-2) 60%,transparent),transparent 72%),
+  radial-gradient(50% 32% at 82% 12%,color-mix(in srgb,var(--neon) 60%,transparent),transparent 72%),
+  radial-gradient(80% 36% at 50% 102%,color-mix(in srgb,var(--neon-3) 62%,transparent),transparent 72%)}
+.ambient::after{animation-delay:-3.5s;background:
+  radial-gradient(52% 32% at 22% 4%,color-mix(in srgb,var(--gold) 62%,transparent),transparent 72%),
+  radial-gradient(52% 34% at 80% 10%,color-mix(in srgb,#FF8A3D 55%,transparent),transparent 72%),
+  radial-gradient(84% 38% at 50% 102%,color-mix(in srgb,var(--gold) 55%,transparent),transparent 72%)}
+:root[data-sweep="1"] .ambient::before{opacity:calc(var(--charge-glow)*.18)}   /* the neon steps back so the gold stays clean */
+:root[data-sweep="1"] .ambient::after{opacity:var(--charge-gold)}
+@keyframes breathe{from{transform:scale(1)}to{transform:scale(1.07) translate3d(0,-1.5%,0)}}
+/* a habit lands: a ring from its emblem across the screen (effects.js, shockwave). A small box scaled up, so only
+   transform and opacity move. A tap effect: Calm mode keeps it, and under reduced motion none is ever made. */
+.shock{position:fixed;z-index:45;width:360px;height:360px;margin:-180px 0 0 -180px;border-radius:50%;pointer-events:none;opacity:0;--sc:var(--neon);
+  background:radial-gradient(circle,transparent 56%,color-mix(in srgb,var(--sc) 14%,transparent) 61%,color-mix(in srgb,var(--sc) 72%,transparent) 67%,transparent 70%);
+  animation:shock 1.15s cubic-bezier(.33,.33,.5,1) forwards}
+.shock.two{--sc:var(--neon-2);animation-delay:.14s}
+.shock.gold{--sc:var(--gold)} .shock.gold.two{--sc:#FF8A3D}
+@keyframes shock{0%{transform:scale(.06);opacity:0}8%{opacity:var(--so,.6)}55%{opacity:calc(var(--so,.6)*.6)}100%{transform:scale(4.4);opacity:0}}
 /* theme row in settings: four chips */
 .theme-row{flex-wrap:wrap}
 .theme-picks{display:flex;gap:6px;flex-wrap:wrap}

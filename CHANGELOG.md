@@ -3,6 +3,48 @@
 What changed in the app, newest first. Started Nov 26 2026; for anything earlier, read `git log` and the dated
 sections of `README.md`.
 
+## 2026-11-27 · The backdrop charges up with your day
+
+The backdrop used to look the same all day and turn gold on a clean sweep. Now it follows today's habits on the
+way there. Guide: `README.md`, "Ambient charge".
+
+### Added
+
+- **Charge.** The backdrop reads today's habits done out of those due. Each check adds motes (26 at the top,
+  where there were 16), brings meteors sooner (5 at the top, where there were 3), fades a second aurora in over
+  the first and brightens the orbit rings. It follows today on every tab, whichever day is on screen.
+- **The ring.** A habit that lands sends a ring from its emblem across the screen: one faint ring early in the
+  day, two brighter ones once two thirds of the day is done, gold on the check that completes it. Unchecking
+  sends none.
+- **Gold, cleaner.** On a clean sweep a gold aurora fades in and the neon one steps back. The gold sky from
+  before is still there underneath.
+- `test/ambient-charge.mjs`, in `npm test`: the levels, a real day from 6 of 9 to a clean sweep, where the ring
+  starts, low charge, a past day, Calm mode, reduced motion.
+
+### Changed
+
+- **With nothing done yet the backdrop is calmer than it was**: 6 motes and 1 meteor, where there were always 16
+  and 3, and dimmer orbit rings (.2, was .35). The 16 motes are back by half the day's habits and the 3 meteors
+  by two thirds; past that it goes beyond the old look.
+- The harness baseline was re-recorded. Against the old one, every step differs only by the charge value on its
+  html line (checked by stripping it and comparing: 105 of 105 identical), and all twelve screenshots match.
+
+### Not changed
+
+- Calm mode and reduced motion still switch the whole backdrop off. The ring is a tap effect, like the emblem
+  wave: Calm mode keeps it, reduced motion does not get one.
+- Points, streaks, the clean-sweep confetti and toast, and everything on the cards.
+
+### Known
+
+- Looked at in desktop Chrome at phone size with a touch screen, in both looks. Not yet seen on an iPhone. The
+  ring and the aurora layers move only transform and opacity, but the frame rate on a phone is not measured.
+- A check on a past day sends a ring too, as strong as that day is full. It does not change the charge, which
+  is today's.
+- Found while in this code, and not changed: the floating "+XP" text after a check is placed at the top-left
+  corner of the screen, not on the habit, because its anchor is read after the list has been redrawn. `main`
+  did the same before this change.
+
 ## 2026-11-26 · Wind-down card moves under the habits
 
 ### Changed

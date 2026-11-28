@@ -5,7 +5,7 @@ import { activeHabits, capOf, habitById, lightXPOf, habitTarget, isActive, isEmp
 import { beltOf, habitCurve, msMeta, nextTrophy, rankInfo, rankTitle, rewardText, trophySVG } from '../core/xp.js';
 import { recompute } from '../core/stats.js';
 import { saveSettings, scheduleSave } from '../core/store.js';
-import { burst, floatXP, queuePromos, toast } from '../core/effects.js';
+import { burst, floatXP, queuePromos, shockwave, toast } from '../core/effects.js';
 import { ICON, miniBelt, miniRing, scoreRing } from '../core/svg.js';
 import { emblem, habitArt, trophyArt } from '../core/art.js';
 import { month, monthHTML } from './month.js';
@@ -21,6 +21,8 @@ export function mutateDay(date, fn, opts){
   opts = opts || {};
   var before = state.days[date] ? clone(state.days[date]) : null;
   var statsBefore = state.stats;
+  var from = opts.anchor && opts.anchor.isConnected ? opts.anchor : opts.hid ? checkOf(opts.hid) : null, at = null;   // render() replaces the row, so the point is read now
+  if(from){ var fr = from.getBoundingClientRect(); if(fr.width) at = {x: fr.left + fr.width/2, y: fr.top + fr.height/2}; }
   var day = state.days[date] ? clone(state.days[date]) : {date:date, done:{}, extras:{}};
   fn(day);
   if(isEmptyDay(day)) delete state.days[date]; else state.days[date] = day;
@@ -30,6 +32,7 @@ export function mutateDay(date, fn, opts){
   var bb = statsBefore.byDate[date] || {xp:0, sweep:false}, ba = state.stats.byDate[date] || {xp:0, sweep:false};
   var delta = ba.xp - bb.xp;
   if(opts.anchor && delta > 0) floatXP(opts.anchor, '+' + delta + ' XP');
+  if((ba.done || 0) > (bb.done || 0)) shockwave(at, ba.total ? ba.done/ba.total : 0, ba.sweep && !bb.sweep);   // one more habit landed that day: the backdrop answers
   if(ba.sweep && !bb.sweep){ burst(); setTimeout(function(){ toast('Clean sweep. +' + ba.sweepBonus + ' XP bonus'); }, reduceMotion ? 0 : 500); }
   else if(opts.undo){
     toast(opts.undo, {label:'Undo', fn:function(){
@@ -59,6 +62,7 @@ export function mutateDay(date, fn, opts){
   });
   if(promos.length) setTimeout(function(){ queuePromos(promos); }, reduceMotion ? 0 : 700);
 }
+function checkOf(hid){ return Array.prototype.filter.call(document.querySelectorAll('#habits [data-act="toggle"]'), function(b){ return b.getAttribute('data-h') === hid; })[0] || null; }
 export function toggleHabit(hid, anchor){
   var date = state.selected; if(date > todayKey()) return;
   var h = habitById(hid); if(!h) return;
@@ -68,7 +72,7 @@ export function toggleHabit(hid, anchor){
   mutateDay(date, function(day){
     if(wasDone){ delete day.done[hid]; delete day.extras[hid]; if(hid === SUNNAH_ID && day.m) delete day.m.rawatibAuto; }
     else { day.done[hid] = Date.now(); if(day.rest) delete day.rest[hid]; }
-  }, {anchor: wasDone ? null : anchor, undo: wasDone ? h.name + ' unchecked' : null});
+  }, {anchor: wasDone ? null : anchor, hid: hid, undo: wasDone ? h.name + ' unchecked' : null});
 }
 export function toggleRest(hid, kind, dateArg){
   var date = dateArg || state.selected, h = habitById(hid); if(!h || date > todayKey()) return;
@@ -77,7 +81,7 @@ export function toggleRest(hid, kind, dateArg){
   mutateDay(date, function(day){
     day.rest = day.rest || {};
     if(marked) delete day.rest[hid]; else { day.rest[hid] = kind === 'light' ? 'light' : kind === 'life' ? 'life' : Date.now(); delete day.done[hid]; delete day.extras[hid]; }
-  }, {undo: marked ? null : kind === 'life' ? 'Life happens: today is excused, streak kept (0 XP)' : h.restManual && kind !== 'light' ? 'Life happens: ' + (hid === 'sleep' ? 'tonight' : 'today') + ' is excused, ' + (h.restFull ? 'full points kept' : 'streak kept') : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
+  }, {hid: hid, undo: marked ? null : kind === 'life' ? 'Life happens: today is excused, streak kept (0 XP)' : h.restManual && kind !== 'light' ? 'Life happens: ' + (hid === 'sleep' ? 'tonight' : 'today') + ' is excused, ' + (h.restFull ? 'full points kept' : 'streak kept') : h.name + ': ' + (kind === 'light' ? 'light day' : 'rest day') + ' logged'});
 }
 /* Bed on time's rest days are "life happens" passes: same engine, different words */
 /* declared-only passes (restManual: Bed on time, Eat enough) are "Life happens"; the rest are rest days */
